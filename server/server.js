@@ -47,6 +47,21 @@ const SELLER = {
   LEGAL_EFFECTIVE_DATE: process.env.LEGAL_EFFECTIVE_DATE || '',
   LEGAL_COURT: process.env.LEGAL_COURT || '',
 };
+// True when `dir` sits on its own persistent mount (e.g. a Render disk at /data),
+// not on the container's throwaway root or on a RAM disk.
+const VOLATILE_FS = new Set(['overlay', 'tmpfs', 'ramfs', 'proc', 'sysfs', 'devtmpfs', 'rootfs', 'aufs']);
+function isOnPersistentMount(dir, mountsText) {
+  if (mountsText === undefined) { try { mountsText = fs.readFileSync('/proc/mounts', 'utf8'); } catch { return false; } }
+  let best = null;
+  for (const line of mountsText.split('\n')) {
+    const [, mnt, type] = line.split(' ');
+    if (!mnt || mnt === '/') continue;
+    const m = mnt.replace(/\\040/g, ' ');
+    if ((dir === m || dir.startsWith(m.endsWith('/') ? m : m + '/')) && (!best || m.length > best.m.length)) best = { m, type };
+  }
+  return !!best && !VOLATILE_FS.has(best.type);
+}
+const DB_ON_DISK = isOnPersistentMount(path.dirname(path.resolve(CFG.dbPath)));
 // Real sales only open once everything a buyer and the law need is in place.
 function salesBlockers() {
   if (CFG.mode !== 'stripe') return [];
@@ -57,6 +72,8 @@ function salesBlockers() {
   if (!SELLER.SELLER_EMAIL) missing.push('SELLER_EMAIL');
   // Set on hosting without persistent storage (e.g. Render Free), where purchase records would be lost.
   if (process.env.SALES_DISABLED === '1') missing.push('SALES_DISABLED=1');
+  // Purchase records must survive restarts before money can be taken.
+  if (process.env.REQUIRE_PERSISTENT_DISK === '1' && !DB_ON_DISK) missing.push('persistent disk for ' + CFG.dbPath);
   return missing;
 }
 if (salesBlockers().length) console.warn('販売は停止中です。未設定の環境変数: ' + salesBlockers().join(', '));
@@ -240,7 +257,7 @@ async function handle(req, res) {
     const f = path.join(LEGAL_DIR, path.basename(p));
     if (fs.existsSync(f)) return send(res, 200, legalHtml(fs.readFileSync(f, 'utf8')), 'text/html; charset=utf-8');
   }
-  if (M === 'GET' && p === '/api/health') return send(res, 200, { ok: true, mode: CFG.mode, salesOpen: !salesBlockers().length });
+  if (M === 'GET' && p === '/api/health') return send(res, 200, { ok: true, mode: CFG.mode, salesOpen: !salesBlockers().length, waitingFor: salesBlockers() });
 
   if (M === 'POST' && p === '/api/session') {
     rateLimit('session:' + ipOf(req), 20, 60e3);
@@ -358,4 +375,4 @@ const server = http.createServer((req, res) => {
 if (require.main === module) {
   server.listen(CFG.port, () => console.log(`仁義サンシャイン server: ${CFG.publicUrl} (payment: ${CFG.mode})`));
 }
-module.exports = { server, verifyStripeSignature, monthStartJST, CFG };
+module.exports = { server, verifyStripeSignature, monthStartJST, isOnPersistentMount, CFG };

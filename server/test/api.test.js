@@ -15,7 +15,7 @@ process.env.MONTHLY_LIMIT_JPY = '700';
 process.env.PORT = '0';
 process.env.SELLER_NAME = 'テスト<商店>';
 process.env.SELLER_EMAIL = 'shop@example.com';
-const { server } = require('../server');
+const { server, isOnPersistentMount } = require('../server');
 
 let base;
 test.before(() => new Promise(r => server.listen(0, () => { base = `http://127.0.0.1:${server.address().port}`; r(); })));
@@ -133,4 +133,13 @@ test('about page lists products and seller from env', async () => {
   assert.match(html, /¥600/);
   assert.match(html, /テスト&lt;商店&gt;/);
   assert.doesNotMatch(html, /\{\{/);
+});
+
+test('persistent disk detection', () => {
+  const mounts = ['overlay / overlay rw 0 0', 'tmpfs /tmp tmpfs rw 0 0', '/dev/sdb /data ext4 rw 0 0', '/dev/sdc /data2 ext4 rw 0 0'].join('\n');
+  assert.equal(isOnPersistentMount('/data', mounts), true);
+  assert.equal(isOnPersistentMount('/data/sub', mounts), true);
+  assert.equal(isOnPersistentMount('/datax', mounts), false, 'prefix must be a path boundary');
+  assert.equal(isOnPersistentMount('/app/server/data', mounts), false, 'container root is not persistent');
+  assert.equal(isOnPersistentMount('/tmp/x', mounts), false, 'tmpfs is not persistent');
 });

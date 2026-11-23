@@ -58,10 +58,10 @@
 ## 3. Stripe の Webhook をつなぐ
 1. Stripe → 開発者 → Webhook → **エンドポイントを追加**
 2. URL：`https://（手順2のURL）/api/stripe/webhook`
-3. イベント：`checkout.session.completed` と `checkout.session.async_payment_succeeded`
+3. イベント：`checkout.session.completed`、`checkout.session.async_payment_succeeded`、`checkout.session.async_payment_failed`、`checkout.session.expired` の4つ
 4. 作成後に表示される **署名シークレット（`whsec_...`）** をコピーする
 5. Render → サービス → Environment → `STRIPE_WEBHOOK_SECRET` に貼り付けて保存（自動で再起動）
-6. `https://（URL）/api/health` を開き、`"salesOpen":true` になっていれば販売が開く
+6. `https://（URL）/api/health` を開き、`"salesOpen":true` になっていれば販売が開く（`false` のときは `waitingFor` に足りない設定の名前が出る）
 
 ## 4. テスト購入する（お金は動かない）
 1. ゲームを開き、一時停止 → 💎 プレミアムショップ → 確認にチェック → 商品を選ぶ
