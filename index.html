@@ -13,7 +13,7 @@
 html,body{margin:0;height:100%;overflow:hidden;background:var(--bg);color:var(--ink);
   font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Noto Sans JP","Yu Gothic",Meiryo,sans-serif;
   touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;overscroll-behavior:none}
-canvas{display:block;position:fixed;inset:0;touch-action:none}
+canvas{display:block;position:fixed;inset:0;width:100%;height:100%;touch-action:none}
 button{font-family:inherit;touch-action:none}
 #hud{position:fixed;left:calc(10px + env(safe-area-inset-left));top:calc(8px + env(safe-area-inset-top));pointer-events:none;width:min(46vw,260px);z-index:5}
 .bar{height:12px;border-radius:7px;background:rgba(0,0,0,.55);border:2px solid rgba(255,255,255,.75);overflow:hidden;margin-bottom:5px}
@@ -26,12 +26,16 @@ button{font-family:inherit;touch-action:none}
 @keyframes pulse{from{opacity:.6}to{opacity:1}}
 #stats{display:flex;gap:10px;font-weight:800;font-size:14px;text-shadow:0 2px 0 #000,0 0 6px #000}
 #money{color:#7dff6a}#foll{color:#ffb4f0}
+#wpn{font-size:12px;font-weight:800;color:#ffe9a0;text-shadow:0 2px 0 #000,0 0 6px #000;margin-top:3px;display:none}
+.shead{margin:12px 0 2px;font-size:13px;font-weight:900;color:#ffd84f;letter-spacing:.1em}
+.item small{display:block;font-size:11px;opacity:.75;font-weight:600}
 #obj{margin-top:6px;font-size:13px;font-weight:700;background:rgba(0,0,0,.55);border-left:4px solid var(--gold);padding:5px 8px;border-radius:0 6px 6px 0;display:none;line-height:1.35}
 #stars{position:fixed;right:calc(10px + env(safe-area-inset-right));top:calc(150px + env(safe-area-inset-top));font-size:15px;pointer-events:none;z-index:5;text-align:right;text-shadow:0 0 4px #000}
 #stars .lb{font-size:10px;font-weight:800;display:block;color:#ffcf9a}
 #stars span.f{opacity:.18;filter:grayscale(1)}#stars span.f.on{opacity:1;filter:none}
 #stars.flash span.f.on{animation:pulse .25s infinite alternate}
 #topbtns{position:fixed;right:calc(10px + env(safe-area-inset-right));top:calc(190px + env(safe-area-inset-top));z-index:6;display:flex;gap:6px}
+@media (min-aspect-ratio:1/1){#topbtns{top:calc(8px + env(safe-area-inset-top));right:calc(142px + env(safe-area-inset-right))}}
 #topbtns button{width:34px;height:34px;border-radius:50%;border:2px solid rgba(255,255,255,.6);background:rgba(0,0,0,.5);color:#fff;font-size:15px}
 #feed{position:fixed;left:calc(10px + env(safe-area-inset-left));top:42%;width:min(58vw,300px);pointer-events:none;z-index:4}
 .post{background:rgba(20,0,35,.78);border:1px solid rgba(255,79,216,.55);border-radius:10px;padding:5px 8px;margin-bottom:5px;font-size:11.5px;line-height:1.35;animation:slidein .3s ease-out;transition:opacity .6s}
@@ -80,7 +84,7 @@ button{font-family:inherit;touch-action:none}
 #dead h2,#ending h2{font-size:clamp(30px,9vw,60px);margin:0 0 10px;font-weight:900;color:#ff4f4f;text-shadow:0 0 16px #f00,3px 3px 0 #000}
 #dead p,#ending p{font-weight:700;line-height:1.7}
 #shop,#pause{background:rgba(0,0,0,.6)}
-.panel{background:linear-gradient(180deg,#1d0030,#33004a);border:2px solid var(--neon);border-radius:16px;padding:16px;width:min(92vw,420px)}
+.panel{max-height:88vh;overflow-y:auto;background:linear-gradient(180deg,#1d0030,#33004a);border:2px solid var(--neon);border-radius:16px;padding:16px;width:min(92vw,420px)}
 .panel h3{margin:0 0 10px;color:#7dff6a;font-size:20px}
 .item{display:flex;justify-content:space-between;align-items:center;width:100%;margin:6px 0;padding:10px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.4);background:rgba(255,255,255,.08);color:#fff;font-size:15px;font-weight:700;text-align:left}
 .item span{color:#7dff6a}
@@ -98,10 +102,11 @@ body.kara #hud,body.kara #stars,body.kara #feed,body.kara #bX,body.kara #bB,body
   <div class="bar" id="hpw"><div id="hpb"></div></div>
   <div class="bar" id="htw"><div id="htb"></div></div>
   <div id="stats"><span id="money">$0</span><span id="foll">👁 0</span></div>
+  <div id="wpn"></div>
   <div id="obj"></div>
 </div>
 <div id="stars"><span class="lb">炎上度</span><span class="f">🔥</span><span class="f">🔥</span><span class="f">🔥</span><span class="f">🔥</span><span class="f">🔥</span></div>
-<div id="topbtns"><button id="bMute" aria-label="サウンド">♪</button><button id="bPause" aria-label="メニュー">Ⅱ</button></div>
+<div id="topbtns"><button id="bMute" aria-label="サウンド">♪</button><button id="bPause" aria-label="メニュー">Ⅱ</button><button id="bW" aria-label="武器切替">武</button></div>
 <div id="feed"></div>
 <div id="card"></div>
 <div id="toast"></div>
@@ -124,10 +129,10 @@ body.kara #hud,body.kara #stars,body.kara #feed,body.kara #bX,body.kara #bB,body
   <p>2027年、日米「歓楽街まるごと姉妹都市協定」により、東京の歓楽街〈紅灯町〉はビルごと南国の〈ガルフストリーム州〉へ移設された。<br>ネオン、ワニ、ハリケーン、そして極道。――誰も止めなかった。</p>
   <button class="mbtn pri" id="bNew">はじめから</button>
   <button class="mbtn" id="bCont" style="display:none">つづきから</button>
-  <div class="hint">左半分ドラッグで移動 ／ 右のボタンで攻撃<br>PC: WASD移動・J殴る・K蹴る・L回避・H極・E乗降</div>
+  <div class="hint">左半分ドラッグで移動 ／ 右のボタンで攻撃<br>PC: WASD移動・J殴る・K蹴る・L回避・H極・E乗降・Q武器</div>
 </div>
 <div class="ov" id="dead"><h2>仁義、ここに尽きる…</h2><p>病院送りになった。治療費として所持金の1割を失った。</p><button class="mbtn pri" id="bRevive">立ち上がる</button></div>
-<div class="ov" id="shop"><div class="panel"><h3>🐊 ワニマート</h3><div id="shopitems"></div><button class="mbtn" id="bShopClose">店を出る</button></div></div>
+<div class="ov" id="shop"><div class="panel"><h3>🐊 ワニマート</h3><div style="font-size:12px;opacity:.8;margin-top:-6px">日用品から武器まで。この州では合法。</div><div id="shopitems"></div><button class="mbtn" id="bShopClose">店を出る</button></div></div>
 <div class="ov" id="pause"><div class="panel" style="text-align:center"><h3 style="color:#ff4fd8">ポーズ</h3>
   <p style="font-size:13px;line-height:1.7;text-align:left">黄色の<b style="color:#ffd84f">！</b>＝メインストーリー<br>水色の<b style="color:#4fffe1">？</b>＝サブストーリー<br>緑の<b style="color:#7dff6a">＄</b>＝ワニマート（回復）<br>ゲージ満タンで<b style="color:#4fffe1">HEAT</b>＝極技。<br>市民や警官を殴ると<b style="color:#ff9a3c">炎上度</b>が上がる。警官の視界から離れれば下がる。</p>
   <button class="mbtn pri" id="bResume">再開</button><button class="mbtn" id="bSave">セーブ</button></div></div>
@@ -230,7 +235,7 @@ const MP=40,mm=document.createElement('canvas');mm.width=MW+MP*2;mm.height=MH+MP
   for(let y=0;y<MH;y++)for(let x=0;x<MW;x++){m.fillStyle=C[tAt(x,y)];m.fillRect(x,y,1,1);}}
 
 // ================= STATE =================
-const S={money:300,chapter:0,subs:{},followers:1200,kills:0,wpts:0,time:0,storm:false,target:null,markerCool:0,ended:false,intro:false};
+const S={inv:{},wdur:{},wpn:null,money:300,chapter:0,subs:{},followers:1200,kills:0,wpts:0,time:0,storm:false,target:null,markerCool:0,ended:false,intro:false};
 const DAY=300;S.time=DAY*.72;
 let mode='title',prevMode='play',wanted=0,wcool=0,hitstop=0,shake=0,lastDt=0,flash=0,sirenT=0;
 const P={x:POS.pierBase.x,y:POS.pierBase.y,r:14,hp:100,maxHp:100,heat:0,dir:Math.PI,atk:0,atkTotal:1,hitAt:0,hitDone:true,atkKind:'p',combo:0,comboT:0,queued:null,inv:0,dodgeT:0,dodgeCD:0,dodgeDir:0,hurt:0,car:null,anim:0,moving:false,skin:'#e2b07f',col:'#ff8c2e',hair:'#111'};
@@ -251,6 +256,7 @@ let hudCache={};
 function updateHUD(){const set=(k,v,f)=>{if(hudCache[k]!==v){hudCache[k]=v;f(v);}};
   set('hp',Math.round(P.hp),v=>$('hpb').style.width=(v/P.maxHp*100)+'%');
   set('ht',Math.round(P.heat),v=>{$('htb').style.width=v+'%';$('htw').classList.toggle('full',v>=100);$('bH').classList.toggle('ready',v>=100);});
+  set('wp',S.wpn?S.wpn+S.wdur[S.wpn]+'/'+S.inv[S.wpn]:'',v=>{const e=$('wpn');if(!S.wpn){e.style.display='none';return;}const w=WEAPONS[S.wpn];e.style.display='block';e.textContent=`⚔ ${w.n}  耐久${S.wdur[S.wpn]}/${w.dur}`+(S.inv[S.wpn]>1?`  予備×${S.inv[S.wpn]-1}`:'');});
   set('m',S.money,v=>$('money').textContent='$'+v.toLocaleString());set('f',S.followers,v=>$('foll').textContent='👁 '+fmtN(v));
   set('w',wanted,v=>{[...document.querySelectorAll('#stars .f')].forEach((e,i)=>e.classList.toggle('on',i<v));});
   set('wc',wanted>0&&wcool>0,v=>$('stars').classList.toggle('flash',v));
@@ -368,10 +374,11 @@ function startAttack(kind){const tg=nearestTarget(115);if(tg)P.dir=Math.atan2(tg
   if(kind==='p'){P.combo=P.comboT>0?(P.combo+1)%3:0;P.comboT=.62;P.atkTotal=P.combo===2?.32:.2;P.hitAt=P.combo===2?.13:.07;}
   else{P.combo=0;P.atkTotal=.42;P.hitAt=.2;}
   P.atkKind=kind;P.atk=P.atkTotal;P.hitDone=false;SFX.swing();moveCircle(P,Math.cos(P.dir)*7,Math.sin(P.dir)*7);}
-function doPlayerHit(){const k=P.atkKind==='k';const range=k?64:P.combo===2?56:48,arc=k?1.25:1.0;const dmg=k?16:[7,8,15][P.combo],kn=k?330:[70,70,290][P.combo];let n=0;
+function doPlayerHit(){const k=P.atkKind==='k';const w=WEAPONS[S.wpn];const range=(k?64:P.combo===2?56:48)+(w&&!k?w.rng:0),arc=k?1.25:w?w.arc:1.0;const dmg=(k?16:[7,8,15][P.combo])*(w&&!k?w.mul:1),kn=k?330:[70,70,290][P.combo];let n=0;
   for(const a of actors){if(a.dead||a.npc)continue;const d=dist(a,P),ang=Math.atan2(a.y-P.y,a.x-P.x);if(d<range+a.r&&Math.abs(angDiff(P.dir,ang))<arc){hitActor(a,dmg*rand(.9,1.15),kn,ang);n++;}}
   for(const c of cars){if(c.wreck||c===P.car)continue;const d=dist(c,P),ang=Math.atan2(c.y-P.y,c.x-P.x);if(d<range+16&&Math.abs(angDiff(P.dir,ang))<arc){damageCar(c,k?9:4);n++;spark(c.x,c.y,'#ffd84f',4);if(c.ai)c.blockT=0;}}
-  if(n){(k||P.combo===2)?SFX.heavy():SFX.hit();hitstop=k||P.combo===2?.08:.045;shake=Math.max(shake,k?7:4);P.heat=Math.min(100,P.heat+(k?9:6)*Math.min(n,3));}}
+  if(n&&w&&!k)wearWeapon();
+  if(n){(k||P.combo===2||w)?SFX.heavy():SFX.hit();hitstop=k||P.combo===2?.08:.045;shake=Math.max(shake,k?7:4);P.heat=Math.min(100,P.heat+(k?9:6)*Math.min(n,3));}}
 function updatePlayer(dt){P.anim+=dt;
   if(P.car){driveCar(P.car,dt);P.x=P.car.x;P.y=P.car.y;
     if(input.act)exitCar();if(input.punch||input.heat)SFX.horn();
@@ -398,7 +405,7 @@ const HEATN=['極・サーフボード唐竹割り','極・フラミンゴ乱舞
 function tryHeat(){if(P.heat<100){toast('ヒートゲージが足りない');return;}
   const tg=actors.filter(a=>!a.dead&&!a.npc&&(a.hostile||a.type==='cop'||a.type==='civ')&&dist(a,P)<130);if(!tg.length){toast('近くに相手がいない');return;}
   let nm=pick(HEATN);let wet=false;for(let dy=-3;dy<=3;dy++)for(let dx=-3;dx<=3;dx++)if(tAt(Math.floor(P.x/T)+dx,Math.floor(P.y/T)+dy)===WATER)wet=true;
-  if(wet)nm='極・ワニの餌やり';if(tileUnder(P)===SWAMP)nm='極・沼底ジャーマン';if(tg.some(a=>a.boss))nm='極・仁義大車輪';
+  if(wet)nm='極・ワニの餌やり';if(tileUnder(P)===SWAMP)nm='極・沼底ジャーマン';if(S.wpn)nm='極・'+WEAPONS[S.wpn].n.replace(/（.*）/,'')+WEAPONS[S.wpn].heat;if(tg.some(a=>a.boss))nm='極・仁義大車輪';
   P.heat=0;cine={t:0,dur:1.5,nm,tg,done:false};mode='cine';SFX.heat();}
 function updateCine(dt){cine.t+=dt;if(!cine.done&&cine.t>=.95){cine.done=true;for(const a of cine.tg){const ang=Math.atan2(a.y-P.y,a.x-P.x);hitActor(a,a.boss?75:95,420,ang);}
   SFX.boom();shake=20;flash=.5;for(let i=0;i<30;i++)parts.push({x:P.x,y:P.y,vx:rand(-300,300),vy:rand(-300,300),life:rand(.3,.8),max:.8,col:pick(['#4fffe1','#fff','#ff4fd8']),s:rand(3,7)});
@@ -488,10 +495,26 @@ const SHOPS=['mart1','mart2','mart3'];
 function nearShop(){if(P.car)return null;for(const k of SHOPS)if(dist(P,POS[k])<70)return k;return null;}
 const GOODS=[['ガンボおにぎり（HP+35）',25,()=>P.hp=Math.min(P.maxHp,P.hp+35)],['ワニ肉ホットドッグ（HP+70）',60,()=>P.hp=Math.min(P.maxHp,P.hp+70)],
   ['エナドリ「ワニブル」（全回復＋HEAT満タン）',150,()=>{P.hp=P.maxHp;P.heat=100;}],['日焼け止め SPF極（最大HP+10）',400,()=>{P.maxHp+=10;P.hp=P.maxHp;}]];
-function openShop(){mode='shop';const box=$('shopitems');box.innerHTML='';
-  GOODS.forEach(([n,p,f])=>{const b=document.createElement('button');b.className='item';b.innerHTML=`${n}<span>$${p}</span>`;
+function openShop(){mode='shop';const box=$('shopitems');box.innerHTML='';const hd=t=>{const h=document.createElement('div');h.className='shead';h.textContent=t;box.appendChild(h);};
+  hd('回復・強化');GOODS.forEach(([n,p,f])=>{const b=document.createElement('button');b.className='item';b.innerHTML=`${n}<span>$${p}</span>`;
     b.onclick=()=>{if(S.money<p){toast('金が足りねぇ…');SFX.hurt();return;}S.money-=p;f();SFX.coin();toast('まいどあり！ '+n.split('（')[0]);updateHUD();};box.appendChild(b);});
+  hd('武器（攻撃が強くなる／壊れるまで使える）');
+  for(const id in WEAPONS){const w=WEAPONS[id];const b=document.createElement('button');b.className='item';
+    b.innerHTML=`<div>${w.n}<small>攻撃×${w.mul} ／ 耐久${w.dur}回 ／ 所持${S.inv[id]||0}</small></div><span>$${w.p.toLocaleString()}</span>`;
+    b.onclick=()=>{if(S.money<w.p){toast('金が足りねぇ…');SFX.hurt();return;}S.money-=w.p;giveWeapon(id);SFX.coin();toast('装備した： '+w.n);updateHUD();save();openShop();};box.appendChild(b);}
   $('shop').style.display='flex';}
+// ---------- weapons ----------
+const WEAPONS={club:{n:'ゴルフクラブ',mul:1.4,rng:22,arc:1.0,dur:40,p:200,col:'#d8d8e0',len:30,w:3,heat:'・ホールインワン'},
+  bat:{n:'金属バット',mul:1.7,rng:14,arc:1.1,dur:30,p:350,col:'#c0c0c8',len:26,w:5,heat:'・満塁ホームラン'},
+  board:{n:'サーフボード',mul:1.9,rng:18,arc:1.5,dur:18,p:600,col:'#4fd0ff',len:34,w:9,heat:'・ビッグウェーブ'},
+  katana:{n:'模造刀（峰打ち）',mul:2.4,rng:24,arc:1.2,dur:25,p:1500,col:'#e8f0ff',len:38,w:3,heat:'・峰打ち千本桜'},
+  hammer:{n:'ハリケーン・ハンマー',mul:3.2,rng:16,arc:1.3,dur:15,p:4000,col:'#ffd84f',len:30,w:11,heat:'・暴風域'}};
+function giveWeapon(id){const had=S.inv[id]||0;S.inv[id]=had+1;if(!had)S.wdur[id]=WEAPONS[id].dur;S.wpn=id;}
+function wearWeapon(){const id=S.wpn;S.wdur[id]--;if(S.wdur[id]>0)return;S.inv[id]--;spark(P.x+Math.cos(P.dir)*30,P.y+Math.sin(P.dir)*30,WEAPONS[id].col,14);
+  if(S.inv[id]>0){S.wdur[id]=WEAPONS[id].dur;toast(WEAPONS[id].n+'が壊れた！ 予備に持ち替えた');}else{toast(WEAPONS[id].n+'が壊れた！');S.wpn=null;}SFX.crash();}
+function cycleWeapon(){const own=Object.keys(WEAPONS).filter(id=>S.inv[id]>0);if(!own.length){toast('武器を持っていない（ワニマートで買える）');return;}
+  const list=[null,...own];S.wpn=list[(list.indexOf(S.wpn)+1)%list.length];SFX.ui();toast(S.wpn?'装備： '+WEAPONS[S.wpn].n:'素手');}
+$('bW').onclick=()=>{initAudio();if(mode==='play')cycleWeapon();};
 $('bShopClose').onclick=()=>{$('shop').style.display='none';mode='play';save();};
 
 // ================= KARAOKE =================
@@ -635,7 +658,7 @@ function die(){mode='dead';$('dead').style.display='flex';SFX.boom();abortMissio
 $('bRevive').onclick=()=>{$('dead').style.display='none';S.money=Math.floor(S.money*.9);P.hp=P.maxHp;P.heat=0;wanted=0;S.wpts=0;
   if(P.car)exitCar(true);P.x=POS.office.x;P.y=POS.office.y+T;actors.length=0;projs.length=0;for(let i=cars.length-1;i>=0;i--)if(cars[i].kind==='police')cars.splice(i,1);
   spawnJade();mode='play';S.markerCool=4;save();};
-function save(){try{localStorage.setItem('jingi_save',JSON.stringify({money:S.money,chapter:S.chapter,subs:S.subs,followers:S.followers,kills:S.kills,maxHp:P.maxHp,intro:S.intro,ended:S.ended}));}catch(e){}}
+function save(){try{localStorage.setItem('jingi_save',JSON.stringify({money:S.money,chapter:S.chapter,subs:S.subs,followers:S.followers,kills:S.kills,maxHp:P.maxHp,inv:S.inv,wdur:S.wdur,wpn:S.wpn,intro:S.intro,ended:S.ended}));}catch(e){}}
 function load(){try{const d=JSON.parse(localStorage.getItem('jingi_save')||'null');return d;}catch(e){return null;}}
 function spawnJade(){if(!actors.some(a=>a.jade))mk('npc',POS.office.x-1.6*T,POS.office.y,{jade:true,npc:true,lookAt:true,col:'#ff4fd8',hair:'#ff9ad8',skin:'#c68a5b',name:'ジェイド'});}
 
@@ -651,7 +674,7 @@ function press(k){initAudio();if(mode==='dialog'){advance();return;}if(mode==='k
   b.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();b.classList.add('pr');press(k);});
   const up=()=>b.classList.remove('pr');b.addEventListener('pointerup',up);b.addEventListener('pointerleave',up);b.addEventListener('pointercancel',up);});
 addEventListener('keydown',e=>{if(e.repeat)return;const k=e.key.toLowerCase();keys[k]=true;
-  const map={j:'punch',k:'kick',l:'dodge',h:'heat',e:'act'};if(map[k])press(map[k]);if(k===' '||k==='enter'){if(mode==='dialog')advance();else if(mode==='karaoke')karaTap();else press('punch');}
+  const map={j:'punch',k:'kick',l:'dodge',h:'heat',e:'act'};if(map[k])press(map[k]);if(k==='q'&&mode==='play')cycleWeapon();if(k===' '||k==='enter'){if(mode==='dialog')advance();else if(mode==='karaoke')karaTap();else press('punch');}
   if(k==='escape'||k==='p')togglePause();});
 addEventListener('keyup',e=>{keys[e.key.toLowerCase()]=false;});
 document.addEventListener('touchmove',e=>e.preventDefault(),{passive:false});
@@ -666,7 +689,7 @@ addEventListener('visibilitychange',()=>{if(document.hidden&&mode==='play')toggl
 
 // ================= START =================
 function beginGame(cont){initAudio();$('title').style.display='none';
-  if(cont){const d=load();if(d){Object.assign(S,{money:d.money,chapter:d.chapter,subs:d.subs||{},followers:d.followers,kills:d.kills||0,intro:d.intro,ended:d.ended});P.maxHp=d.maxHp||100;P.hp=P.maxHp;}
+  if(cont){const d=load();if(d){Object.assign(S,{money:d.money,chapter:d.chapter,subs:d.subs||{},followers:d.followers,kills:d.kills||0,intro:d.intro,ended:d.ended,inv:d.inv||{},wdur:d.wdur||{},wpn:d.wpn||null});P.maxHp=d.maxHp||100;P.hp=P.maxHp;}
     P.x=POS.office.x;P.y=POS.office.y+T;}
   cam.x=P.x;cam.y=P.y;spawnJade();spawnOwned();for(let i=0;i<10;i++)spawnTraffic();for(let i=0;i<16;i++){const s=findSpot(P.x,P.y,120,800,v=>v===SIDE||v===PLAZA);if(s)mkCiv(s.x,s.y);}
   mode='play';
@@ -732,6 +755,8 @@ function drawHuman(a,isP){const r=a.r;ctx.save();ctx.translate(a.x,a.y);ctx.fill
   if(a.type==='cop'){ctx.fillStyle='#ffd84f';circ(2,-6,2.2);}
   ctx.fillStyle=a.skin;circ(r*.05,0,r*.52);
   ctx.fillStyle=a.hair;ctx.beginPath();ctx.arc(0,0,r*.55,Math.PI*.45,Math.PI*1.55);ctx.fill();
+  if(isP&&S.wpn&&!kick){const w=WEAPONS[S.wpn];const pr=P.atk>0?1-P.atk/P.atkTotal:0;const sw=P.atk>0?-1.5+pr*2.2:-.5;ctx.save();ctx.translate(r*.32+ext*10,r*.8);ctx.rotate(sw);
+    ctx.fillStyle='#3a2a1a';ctx.fillRect(-4,-2.5,10,5);ctx.fillStyle=w.col;rr(5,-w.w/2,w.len,w.w,Math.min(4,w.w/2));ctx.fill();ctx.restore();}
   if(isP){ctx.fillStyle=a.hair;ell(-r*.1,0,r*.6,r*.42);ctx.fillStyle='#111';ctx.fillRect(r*.28,-r*.36,4,r*.72);}
   if(a.type==='cop'){ctx.fillStyle='#16295a';circ(0,0,r*.5);ctx.fillRect(r*.2,-r*.45,6,r*.9);}
   if(a.jade){ctx.strokeStyle='#ccc';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(r*.4,0);ctx.lineTo(r*1.8,-4);ctx.stroke();ctx.fillStyle='#111';ctx.fillRect(r*1.7,-9,4,10);}
