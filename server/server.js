@@ -55,6 +55,8 @@ function salesBlockers() {
   if (!CFG.webhookSecret) missing.push('STRIPE_WEBHOOK_SECRET');
   if (!SELLER.SELLER_NAME) missing.push('SELLER_NAME');
   if (!SELLER.SELLER_EMAIL) missing.push('SELLER_EMAIL');
+  // Set on hosting without persistent storage (e.g. Render Free), where purchase records would be lost.
+  if (process.env.SALES_DISABLED === '1') missing.push('SALES_DISABLED=1');
   return missing;
 }
 if (salesBlockers().length) console.warn('販売は停止中です。未設定の環境変数: ' + salesBlockers().join(', '));

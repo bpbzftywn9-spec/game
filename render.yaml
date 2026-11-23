@@ -8,16 +8,20 @@ services:
     dockerfilePath: ./Dockerfile
     branch: claude/gta6-yakuza-mobile-game-yoz8wt
     region: singapore
-    plan: starter            # 消えないディスク（購入記録とセーブ）を付けるには有料プランが必要
+    # 今は無料プラン（動作確認用）。しばらくアクセスがないと停止し、再起動でサーバー側のデータは消える。
+    # 販売を始めるときは plan を starter にし、下の disk のコメントを外し、SALES_DISABLED を削除する。
+    plan: free
     healthCheckPath: /api/health
     autoDeploy: true
-    disk:
-      name: data
-      mountPath: /data
-      sizeGB: 1
+    # disk:                  # 有料プラン（starter 以上）でのみ使える
+    #   name: data
+    #   mountPath: /data
+    #   sizeGB: 1
     envVars:
       - key: PAYMENT_MODE
         value: stripe
+      - key: SALES_DISABLED          # 購入記録が消える環境では販売しない。ディスクを付けたら削除
+        value: "1"
       - key: TRUST_PROXY
         value: "1"
       - key: MONTHLY_LIMIT_JPY

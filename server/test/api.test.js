@@ -112,7 +112,7 @@ test('production stripe mode keeps sales closed until configured', async () => {
   const { spawn } = require('node:child_process');
   const port = 18000 + Math.floor(Math.random() * 1000);
   const env = { ...process.env, PORT: String(port), PAYMENT_MODE: 'stripe', NODE_ENV: 'production', DB_PATH: path.join(tmp, 'prod.db'),
-    STRIPE_SECRET_KEY: '', STRIPE_WEBHOOK_SECRET: '', SELLER_NAME: '', SELLER_EMAIL: '' };
+    STRIPE_SECRET_KEY: 'sk_test_x', STRIPE_WEBHOOK_SECRET: 'whsec_x', SELLER_NAME: 'x', SELLER_EMAIL: 'x@example.com', SALES_DISABLED: '1' };
   const child = spawn(process.execPath, ['--disable-warning=ExperimentalWarning', path.join(__dirname, '..', 'server.js')], { env, stdio: 'ignore' });
   try {
     const url = `http://127.0.0.1:${port}`;
