@@ -26,6 +26,12 @@ const CFG = {
   mode: process.env.PAYMENT_MODE || 'mock', // 'stripe' | 'mock'
   stripeKey: process.env.STRIPE_SECRET_KEY || '',
   webhookSecret: process.env.STRIPE_WEBHOOK_SECRET || '',
+  // Pinned so Stripe API changes never reach production unannounced. Bump deliberately.
+  stripeVersion: process.env.STRIPE_API_VERSION || '2026-11-18.endive',
+  // Product tax code (needed for Managed Payments / Stripe Tax). Browser game, consumable in-game items.
+  taxCode: process.env.STRIPE_TAX_CODE || 'txcd_10201003',
+  // 'off' sends managed_payments[enabled]=false; otherwise the account's default applies.
+  managedPayments: process.env.STRIPE_MANAGED_PAYMENTS || 'default',
   monthlyLimit: Number(process.env.MONTHLY_LIMIT_JPY || 10000),
   dbPath: process.env.DB_PATH || path.join(__dirname, 'data', 'game.db'),
   trustProxy: process.env.TRUST_PROXY === '1',
@@ -83,6 +89,7 @@ const q = {
   order: db.prepare('SELECT * FROM orders WHERE id=?'),
   orderBySession: db.prepare('SELECT * FROM orders WHERE stripe_session=?'),
   markPaid: db.prepare("UPDATE orders SET status='paid', paid_at=? WHERE id=? AND status<>'paid'"),
+  markFailed: db.prepare("UPDATE orders SET status=? WHERE id=? AND status='pending'"),
   insGrant: db.prepare('INSERT OR IGNORE INTO grants(user_id,order_id,items,created_at) VALUES(?,?,?,?)'),
   pending: db.prepare('SELECT id, items, order_id FROM grants WHERE user_id=? AND acked_at IS NULL ORDER BY id'),
   ack: db.prepare('UPDATE grants SET acked_at=? WHERE id=? AND user_id=? AND acked_at IS NULL'),
@@ -131,7 +138,7 @@ function form(obj, prefix, out = []) {
   return out.join('&');
 }
 async function stripe(method, p, body, idem) {
-  const headers = { Authorization: 'Bearer ' + CFG.stripeKey };
+  const headers = { Authorization: 'Bearer ' + CFG.stripeKey, 'Stripe-Version': CFG.stripeVersion };
   if (body) headers['Content-Type'] = 'application/x-www-form-urlencoded';
   if (idem) headers['Idempotency-Key'] = idem;
   const r = await fetch('https://api.stripe.com/v1' + p, { method, headers, body: body ? form(body) : undefined });
@@ -275,8 +282,9 @@ async function handle(req, res) {
     if (CFG.mode === 'mock') return send(res, 200, { url: `/mock-checkout?order=${orderId}` });
     const s = await stripe('POST', '/checkout/sessions', {
       mode: 'payment', locale: b.lang === 'en' ? 'en' : 'ja', client_reference_id: u.id,
-      line_items: { 0: { quantity: 1, price_data: { currency: 'jpy', unit_amount: prod.price, product_data: b.lang === 'en' ? { name: prod.name_en || prod.name, description: prod.desc_en || prod.desc } : { name: prod.name, description: prod.desc } } } },
+      line_items: { 0: { quantity: 1, price_data: { currency: 'jpy', unit_amount: prod.price, product_data: Object.assign(b.lang === 'en' ? { name: prod.name_en || prod.name, description: prod.desc_en || prod.desc } : { name: prod.name, description: prod.desc }, CFG.taxCode ? { tax_code: CFG.taxCode } : {}) } } },
       metadata: { order_id: orderId, user_id: u.id, product: prod.id },
+      ...(CFG.managedPayments === 'off' ? { managed_payments: { enabled: false } } : {}),
       success_url: `${CFG.publicUrl}/?purchase=success&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${CFG.publicUrl}/?purchase=cancel`,
     }, orderId);
@@ -309,6 +317,10 @@ async function handle(req, res) {
     if (!verifyStripeSignature(raw, req.headers['stripe-signature'], CFG.webhookSecret)) return send(res, 400, { error: 'bad signature' });
     const ev = JSON.parse(raw);
     if (ev.type === 'checkout.session.completed' || ev.type === 'checkout.session.async_payment_succeeded') fulfillFromSession(ev.data.object);
+    else if (ev.type === 'checkout.session.expired' || ev.type === 'checkout.session.async_payment_failed') {
+      const id = ev.data.object.metadata && ev.data.object.metadata.order_id;
+      if (id) q.markFailed.run(ev.type === 'checkout.session.expired' ? 'expired' : 'failed', id);
+    }
     return send(res, 200, { received: true });
   }
 
