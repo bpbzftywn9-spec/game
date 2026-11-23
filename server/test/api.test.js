@@ -125,3 +125,12 @@ test('production stripe mode keeps sales closed until configured', async () => {
     assert.equal((await r.json()).error, 'The shop is not open yet');
   } finally { child.kill(); }
 });
+
+test('about page lists products and seller from env', async () => {
+  const html = await (await fetch(base + '/about')).text();
+  assert.match(html, /仁義フルセット/);
+  assert.match(html, /Jingi Full Set/);
+  assert.match(html, /¥600/);
+  assert.match(html, /テスト&lt;商店&gt;/);
+  assert.doesNotMatch(html, /\{\{/);
+});

@@ -227,6 +227,13 @@ async function handle(req, res) {
   if (p.startsWith('/api/')) rateLimit('api:' + ipOf(req), 240, 60e3);
 
   if (M === 'GET' && (p === '/' || p === '/index.html')) return send(res, 200, gameHtml(), 'text/html; charset=utf-8');
+  if (M === 'GET' && (p === '/about' || p === '/about.html')) {
+    const row = (n, d, price) => `<tr><td>${esc(n)}</td><td>${esc(d)}</td><td class="price">¥${price.toLocaleString()}</td></tr>`;
+    const html = fs.readFileSync(path.join(__dirname, 'public', 'about.html'), 'utf8')
+      .replace('{{PRODUCT_ROWS}}', PRODUCTS.map(x => row(x.name, x.desc, x.price)).join(''))
+      .replace('{{PRODUCT_ROWS_EN}}', PRODUCTS.map(x => row(x.name_en || x.name, x.desc_en || x.desc, x.price)).join(''));
+    return send(res, 200, legalHtml(html), 'text/html; charset=utf-8');
+  }
   if (M === 'GET' && /^\/legal\/[a-z]+\.html$/.test(p)) {
     const f = path.join(LEGAL_DIR, path.basename(p));
     if (fs.existsSync(f)) return send(res, 200, legalHtml(fs.readFileSync(f, 'utf8')), 'text/html; charset=utf-8');

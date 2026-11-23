@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>仁義サンシャイン 運営者情報</title>
+<meta name="description" content="ブラウザで遊べるオンラインゲーム「仁義サンシャイン」の運営者情報・販売商品・お問い合わせ先">
+<style>
+/* Layout: one readable column; neon game identity kept to the header band, the rest is plain and scannable for reviewers. */
+:root{--bg:#160022;--panel:#22003a;--fg:#f3ecf8;--muted:#bfb0cf;--line:#4a2a5e;--neon:#ff4fd8;--cyan:#4fffe1;--gold:#ffd84f;--todo:#ffd84f;
+  --display:"Hiragino Kaku Gothic ProN","Noto Sans JP","Yu Gothic",sans-serif}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--display);line-height:1.8}
+.band{background:radial-gradient(ellipse at 50% 140%,#ff5f2e 0%,#c0007a 35%,#3a0060 70%,var(--bg) 100%)}
+.wrap{max-width:820px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+header .wrap{padding-block:40px 36px;text-align:center}
+h1{margin:0;font-size:clamp(32px,8vw,52px);font-weight:900;letter-spacing:.04em;text-shadow:0 0 18px var(--neon),3px 3px 0 #6a0050;text-wrap:balance}
+.en-title{margin:4px 0 14px;letter-spacing:.45em;color:var(--cyan);font-weight:800;font-size:14px;text-shadow:0 0 8px var(--cyan)}
+.lead{max-width:60ch;margin:0 auto 20px;font-size:15px}
+.play{display:inline-block;padding:12px 32px;border-radius:30px;background:linear-gradient(90deg,var(--neon),#ff9a3c);color:#fff;font-weight:900;text-decoration:none;letter-spacing:.1em}
+.play:focus-visible,a:focus-visible{outline:3px solid var(--cyan);outline-offset:3px}
+main .wrap{padding-block:32px 56px;display:grid;gap:36px}
+h2{font-size:18px;margin:0 0 10px;padding-bottom:6px;border-bottom:2px solid var(--neon);text-wrap:balance}
+p,li,td,th{font-size:14px}
+table{width:100%;border-collapse:collapse}
+th,td{text-align:left;vertical-align:top;padding:10px 8px;border-bottom:1px solid var(--line)}
+th{color:var(--muted);font-weight:700;width:30%}
+td.price{white-space:nowrap;text-align:right;font-variant-numeric:tabular-nums;color:var(--gold);font-weight:800}
+.tablewrap{overflow-x:auto}
+.note{color:var(--muted);font-size:13px}
+.links{display:flex;flex-wrap:wrap;gap:8px 18px;padding:0;margin:0;list-style:none}
+a{color:var(--neon)}
+.todo{color:var(--todo);font-weight:700}
+section.en{border-top:1px dashed var(--line);padding-top:28px}
+footer{border-top:1px solid var(--line)}
+footer .wrap{padding-block:18px 28px;color:var(--muted);font-size:12px}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<header class="band"><div class="wrap">
+  <h1>仁義サンシャイン</h1>
+  <div class="en-title">JINGI SUNSHINE</div>
+  <p class="lead">スマートフォンとPCのブラウザで遊べる、オープンワールド喧嘩アクションのオンラインゲームです。インストール不要、基本プレイ無料。</p>
+  <a class="play" href="/">ゲームを遊ぶ</a>
+</div></header>
+
+<main><div class="wrap">
+<section>
+  <h2>事業内容</h2>
+  <p>オンラインゲーム「仁義サンシャイン」の開発・運営をしています。ゲームは無料で最後まで遊べます。任意で、ゲーム内で使える武器アイテムを販売しています（ゲーム内通貨の販売はしていません）。</p>
+</section>
+
+<section>
+  <h2>販売商品と価格</h2>
+  <p class="note">価格はすべて税込です。購入した武器は、お支払いの確認後すぐにゲーム内で受け取れます。</p>
+  <div class="tablewrap"><table>
+    <thead><tr><th>商品</th><th>内容</th><th style="text-align:right">価格</th></tr></thead>
+    <tbody>{{PRODUCT_ROWS}}</tbody>
+  </table></div>
+</section>
+
+<section>
+  <h2>お支払い・お届け・返金</h2>
+  <ul>
+    <li>お支払い方法：クレジットカードほか、決済画面（Stripe）に表示される方法</li>
+    <li>お届け：お支払いの確認後、ただちにゲーム内に反映</li>
+    <li>返金：デジタルコンテンツのため、購入後の返品・キャンセルはお受けしていません。アイテムが届かないなど当方の不具合の場合は、下記までご連絡ください</li>
+    <li>未成年の方は保護者の同意を得てご購入ください。1か月の購入金額に上限があります</li>
+  </ul>
+</section>
+
+<section>
+  <h2>運営者・お問い合わせ</h2>
+  <table>
+    <tr><th>運営者</th><td>{{SELLER_NAME}}</td></tr>
+    <tr><th>お問い合わせ</th><td>{{SELLER_EMAIL}}</td></tr>
+  </table>
+  <p class="note">所在地・電話番号などは「特定商取引法に基づく表記」に記載しています。</p>
+  <ul class="links">
+    <li><a href="/legal/tokushoho.html">特定商取引法に基づく表記</a></li>
+    <li><a href="/legal/terms.html">利用規約</a></li>
+    <li><a href="/legal/privacy.html">プライバシーポリシー</a></li>
+  </ul>
+</section>
+
+<section class="en" lang="en">
+  <h2>About (English)</h2>
+  <p>JINGI SUNSHINE is an open-world brawler that runs in the browser on phones and PCs. It is free to play from start to finish. Optional in-game weapon items are sold for Japanese yen (tax included) and are delivered in the game as soon as payment is confirmed. We do not sell in-game currency.</p>
+  <div class="tablewrap"><table>
+    <thead><tr><th>Item</th><th>Details</th><th style="text-align:right">Price</th></tr></thead>
+    <tbody>{{PRODUCT_ROWS_EN}}</tbody>
+  </table></div>
+  <p>Payments are processed by Stripe. Because these are digital goods, purchases are non-refundable except when an item is not delivered due to our error. Operator: {{SELLER_NAME}} — Contact: {{SELLER_EMAIL}}</p>
+</section>
+</div></main>
+
+<footer><div class="wrap">© 仁義サンシャイン</div></footer>
+</body>
+</html>
