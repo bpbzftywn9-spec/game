@@ -92,6 +92,13 @@ button{font-family:inherit;touch-action:none}
 #ending h2{color:#fff;text-shadow:0 0 18px var(--neon)}
 body.kara #hud,body.kara #stars,body.kara #feed,body.kara #bX,body.kara #bB,body.kara #bD,body.kara #bH,body.kara #topbtns{display:none!important}
 #toast{position:fixed;left:50%;top:calc(60px + env(safe-area-inset-top));transform:translateX(-50%);z-index:8;background:rgba(0,0,0,.8);border:1px solid var(--cyan);color:#dffffa;padding:6px 14px;border-radius:20px;font-size:13px;font-weight:700;display:none;pointer-events:none;white-space:nowrap;max-width:94vw;overflow:hidden;text-overflow:ellipsis}
+.consent{display:flex;gap:10px;align-items:flex-start;font-size:13px;margin:12px 0 4px;font-weight:700;line-height:1.5}.consent input{width:22px;height:22px;flex:none;margin:0}
+.note{font-size:12px;opacity:.85;line-height:1.6}.legal{font-size:12px;margin:10px 0;line-height:1.8}.legal a{color:#ff9ae8}
+.code{font-size:26px;font-weight:900;letter-spacing:.12em;color:#ffd84f;user-select:all;-webkit-user-select:all;margin:6px 0}
+#xin{width:100%;margin:6px 0;padding:12px;font-size:18px;border-radius:10px;border:2px solid #4fffe1;background:#000;color:#fff;text-align:center;letter-spacing:.1em;user-select:text;-webkit-user-select:text;font-family:inherit}
+.item:disabled{cursor:default}
+.panel{touch-action:pan-y}
+#rot{display:none}
 @media (max-height:430px){#title h1{font-size:44px}#title p{margin-bottom:8px}.mbtn{padding:9px;margin:5px auto}.sun{display:none}#feed{top:34%}}
 </style>
 </head>
@@ -133,10 +140,23 @@ body.kara #hud,body.kara #stars,body.kara #feed,body.kara #bX,body.kara #bB,body
 </div>
 <div class="ov" id="dead"><h2>仁義、ここに尽きる…</h2><p>このままだと病院送り。治療費として所持金の1割を失う。</p><button class="mbtn pri" id="bAdRevive" style="display:none">📺 広告を見て、その場で復活</button><button class="mbtn" id="bRevive">病院で目を覚ます</button></div>
 <div class="ov" id="adov" style="background:rgba(0,0,0,.85);z-index:40"><div class="panel" style="text-align:center"><h3 style="color:#4fffe1">広告（テスト表示）</h3><p id="adtx" style="font-weight:700"></p></div></div>
-<div class="ov" id="shop"><div class="panel"><h3>🐊 ワニマート</h3><div style="font-size:12px;opacity:.8;margin-top:-6px">日用品から武器まで。この州では合法。</div><div id="shopitems"></div><button class="mbtn" id="bShopClose">店を出る</button></div></div>
+<div class="ov" id="shop"><div class="panel"><h3>🐊 ワニマート</h3><div style="font-size:12px;opacity:.8;margin-top:-6px">日用品から武器まで。この州では合法。</div><div id="shopitems"></div><button class="mbtn pri" id="bPrem2" style="display:none">💎 プレミアムショップ（現金）</button><button class="mbtn" id="bShopClose">店を出る</button></div></div>
 <div class="ov" id="pause"><div class="panel" style="text-align:center"><h3 style="color:#ff4fd8">ポーズ</h3>
   <p style="font-size:13px;line-height:1.7;text-align:left">黄色の<b style="color:#ffd84f">！</b>＝メインストーリー<br>水色の<b style="color:#4fffe1">？</b>＝サブストーリー<br>緑の<b style="color:#7dff6a">＄</b>＝ワニマート（回復）<br>ゲージ満タンで<b style="color:#4fffe1">HEAT</b>＝極技。<br>市民や警官を殴ると<b style="color:#ff9a3c">炎上度</b>が上がる。警官の視界から離れれば下がる。</p>
-  <button class="mbtn pri" id="bResume">再開</button><button class="mbtn" id="bSave">セーブ</button></div></div>
+  <button class="mbtn pri" id="bResume">再開</button><button class="mbtn" id="bSave">セーブ</button><button class="mbtn" id="bPrem" style="display:none">💎 プレミアムショップ</button><button class="mbtn" id="bXfer" style="display:none">機種変更（引き継ぎ）</button></div></div>
+<div class="ov" id="prem" style="z-index:35"><div class="panel"><h3 style="color:#ff9ae8">💎 プレミアムショップ</h3>
+  <div class="note" style="margin-top:-6px">現金で武器を購入できます（税込）。購入した武器は機種変更しても引き継げます。</div>
+  <div id="premitems"></div>
+  <label class="consent"><input type="checkbox" id="premConsent"><span>18歳以上です／未成年の場合は保護者の同意を得ています</span></label>
+  <div id="premlimit" class="note"></div>
+  <div class="legal"><a href="/legal/tokushoho.html" target="_blank" rel="noopener">特定商取引法に基づく表記</a> ・ <a href="/legal/terms.html" target="_blank" rel="noopener">利用規約</a> ・ <a href="/legal/privacy.html" target="_blank" rel="noopener">プライバシーポリシー</a></div>
+  <button class="mbtn" id="bPremClose">閉じる</button></div></div>
+<div class="ov" id="xfer" style="z-index:35"><div class="panel" style="text-align:center"><h3 style="color:#4fffe1">機種変更（引き継ぎ）</h3>
+  <p class="note" style="text-align:left">新しい端末でこのコードを入力すると、セーブと購入したアイテムを引き継げます。コードは1回だけ使えて、使うとこの端末からは遊べなくなります。人に教えないでください。</p>
+  <div id="xcode" class="code"></div>
+  <p class="note" style="margin-top:18px">別の端末のデータをこの端末に移す</p>
+  <input id="xin" placeholder="XXXX-XXXX-XXXX" maxlength="14" autocomplete="off" autocapitalize="characters">
+  <button class="mbtn pri" id="bXRedeem">引き継ぐ</button><button class="mbtn" id="bXClose">閉じる</button></div></div>
 <div class="ov" id="ending"><h2>第一部 完</h2><p id="endtx"></p><button class="mbtn pri" id="bEndOk">自由行動を続ける</button></div>
 
 <script>
@@ -236,7 +256,7 @@ const MP=40,mm=document.createElement('canvas');mm.width=MW+MP*2;mm.height=MH+MP
   for(let y=0;y<MH;y++)for(let x=0;x<MW;x++){m.fillStyle=C[tAt(x,y)];m.fillRect(x,y,1,1);}}
 
 // ================= STATE =================
-const S={inv:{},wdur:{},wpn:null,money:300,chapter:0,subs:{},followers:1200,kills:0,wpts:0,time:0,storm:false,target:null,markerCool:0,ended:false,intro:false};
+const S={gotGrants:[],inv:{},wdur:{},wpn:null,money:300,chapter:0,subs:{},followers:1200,kills:0,wpts:0,time:0,storm:false,target:null,markerCool:0,ended:false,intro:false};
 const DAY=300;S.time=DAY*.72;
 let mode='title',prevMode='play',wanted=0,wcool=0,hitstop=0,shake=0,lastDt=0,flash=0,sirenT=0;
 const P={x:POS.pierBase.x,y:POS.pierBase.y,r:14,hp:100,maxHp:100,heat:0,dir:Math.PI,atk:0,atkTotal:1,hitAt:0,hitDone:true,atkKind:'p',combo:0,comboT:0,queued:null,inv:0,dodgeT:0,dodgeCD:0,dodgeDir:0,hurt:0,car:null,anim:0,moving:false,skin:'#e2b07f',col:'#ff8c2e',hair:'#111'};
@@ -505,7 +525,7 @@ function openShop(){mode='shop';const box=$('shopitems');box.innerHTML='';const 
   hd('回復・強化');GOODS.forEach(([n,p,f])=>{const b=document.createElement('button');b.className='item';b.innerHTML=`${n}<span>$${p}</span>`;
     b.onclick=()=>{if(S.money<p){toast('金が足りねぇ…');SFX.hurt();return;}S.money-=p;f();SFX.coin();toast('まいどあり！ '+n.split('（')[0]);updateHUD();};box.appendChild(b);});
   hd('武器（攻撃が強くなる／壊れるまで使える）');
-  for(const id in WEAPONS){const w=WEAPONS[id];const b=document.createElement('button');b.className='item';
+  for(const id in WEAPONS){const w=WEAPONS[id];if(w.premium)continue;const b=document.createElement('button');b.className='item';
     b.innerHTML=`<div>${w.n}<small>攻撃×${w.mul} ／ 耐久${w.dur}回 ／ 所持${S.inv[id]||0}</small></div><span>$${w.p.toLocaleString()}</span>`;
     b.onclick=()=>{if(S.money<w.p){toast('金が足りねぇ…');SFX.hurt();return;}S.money-=w.p;giveWeapon(id);SFX.coin();toast('装備した： '+w.n);updateHUD();save();openShop();};box.appendChild(b);}
   $('shop').style.display='flex';}
@@ -514,7 +534,8 @@ const WEAPONS={club:{n:'ゴルフクラブ',mul:1.4,rng:22,arc:1.0,dur:40,p:200,
   bat:{n:'金属バット',mul:1.7,rng:14,arc:1.1,dur:30,p:350,col:'#c0c0c8',len:26,w:5,heat:'・満塁ホームラン'},
   board:{n:'サーフボード',mul:1.9,rng:18,arc:1.5,dur:18,p:600,col:'#4fd0ff',len:34,w:9,heat:'・ビッグウェーブ'},
   katana:{n:'模造刀（峰打ち）',mul:2.4,rng:24,arc:1.2,dur:25,p:1500,col:'#e8f0ff',len:38,w:3,heat:'・峰打ち千本桜'},
-  hammer:{n:'ハリケーン・ハンマー',mul:3.2,rng:16,arc:1.3,dur:15,p:4000,col:'#ffd84f',len:30,w:11,heat:'・暴風域'}};
+  hammer:{n:'ハリケーン・ハンマー',mul:3.2,rng:16,arc:1.3,dur:15,p:4000,col:'#ffd84f',len:30,w:11,heat:'・暴風域'},
+  fan:{n:'黄金の扇子',mul:2.8,rng:20,arc:1.6,dur:60,p:0,premium:true,col:'#ffcc33',len:24,w:13,heat:'・天下御免'}};
 function giveWeapon(id){const had=S.inv[id]||0;S.inv[id]=had+1;if(!had)S.wdur[id]=WEAPONS[id].dur;S.wpn=id;}
 function wearWeapon(){const id=S.wpn;S.wdur[id]--;if(S.wdur[id]>0)return;S.inv[id]--;spark(P.x+Math.cos(P.dir)*30,P.y+Math.sin(P.dir)*30,WEAPONS[id].col,14);
   if(S.inv[id]>0){S.wdur[id]=WEAPONS[id].dur;toast(WEAPONS[id].n+'が壊れた！ 予備に持ち替えた');}else{toast(WEAPONS[id].n+'が壊れた！');S.wpn=null;}SFX.crash();}
@@ -690,6 +711,55 @@ const Ads={platform:window.AD_PLATFORM||new URLSearchParams(location.search).get
   midgame(){if(!this.ready||Date.now()-this.lastMid<180000)return Promise.resolve(false);this.lastMid=Date.now();return this.show('midgame');},
   freeReady(){return this.ready&&Date.now()>=this.freeAt;}};
 window.__gdEvent=e=>{if(e&&e.name==='SDK_REWARDED_WATCH_COMPLETE')Ads.gdReward=true;};
+// ================= ONLINE (own server: saves + real-money shop) =================
+// Enabled only when served by server/server.js, which injects window.GAME_API.
+const lsGet=k=>{try{return localStorage.getItem(k);}catch(e){return null;}},lsSet=(k,v)=>{try{localStorage.setItem(k,v);}catch(e){}};
+const Net={on:typeof window.GAME_API==='string',api:window.GAME_API||'',ready:false,token:null,me:null,products:[],
+  async req(m,p,body){const h={'Content-Type':'application/json'};if(this.token)h.Authorization='Bearer '+this.token;
+    const r=await fetch(this.api+p,{method:m,headers:h,body:body===undefined?undefined:JSON.stringify(body)});const j=await r.json().catch(()=>({}));
+    if(!r.ok)throw new Error(j.error||('通信エラー（'+r.status+'）'));return j;},
+  async init(){if(!this.on)return;try{
+      this.token=lsGet('jingi_token');
+      if(this.token){try{this.me=await this.req('GET','/api/me');}catch(e){this.token=null;}}
+      if(!this.token){const s=await this.req('POST','/api/session');this.token=s.token;lsSet('jingi_token',s.token);this.me=await this.req('GET','/api/me');}
+      this.products=(await this.req('GET','/api/products')).products;
+      const sv=await this.req('GET','/api/save'),local=load();
+      if(sv.data&&(!local||(sv.data.savedAt||0)>(local.savedAt||0)))lsSet('jingi_save',JSON.stringify(sv.data));
+      else if(local&&(!sv.data||(local.savedAt||0)>(sv.data.savedAt||0)))this.req('PUT','/api/save',{data:local}).catch(()=>{});
+      if(load())$('bCont').style.display='block';
+      this.ready=true;['bPrem','bPrem2','bXfer'].forEach(id=>$(id).style.display='block');
+      await this.handleReturn();
+      setInterval(()=>{if(mode==='play')this.pullGrants();},30000);
+    }catch(e){console.warn('online features disabled:',e);}},
+  async handleReturn(){const u=new URLSearchParams(location.search),st=u.get('purchase');if(!st)return;
+    history.replaceState(null,'',location.pathname);
+    if(st==='success'){const sid=u.get('session_id')||'';if(sid.startsWith('cs_'))await this.req('POST','/api/checkout/confirm',{sessionId:sid}).catch(()=>{});
+      toast('購入ありがとうございます！ ゲームを始めると受け取れます',5);}
+    else toast('購入をキャンセルしました',3);},
+  pushSave(d){if(!this.ready)return;clearTimeout(this.pt);this.pt=setTimeout(()=>this.req('PUT','/api/save',{data:d}).catch(()=>{}),1000);},
+  async saveNow(){if(!this.ready)return;clearTimeout(this.pt);const d=load();if(d)await this.req('PUT','/api/save',{data:d});},
+  async pullGrants(){if(!this.ready||this.pulling)return;this.pulling=true;try{
+      const{grants}=await this.req('GET','/api/grants');if(!grants.length)return;const names=[];
+      for(const g of grants){if(S.gotGrants.includes(g.id))continue;S.gotGrants.push(g.id);
+        for(const id in g.items){if(!WEAPONS[id])continue;for(let i=0;i<g.items[id];i++)giveWeapon(id);names.push(WEAPONS[id].n+'×'+g.items[id]);}}
+      save();await this.saveNow();await this.req('POST','/api/grants/ack',{ids:grants.map(g=>g.id)});
+      if(names.length){card('購入アイテム受け取り',names.join('・'));SFX.coin();}
+    }catch(e){console.warn(e);}finally{this.pulling=false;}}};
+async function openPrem(){if(!Net.ready)return;try{Net.me=await Net.req('GET','/api/me');}catch(e){}
+  const box=$('premitems');box.innerHTML='';
+  for(const p of Net.products){const b=document.createElement('button');b.className='item';b.innerHTML=`<div>${p.name}<small>${p.desc}</small></div><span>¥${p.price.toLocaleString()}</span>`;
+    b.onclick=()=>buyPrem(p,b);box.appendChild(b);}
+  const me=Net.me;$('premlimit').textContent=me?`今月の購入額 ¥${me.spentThisMonth.toLocaleString()} ／ 上限 ¥${me.monthlyLimit.toLocaleString()}`+(me.paymentMode==='mock'?'（テスト決済モード：請求は発生しません）':''):'';
+  $('prem').style.display='flex';}
+async function buyPrem(p,b){if(!$('premConsent').checked){toast('購入前の確認にチェックしてください',3);return;}
+  b.disabled=true;try{save();await Net.saveNow();const{url}=await Net.req('POST','/api/checkout',{product:p.id,consent:true});location.href=url;}
+  catch(e){toast(e.message,4);b.disabled=false;}}
+$('bPrem').onclick=openPrem;$('bPrem2').onclick=openPrem;$('bPremClose').onclick=()=>$('prem').style.display='none';
+$('bXfer').onclick=()=>{$('xcode').textContent=Net.me?Net.me.transferCode:'';$('xfer').style.display='flex';};
+$('bXClose').onclick=()=>$('xfer').style.display='none';
+$('bXRedeem').onclick=async()=>{const code=$('xin').value.trim();if(!code){toast('コードを入力してください');return;}
+  try{const r=await Net.req('POST','/api/transfer',{code});lsSet('jingi_token',r.token);try{localStorage.removeItem('jingi_save');}catch(e){}location.reload();}catch(e){toast(e.message,3);}};
+
 
 function die(){mode='dead';$('card').style.display='none';$('dead').style.display='flex';$('bAdRevive').style.display=Ads.ready?'block':'none';SFX.boom();}
 $('bAdRevive').onclick=async()=>{const ok=await Ads.rewarded();if(!ok){toast('広告を読み込めなかった');return;}$('dead').style.display='none';P.hp=P.maxHp;P.inv=3;P.hurt=0;mode='play';
@@ -698,7 +768,8 @@ $('bAdRevive').onclick=async()=>{const ok=await Ads.rewarded();if(!ok){toast('�
 $('bRevive').onclick=()=>{$('dead').style.display='none';abortMission();Ads.midgame();S.money=Math.floor(S.money*.9);P.hp=P.maxHp;P.heat=0;wanted=0;S.wpts=0;
   if(P.car)exitCar(true);P.x=POS.office.x;P.y=POS.office.y+T;actors.length=0;projs.length=0;for(let i=cars.length-1;i>=0;i--)if(cars[i].kind==='police')cars.splice(i,1);
   spawnJade();mode='play';S.markerCool=4;save();};
-function save(){try{localStorage.setItem('jingi_save',JSON.stringify({money:S.money,chapter:S.chapter,subs:S.subs,followers:S.followers,kills:S.kills,maxHp:P.maxHp,inv:S.inv,wdur:S.wdur,wpn:S.wpn,intro:S.intro,ended:S.ended}));}catch(e){}}
+function save(){const d={money:S.money,chapter:S.chapter,subs:S.subs,followers:S.followers,kills:S.kills,maxHp:P.maxHp,inv:S.inv,wdur:S.wdur,wpn:S.wpn,intro:S.intro,ended:S.ended,gotGrants:S.gotGrants.slice(-200),savedAt:Date.now()};
+  try{localStorage.setItem('jingi_save',JSON.stringify(d));}catch(e){}Net.pushSave(d);}
 function load(){try{const d=JSON.parse(localStorage.getItem('jingi_save')||'null');return d;}catch(e){return null;}}
 function spawnJade(){if(!actors.some(a=>a.jade))mk('npc',POS.office.x-1.6*T,POS.office.y,{jade:true,npc:true,lookAt:true,col:'#ff4fd8',hair:'#ff9ad8',skin:'#c68a5b',name:'ジェイド'});}
 
@@ -713,11 +784,11 @@ function press(k){initAudio();if(mode==='dialog'){advance();return;}if(mode==='k
 [['bA','punch'],['bB','kick'],['bD','dodge'],['bH','heat'],['bX','act']].forEach(([id,k])=>{const b=$(id);
   b.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();b.classList.add('pr');press(k);});
   const up=()=>b.classList.remove('pr');b.addEventListener('pointerup',up);b.addEventListener('pointerleave',up);b.addEventListener('pointercancel',up);});
-addEventListener('keydown',e=>{if(e.repeat)return;const k=e.key.toLowerCase();keys[k]=true;
+addEventListener('keydown',e=>{if(e.repeat||(e.target&&e.target.tagName==='INPUT'))return;const k=e.key.toLowerCase();keys[k]=true;
   const map={j:'punch',k:'kick',l:'dodge',h:'heat',e:'act'};if(map[k])press(map[k]);if(k==='q'&&mode==='play')cycleWeapon();if(k===' '||k==='enter'){if(mode==='dialog')advance();else if(mode==='karaoke')karaTap();else press('punch');}
   if(k==='escape'||k==='p')togglePause();});
 addEventListener('keyup',e=>{keys[e.key.toLowerCase()]=false;});
-document.addEventListener('touchmove',e=>e.preventDefault(),{passive:false});
+document.addEventListener('touchmove',e=>{if(!(e.target.closest&&e.target.closest('.panel')))e.preventDefault();},{passive:false});
 document.addEventListener('gesturestart',e=>e.preventDefault());
 function readStick(){if(joy.id!==null){const dx=joy.x-joy.bx,dy=joy.y-joy.by;input.jx=clamp(dx/55,-1,1);input.jy=clamp(dy/55,-1,1);return;}
   let x=0,y=0;if(keys.a||keys.arrowleft)x--;if(keys.d||keys.arrowright)x++;if(keys.w||keys.arrowup)y--;if(keys.s||keys.arrowdown)y++;const m=Math.hypot(x,y)||1;input.jx=x/m;input.jy=y/m;}
@@ -729,18 +800,21 @@ addEventListener('visibilitychange',()=>{if(document.hidden&&mode==='play')toggl
 
 // ================= START =================
 function beginGame(cont){initAudio();$('title').style.display='none';
-  if(cont){const d=load();if(d){Object.assign(S,{money:d.money,chapter:d.chapter,subs:d.subs||{},followers:d.followers,kills:d.kills||0,intro:d.intro,ended:d.ended,inv:d.inv||{},wdur:d.wdur||{},wpn:d.wpn||null});P.maxHp=d.maxHp||100;P.hp=P.maxHp;}
+  if(cont){const d=load();if(d){Object.assign(S,{money:d.money,chapter:d.chapter,subs:d.subs||{},followers:d.followers,kills:d.kills||0,intro:d.intro,ended:d.ended,inv:d.inv||{},wdur:d.wdur||{},wpn:d.wpn||null,gotGrants:d.gotGrants||[]});P.maxHp=d.maxHp||100;P.hp=P.maxHp;}
     P.x=POS.office.x;P.y=POS.office.y+T;}
   cam.x=P.x;cam.y=P.y;spawnJade();spawnOwned();for(let i=0;i<10;i++)spawnTraffic();for(let i=0;i<16;i++){const s=findSpot(P.x,P.y,120,800,v=>v===SIDE||v===PLAZA);if(s)mkCiv(s.x,s.y);}
   mode='play';
   if(!S.intro){openDialog([[null,'2027年。日米「歓楽街まるごと姉妹都市協定」により、東京の歓楽街〈紅灯町〉は、ビルごと南国〈ガルフストリーム州〉へ移設された。'],
     [null,'ネオン、ワニ、ハリケーン、そして極道。――誰も止めなかった。'],[null,'元・鰐淵組若頭、鰐淵 鉄平（わにぶち てっぺい）。現在の職業――保釈金ハンター。'],
     [TP,'……暑ぃな、この街は。'],[null,'画面左側をドラッグで移動。黄色い「！」がメインストーリーだ。']],()=>{S.intro=true;save();toast('黄色い矢印の方向へ進め');});}
-  else toast('おかえり、ボス');}
-$('bNew').onclick=()=>{try{localStorage.removeItem('jingi_save');}catch(e){}beginGame(false);};
+  else toast('おかえり、ボス');
+  Net.pullGrants();}
+$('bNew').onclick=()=>{const old=load();try{localStorage.removeItem('jingi_save');}catch(e){}
+  if(old){S.inv=old.inv||{};S.wdur=old.wdur||{};S.gotGrants=old.gotGrants||[];} // weapons carry over to a new game
+  beginGame(false);};
 $('bCont').onclick=()=>beginGame(true);
 if(load())$('bCont').style.display='block';
-Ads.init();
+Ads.init();Net.init();
 
 // ================= RENDER =================
 function nightAmt(){const d=(S.time%DAY)/DAY;const light=.5+.5*Math.cos(TAU*(d-.5));return clamp((.55-light)*1.4,0,.5);}

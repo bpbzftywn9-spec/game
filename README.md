@@ -49,3 +49,27 @@ python3 tools/build_portals.py --gd-game-id <GameDistributionのゲームID>
 
 ### ローカルで広告の流れを試す
 `index.html?ads=test` で開くと、本物の広告の代わりに数秒のテスト表示が出ます。
+
+## 自分のサイトでカード決済（Stripe）
+`server/` は、ゲーム配信・セーブの保存・課金をまとめて行うサーバーです（Node.js 22.13 以上、外部パッケージなし）。
+
+- **プレミアムショップ**：一時停止メニューとワニマートから開けます。商品は武器のみ（ゲーム内通貨は売りません）で、`server/products.js` で設定します
+- **決済**：Stripe Checkout（カード、コンビニ払いなど、Stripe で有効にした支払い方法）。Webhook の署名を検証し、同じ注文で二重にアイテムが付与されない作り
+- **未成年対策**：購入前の年齢確認のチェック、1アカウントの月間購入上限（初期値 ¥10,000）
+- **セーブ**：サーバーにも保存。「機種変更（引き継ぎ）」コードで別の端末に移せます（コードは1回限り）
+- **法的ページのひな形**：`server/public/legal/` の特定商取引法に基づく表記・利用規約・プライバシーポリシー（【要記入】を埋めてください）
+
+### 手元で試す（請求なし）
+```
+cd server
+npm start          # http://localhost:8787 をブラウザで開く
+npm test           # API の自動テスト
+```
+`PAYMENT_MODE=mock`（初期値）では、本物の決済の代わりにテスト決済ページが開きます。
+
+### 本番で動かす
+1. Stripe アカウントを作り、事業者情報と特商法ページのURLを登録する
+2. `server/.env.example` を参考に環境変数を設定する（`PAYMENT_MODE=stripe`、`NODE_ENV=production`、`STRIPE_SECRET_KEY`、`STRIPE_WEBHOOK_SECRET`、`PUBLIC_URL`）
+3. Stripe の Webhook を `https://あなたのドメイン/api/stripe/webhook` に設定する（イベント：`checkout.session.completed`、`checkout.session.async_payment_succeeded`）
+4. `Dockerfile` で Render・Fly.io・VPS などにデプロイする。**SQLite のファイル（`/data`）は消えないディスクに置くこと**
+5. まず `sk_test_` のテストキーとテストカード（4242 4242 4242 4242）で一通り試してから、本番キーに切り替える
