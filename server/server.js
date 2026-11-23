@@ -21,7 +21,8 @@ loadEnvFile(path.join(__dirname, '.env'));
 const PORT = Number(process.env.PORT || 8787);
 const CFG = {
   port: PORT,
-  publicUrl: (process.env.PUBLIC_URL || `http://localhost:${PORT}`).replace(/\/$/, ''),
+  // RENDER_EXTERNAL_URL is set automatically on Render
+  publicUrl: (process.env.PUBLIC_URL || process.env.RENDER_EXTERNAL_URL || `http://localhost:${PORT}`).replace(/\/$/, ''),
   mode: process.env.PAYMENT_MODE || 'mock', // 'stripe' | 'mock'
   stripeKey: process.env.STRIPE_SECRET_KEY || '',
   webhookSecret: process.env.STRIPE_WEBHOOK_SECRET || '',
@@ -30,10 +31,27 @@ const CFG = {
   trustProxy: process.env.TRUST_PROXY === '1',
   gameFile: process.env.GAME_FILE || path.join(__dirname, '..', 'index.html'),
 };
-if (CFG.mode === 'stripe' && !CFG.stripeKey) {
-  console.error('PAYMENT_MODE=stripe には STRIPE_SECRET_KEY が必要です');
-  process.exit(1);
+// Seller details for the legal pages (特定商取引法). Kept in env vars, not in the repo.
+const SELLER = {
+  SELLER_NAME: process.env.SELLER_NAME || '',
+  SELLER_REPRESENTATIVE: process.env.SELLER_REPRESENTATIVE || process.env.SELLER_NAME || '',
+  SELLER_ADDRESS: process.env.SELLER_ADDRESS || '請求があった場合には遅滞なく開示します',
+  SELLER_PHONE: process.env.SELLER_PHONE || '請求があった場合には遅滞なく開示します',
+  SELLER_EMAIL: process.env.SELLER_EMAIL || '',
+  LEGAL_EFFECTIVE_DATE: process.env.LEGAL_EFFECTIVE_DATE || '',
+  LEGAL_COURT: process.env.LEGAL_COURT || '',
+};
+// Real sales only open once everything a buyer and the law need is in place.
+function salesBlockers() {
+  if (CFG.mode !== 'stripe') return [];
+  const missing = [];
+  if (!CFG.stripeKey) missing.push('STRIPE_SECRET_KEY');
+  if (!CFG.webhookSecret) missing.push('STRIPE_WEBHOOK_SECRET');
+  if (!SELLER.SELLER_NAME) missing.push('SELLER_NAME');
+  if (!SELLER.SELLER_EMAIL) missing.push('SELLER_EMAIL');
+  return missing;
 }
+if (salesBlockers().length) console.warn('販売は停止中です。未設定の環境変数: ' + salesBlockers().join(', '));
 if (CFG.mode === 'mock' && process.env.NODE_ENV === 'production') {
   console.error('本番環境（NODE_ENV=production）ではテスト決済（PAYMENT_MODE=mock）は使えません');
   process.exit(1);
@@ -182,6 +200,9 @@ function gameHtml() {
   return src.replace('<style>', "<script>window.GAME_API='';</script>\n<style>");
 }
 const LEGAL_DIR = path.join(__dirname, 'public', 'legal');
+const esc = v => String(v).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+// Fills {{SELLER_NAME}} etc. Anything not set stays visibly marked 【未設定】.
+const legalHtml = src => src.replace(/\{\{([A-Z_]+)\}\}/g, (m, k) => (k in SELLER ? (SELLER[k] ? esc(SELLER[k]) : '<span class="todo">【未設定】</span>') : m));
 const mockPage = order => `<!doctype html><html lang="ja"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>テスト決済</title><body style="font-family:sans-serif;background:#1d0030;color:#fff;display:flex;min-height:100vh;align-items:center;justify-content:center;margin:0">
 <div style="max-width:360px;padding:24px;border:2px solid #ff4fd8;border-radius:14px;text-align:center">
@@ -201,9 +222,9 @@ async function handle(req, res) {
   if (M === 'GET' && (p === '/' || p === '/index.html')) return send(res, 200, gameHtml(), 'text/html; charset=utf-8');
   if (M === 'GET' && /^\/legal\/[a-z]+\.html$/.test(p)) {
     const f = path.join(LEGAL_DIR, path.basename(p));
-    if (fs.existsSync(f)) return send(res, 200, fs.readFileSync(f, 'utf8'), 'text/html; charset=utf-8');
+    if (fs.existsSync(f)) return send(res, 200, legalHtml(fs.readFileSync(f, 'utf8')), 'text/html; charset=utf-8');
   }
-  if (M === 'GET' && p === '/api/health') return send(res, 200, { ok: true, mode: CFG.mode });
+  if (M === 'GET' && p === '/api/health') return send(res, 200, { ok: true, mode: CFG.mode, salesOpen: !salesBlockers().length });
 
   if (M === 'POST' && p === '/api/session') {
     rateLimit('session:' + ipOf(req), 20, 60e3);
@@ -213,7 +234,7 @@ async function handle(req, res) {
   }
   if (M === 'GET' && p === '/api/me') {
     const u = auth(req);
-    return send(res, 200, { userId: u.id, transferCode: u.transfer_code, spentThisMonth: spentThisMonth(u.id), monthlyLimit: CFG.monthlyLimit, paymentMode: CFG.mode });
+    return send(res, 200, { userId: u.id, transferCode: u.transfer_code, spentThisMonth: spentThisMonth(u.id), monthlyLimit: CFG.monthlyLimit, paymentMode: CFG.mode, salesOpen: !salesBlockers().length });
   }
   if (M === 'GET' && p === '/api/products') return send(res, 200, { products: PRODUCTS.map(publicProduct) });
 
@@ -246,6 +267,7 @@ async function handle(req, res) {
     const b = await json(req);
     const prod = PRODUCTS.find(x => x.id === b.product);
     if (!prod) throw err(400, '商品が見つかりません');
+    if (salesBlockers().length) throw err(503, '現在、販売の準備中です', 'The shop is not open yet');
     if (b.consent !== true) throw err(400, '購入前の確認にチェックしてください');
     if (spentThisMonth(u.id) + prod.price > CFG.monthlyLimit) throw err(403, `今月の購入上限（¥${CFG.monthlyLimit.toLocaleString()}）を超えるため購入できません`, `This purchase would go over the monthly limit (¥${CFG.monthlyLimit.toLocaleString()})`);
     const orderId = 'o_' + rid(12);

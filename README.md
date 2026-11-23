@@ -72,6 +72,8 @@ npm test           # API の自動テスト
 `PAYMENT_MODE=mock`（初期値）では、本物の決済の代わりにテスト決済ページが開きます。
 
 ### 本番で動かす
+**詳しい手順は [DEPLOY.md](DEPLOY.md)**（Render のブループリント `render.yaml` 付き）。販売者情報と Stripe の設定がそろうまで、販売は自動で止まります。
+
 1. Stripe アカウントを作り、事業者情報と特商法ページのURLを登録する
 2. `server/.env.example` を参考に環境変数を設定する（`PAYMENT_MODE=stripe`、`NODE_ENV=production`、`STRIPE_SECRET_KEY`、`STRIPE_WEBHOOK_SECRET`、`PUBLIC_URL`）
 3. Stripe の Webhook を `https://あなたのドメイン/api/stripe/webhook` に設定する（イベント：`checkout.session.completed`、`checkout.session.async_payment_succeeded`）

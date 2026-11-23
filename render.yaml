@@ -1,0 +1,42 @@
+# Render Blueprint: 仁義サンシャイン (game + payment server)
+# Render ダッシュボード → New → Blueprint → このリポジトリを選ぶと、この設定でサービスが作られる。
+# 値が sync: false の項目は、作成時に Render の画面で入力する（リポジトリには書かない）。
+services:
+  - type: web
+    name: jingi-sunshine
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    branch: claude/gta6-yakuza-mobile-game-yoz8wt
+    region: singapore
+    plan: starter            # 消えないディスク（購入記録とセーブ）を付けるには有料プランが必要
+    healthCheckPath: /api/health
+    autoDeploy: true
+    disk:
+      name: data
+      mountPath: /data
+      sizeGB: 1
+    envVars:
+      - key: PAYMENT_MODE
+        value: stripe
+      - key: TRUST_PROXY
+        value: "1"
+      - key: MONTHLY_LIMIT_JPY
+        value: "10000"
+      - key: STRIPE_SECRET_KEY        # 最初は sk_test_ で始まるテストキー
+        sync: false
+      - key: STRIPE_WEBHOOK_SECRET    # デプロイ後に Stripe で Webhook を作ってから入れる
+        sync: false
+      - key: SELLER_NAME              # 特商法の「販売事業者」（氏名または屋号）
+        sync: false
+      - key: SELLER_EMAIL             # 問い合わせ先メールアドレス
+        sync: false
+      - key: SELLER_REPRESENTATIVE    # 運営統括責任者（空なら SELLER_NAME）
+        sync: false
+      - key: SELLER_ADDRESS           # 空なら「請求があった場合には遅滞なく開示します」
+        sync: false
+      - key: SELLER_PHONE             # 空なら「請求があった場合には遅滞なく開示します」
+        sync: false
+      - key: LEGAL_EFFECTIVE_DATE     # 規約の制定日（例: 2026年12月1日）
+        sync: false
+      - key: LEGAL_COURT              # 合意管轄裁判所（例: 東京地方裁判所）
+        sync: false

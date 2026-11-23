@@ -304,7 +304,7 @@ const EN={
 '搾らん。保釈金を払え。':'I won\'t juice you. Pay your bail.','オレンジくん確保の瞬間、腹筋崩壊':'the moment they caught Orange-kun I died laughing','逃げられちゃった……工場の前で待ってるって噂よ。':'He got away... Word is he hangs around outside the factory.',
 // server messages
 'リクエストが多すぎます。少し待ってから試してください':'Too many requests. Please wait a moment and try again.','ログイン情報が無効です':'Your session is no longer valid','JSONが不正です':'Invalid request',
-'セーブデータが不正です':'Invalid save data','引き継ぎコードが見つかりません':'Transfer code not found','商品が見つかりません':'Product not found','注文が見つかりません':'Order not found','サーバーエラーが発生しました':'A server error occurred',
+'セーブデータが不正です':'Invalid save data','引き継ぎコードが見つかりません':'Transfer code not found','商品が見つかりません':'Product not found','注文が見つかりません':'Order not found','サーバーエラーが発生しました':'A server error occurred','現在、販売の準備中です':'The shop is not open yet',
 };
 // Static page text, keyed by data-i18n.
 const EN_HTML={infamy:'INFAMY',tap:'▼ Tap',
@@ -896,7 +896,7 @@ async function openPrem(){if(!Net.ready)return;try{Net.me=await Net.req('GET','/
   const box=$('premitems');box.innerHTML='';
   for(const p of Net.products){const b=document.createElement('button');b.className='item';b.innerHTML=`<div>${L(p.name,p.name_en||p.name)}<small>${L(p.desc,p.desc_en||p.desc)}</small></div><span>¥${p.price.toLocaleString()}</span>`;
     b.onclick=()=>buyPrem(p,b);box.appendChild(b);}
-  const me=Net.me;$('premlimit').textContent=me?L(`今月の購入額 ¥${me.spentThisMonth.toLocaleString()} ／ 上限 ¥${me.monthlyLimit.toLocaleString()}`,`Spent this month ¥${me.spentThisMonth.toLocaleString()} / limit ¥${me.monthlyLimit.toLocaleString()}`)+(me.paymentMode==='mock'?L('（テスト決済モード：請求は発生しません）',' (test payment mode: no charge)'):''):'';
+  const me=Net.me;$('premlimit').textContent=me?L(`今月の購入額 ¥${me.spentThisMonth.toLocaleString()} ／ 上限 ¥${me.monthlyLimit.toLocaleString()}`,`Spent this month ¥${me.spentThisMonth.toLocaleString()} / limit ¥${me.monthlyLimit.toLocaleString()}`)+(me.paymentMode==='mock'?L('（テスト決済モード：請求は発生しません）',' (test payment mode: no charge)'):'')+(me.salesOpen===false?L('　※現在、販売の準備中です',' (The shop is not open yet)'):''):'';
   $('prem').style.display='flex';}
 async function buyPrem(p,b){if(!$('premConsent').checked){toast('購入前の確認にチェックしてください',3);return;}
   b.disabled=true;try{save();await Net.saveNow();const{url}=await Net.req('POST','/api/checkout',{product:p.id,consent:true,lang:LANG});location.href=url;}

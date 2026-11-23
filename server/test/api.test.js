@@ -13,6 +13,8 @@ process.env.PAYMENT_MODE = 'mock';
 process.env.STRIPE_WEBHOOK_SECRET = 'whsec_test123';
 process.env.MONTHLY_LIMIT_JPY = '700';
 process.env.PORT = '0';
+process.env.SELLER_NAME = 'テスト<商店>';
+process.env.SELLER_EMAIL = 'shop@example.com';
 const { server } = require('../server');
 
 let base;
@@ -96,4 +98,30 @@ test('stripe webhook: signature check and fulfilment', async () => {
   const g = (await call('GET', '/api/grants', undefined, tok)).body.grants;
   assert.equal(g.length, 1);
   assert.deepEqual(g[0].items, { fan: 1 });
+});
+
+test('legal pages are filled from env vars and escaped', async () => {
+  const html = await (await fetch(base + '/legal/tokushoho.html')).text();
+  assert.match(html, /テスト&lt;商店&gt;/);
+  assert.match(html, /shop@example\.com/);
+  assert.match(html, /請求があった場合には遅滞なく開示します/);
+  assert.doesNotMatch(html, /\{\{/);
+});
+
+test('production stripe mode keeps sales closed until configured', async () => {
+  const { spawn } = require('node:child_process');
+  const port = 18000 + Math.floor(Math.random() * 1000);
+  const env = { ...process.env, PORT: String(port), PAYMENT_MODE: 'stripe', NODE_ENV: 'production', DB_PATH: path.join(tmp, 'prod.db'),
+    STRIPE_SECRET_KEY: '', STRIPE_WEBHOOK_SECRET: '', SELLER_NAME: '', SELLER_EMAIL: '' };
+  const child = spawn(process.execPath, ['--disable-warning=ExperimentalWarning', path.join(__dirname, '..', 'server.js')], { env, stdio: 'ignore' });
+  try {
+    const url = `http://127.0.0.1:${port}`;
+    let h;
+    for (let i = 0; i < 50 && !h; i++) { try { h = await (await fetch(url + '/api/health')).json(); } catch { await new Promise(r => setTimeout(r, 100)); } }
+    assert.equal(h.salesOpen, false);
+    const tok = (await (await fetch(url + '/api/session', { method: 'POST' })).json()).token;
+    const r = await fetch(url + '/api/checkout', { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + tok, 'X-Lang': 'en' }, body: JSON.stringify({ product: 'fan', consent: true }) });
+    assert.equal(r.status, 503);
+    assert.equal((await r.json()).error, 'The shop is not open yet');
+  } finally { child.kill(); }
 });
