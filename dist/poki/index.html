@@ -73,7 +73,7 @@ button{font-family:inherit;touch-action:none}
 #dlg.narr{border-color:#aaa;background:rgba(0,0,0,.88)}#dlg.narr .tx{font-style:italic;color:#e8e0ff}
 #dlg .nx{position:absolute;right:12px;bottom:6px;font-size:12px;animation:pulse .6s infinite alternate;color:var(--gold)}
 .ov{position:fixed;inset:0;z-index:30;display:none;align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:20px}
-#title{display:flex;background:radial-gradient(ellipse at 50% 120%,#ff5f2e 0%,#c0007a 28%,#3a0060 55%,#0c0018 80%)}
+#title{display:flex;overflow-y:auto;justify-content:safe center;touch-action:pan-y;background:radial-gradient(ellipse at 50% 120%,#ff5f2e 0%,#c0007a 28%,#3a0060 55%,#0c0018 80%)}
 #title h1{margin:0;font-size:clamp(40px,12vw,84px);font-weight:900;line-height:1.05;letter-spacing:.04em;
   color:#fff;text-shadow:0 0 18px var(--neon),0 0 40px var(--neon),4px 4px 0 #6a0050}
 #title .en{font-size:clamp(14px,4vw,22px);letter-spacing:.5em;color:var(--cyan);text-shadow:0 0 10px var(--cyan);margin:6px 0 14px;font-weight:800}
@@ -93,7 +93,7 @@ button{font-family:inherit;touch-action:none}
 #ending{background:radial-gradient(ellipse at 50% 100%,#ff9a3c,#c0007a 40%,#14001f 80%)}
 #ending h2{color:#fff;text-shadow:0 0 18px var(--neon)}
 body.kara #hud,body.kara #stars,body.kara #feed,body.kara #bX,body.kara #bB,body.kara #bD,body.kara #bH,body.kara #topbtns{display:none!important}
-#toast{position:fixed;left:50%;top:calc(60px + env(safe-area-inset-top));transform:translateX(-50%);z-index:8;background:rgba(0,0,0,.8);border:1px solid var(--cyan);color:#dffffa;padding:6px 14px;border-radius:20px;font-size:13px;font-weight:700;display:none;pointer-events:none;white-space:nowrap;max-width:94vw;overflow:hidden;text-overflow:ellipsis}
+#toast{position:fixed;left:50%;top:calc(60px + env(safe-area-inset-top));transform:translateX(-50%);z-index:8;background:rgba(0,0,0,.8);border:1px solid var(--cyan);color:#dffffa;padding:6px 14px;border-radius:20px;font-size:13px;font-weight:700;display:none;pointer-events:none;white-space:normal;text-align:center;max-width:94vw}
 .consent{display:flex;gap:10px;align-items:flex-start;font-size:13px;margin:12px 0 4px;font-weight:700;line-height:1.5}.consent input{width:22px;height:22px;flex:none;margin:0}
 .note{font-size:12px;opacity:.85;line-height:1.6}.legal{font-size:12px;margin:10px 0;line-height:1.8}.legal a{color:#ff9ae8}
 .code{font-size:26px;font-weight:900;letter-spacing:.12em;color:#ffd84f;user-select:all;-webkit-user-select:all;margin:6px 0}
@@ -101,7 +101,7 @@ body.kara #hud,body.kara #stars,body.kara #feed,body.kara #bX,body.kara #bB,body
 .item:disabled{cursor:default}
 .panel{touch-action:pan-y}
 #rot{display:none}
-@media (max-height:430px){#title h1{font-size:44px}#title p{margin-bottom:8px}.mbtn{padding:9px;margin:5px auto}.sun{display:none}#feed{top:34%}}
+@media (max-height:430px){#title h1{font-size:40px}#title p{margin-bottom:8px;font-size:12px;line-height:1.5}.mbtn{padding:9px;margin:5px auto}.sun{display:none}#feed{top:34%}}
 </style>
 </head>
 <body>
@@ -114,7 +114,7 @@ body.kara #hud,body.kara #stars,body.kara #feed,body.kara #bX,body.kara #bB,body
   <div id="wpn"></div>
   <div id="obj"></div>
 </div>
-<div id="stars"><span class="lb">炎上度</span><span class="f">🔥</span><span class="f">🔥</span><span class="f">🔥</span><span class="f">🔥</span><span class="f">🔥</span></div>
+<div id="stars"><span class="lb" data-i18n="infamy">炎上度</span><span class="f">🔥</span><span class="f">🔥</span><span class="f">🔥</span><span class="f">🔥</span><span class="f">🔥</span></div>
 <div id="topbtns"><button id="bMute" aria-label="サウンド">♪</button><button id="bPause" aria-label="メニュー">Ⅱ</button><button id="bW" aria-label="武器切替">武</button></div>
 <div id="feed"></div>
 <div id="card"></div>
@@ -129,37 +129,38 @@ body.kara #hud,body.kara #stars,body.kara #feed,body.kara #bX,body.kara #bB,body
   <button class="b" id="bX">乗る</button>
 </div>
 
-<div id="dlgwrap"><div id="dlg"><div class="nm"></div><div class="tx"></div><div class="nx">▼ タップ</div></div></div>
+<div id="dlgwrap"><div id="dlg"><div class="nm"></div><div class="tx"></div><div class="nx" data-i18n="tap">▼ タップ</div></div></div>
 
 <div class="ov" id="title">
   <div class="sun"></div>
   <h1>仁義<br>サンシャイン</h1>
   <div class="en">JINGI SUNSHINE</div>
-  <p>2027年、日米「歓楽街まるごと姉妹都市協定」により、東京の歓楽街〈紅灯町〉はビルごと南国の〈ガルフストリーム州〉へ移設された。<br>ネオン、ワニ、ハリケーン、そして極道。――誰も止めなかった。</p>
-  <button class="mbtn pri" id="bNew">はじめから</button>
-  <button class="mbtn" id="bCont" style="display:none">つづきから</button>
-  <div class="hint">左半分ドラッグで移動 ／ 右のボタンで攻撃<br>PC: WASD移動・J殴る・K蹴る・L回避・H極・E乗降・Q武器</div>
+  <p data-i18n="intro">2027年、日米「歓楽街まるごと姉妹都市協定」により、東京の歓楽街〈紅灯町〉はビルごと南国の〈ガルフストリーム州〉へ移設された。<br>ネオン、ワニ、ハリケーン、そして極道。――誰も止めなかった。</p>
+  <button class="mbtn pri" id="bNew" data-i18n="newgame">はじめから</button>
+  <button class="mbtn" id="bCont" style="display:none" data-i18n="cont">つづきから</button>
+  <button class="mbtn" id="bLang"></button>
+  <div class="hint" data-i18n="hint">左半分ドラッグで移動 ／ 右のボタンで攻撃<br>PC: WASD移動・J殴る・K蹴る・L回避・H極・E乗降・Q武器</div>
 </div>
-<div class="ov" id="dead"><h2>仁義、ここに尽きる…</h2><p>このままだと病院送り。治療費として所持金の1割を失う。</p><button class="mbtn pri" id="bAdRevive" style="display:none">📺 広告を見て、その場で復活</button><button class="mbtn" id="bRevive">病院で目を覚ます</button></div>
-<div class="ov" id="adov" style="background:rgba(0,0,0,.85);z-index:40"><div class="panel" style="text-align:center"><h3 style="color:#4fffe1">広告（テスト表示）</h3><p id="adtx" style="font-weight:700"></p></div></div>
-<div class="ov" id="shop"><div class="panel"><h3>🐊 ワニマート</h3><div style="font-size:12px;opacity:.8;margin-top:-6px">日用品から武器まで。この州では合法。</div><div id="shopitems"></div><button class="mbtn pri" id="bPrem2" style="display:none">💎 プレミアムショップ（現金）</button><button class="mbtn" id="bShopClose">店を出る</button></div></div>
-<div class="ov" id="pause"><div class="panel" style="text-align:center"><h3 style="color:#ff4fd8">ポーズ</h3>
-  <p style="font-size:13px;line-height:1.7;text-align:left">黄色の<b style="color:#ffd84f">！</b>＝メインストーリー<br>水色の<b style="color:#4fffe1">？</b>＝サブストーリー<br>緑の<b style="color:#7dff6a">＄</b>＝ワニマート（回復）<br>ゲージ満タンで<b style="color:#4fffe1">HEAT</b>＝極技。<br>市民や警官を殴ると<b style="color:#ff9a3c">炎上度</b>が上がる。警官の視界から離れれば下がる。</p>
-  <button class="mbtn pri" id="bResume">再開</button><button class="mbtn" id="bSave">セーブ</button><button class="mbtn" id="bPrem" style="display:none">💎 プレミアムショップ</button><button class="mbtn" id="bXfer" style="display:none">機種変更（引き継ぎ）</button></div></div>
-<div class="ov" id="prem" style="z-index:35"><div class="panel"><h3 style="color:#ff9ae8">💎 プレミアムショップ</h3>
-  <div class="note" style="margin-top:-6px">現金で武器を購入できます（税込）。購入した武器は機種変更しても引き継げます。</div>
+<div class="ov" id="dead"><h2 data-i18n="deadh">仁義、ここに尽きる…</h2><p data-i18n="deadp">このままだと病院送り。治療費として所持金の1割を失う。</p><button class="mbtn pri" id="bAdRevive" data-i18n="adrevive" style="display:none">📺 広告を見て、その場で復活</button><button class="mbtn" id="bRevive" data-i18n="revive">病院で目を覚ます</button></div>
+<div class="ov" id="adov" style="background:rgba(0,0,0,.85);z-index:40"><div class="panel" style="text-align:center"><h3 style="color:#4fffe1" data-i18n="adtest">広告（テスト表示）</h3><p id="adtx" style="font-weight:700"></p></div></div>
+<div class="ov" id="shop"><div class="panel"><h3 data-i18n="shoph">🐊 ワニマート</h3><div style="font-size:12px;opacity:.8;margin-top:-6px" data-i18n="shopsub">日用品から武器まで。この州では合法。</div><div id="shopitems"></div><button class="mbtn pri" id="bPrem2" data-i18n="prem2" style="display:none">💎 プレミアムショップ（現金）</button><button class="mbtn" id="bShopClose" data-i18n="shopclose">店を出る</button></div></div>
+<div class="ov" id="pause"><div class="panel" style="text-align:center"><h3 style="color:#ff4fd8" data-i18n="pauseh">ポーズ</h3>
+  <p style="font-size:13px;line-height:1.7;text-align:left" data-i18n="pausep">黄色の<b style="color:#ffd84f">！</b>＝メインストーリー<br>水色の<b style="color:#4fffe1">？</b>＝サブストーリー<br>緑の<b style="color:#7dff6a">＄</b>＝ワニマート（回復）<br>ゲージ満タンで<b style="color:#4fffe1">HEAT</b>＝極技。<br>市民や警官を殴ると<b style="color:#ff9a3c">炎上度</b>が上がる。警官の視界から離れれば下がる。</p>
+  <button class="mbtn pri" id="bResume" data-i18n="resume">再開</button><button class="mbtn" id="bSave" data-i18n="save">セーブ</button><button class="mbtn" id="bPrem" data-i18n="prem" style="display:none">💎 プレミアムショップ</button><button class="mbtn" id="bXfer" style="display:none" data-i18n="xfer">機種変更（引き継ぎ）</button><button class="mbtn" id="bLang2"></button></div></div>
+<div class="ov" id="prem" style="z-index:35"><div class="panel"><h3 style="color:#ff9ae8" data-i18n="premh">💎 プレミアムショップ</h3>
+  <div class="note" style="margin-top:-6px" data-i18n="premnote">現金で武器を購入できます（税込）。購入した武器は機種変更しても引き継げます。</div>
   <div id="premitems"></div>
-  <label class="consent"><input type="checkbox" id="premConsent"><span>18歳以上です／未成年の場合は保護者の同意を得ています</span></label>
+  <label class="consent"><input type="checkbox" id="premConsent"><span data-i18n="consent">18歳以上です／未成年の場合は保護者の同意を得ています</span></label>
   <div id="premlimit" class="note"></div>
-  <div class="legal"><a href="/legal/tokushoho.html" target="_blank" rel="noopener">特定商取引法に基づく表記</a> ・ <a href="/legal/terms.html" target="_blank" rel="noopener">利用規約</a> ・ <a href="/legal/privacy.html" target="_blank" rel="noopener">プライバシーポリシー</a></div>
-  <button class="mbtn" id="bPremClose">閉じる</button></div></div>
-<div class="ov" id="xfer" style="z-index:35"><div class="panel" style="text-align:center"><h3 style="color:#4fffe1">機種変更（引き継ぎ）</h3>
-  <p class="note" style="text-align:left">新しい端末でこのコードを入力すると、セーブと購入したアイテムを引き継げます。コードは1回だけ使えて、使うとこの端末からは遊べなくなります。人に教えないでください。</p>
+  <div class="legal" data-i18n="legal"><a href="/legal/tokushoho.html" target="_blank" rel="noopener">特定商取引法に基づく表記</a> ・ <a href="/legal/terms.html" target="_blank" rel="noopener">利用規約</a> ・ <a href="/legal/privacy.html" target="_blank" rel="noopener">プライバシーポリシー</a></div>
+  <button class="mbtn" id="bPremClose" data-i18n="close">閉じる</button></div></div>
+<div class="ov" id="xfer" style="z-index:35"><div class="panel" style="text-align:center"><h3 style="color:#4fffe1" data-i18n="xferh">機種変更（引き継ぎ）</h3>
+  <p class="note" style="text-align:left" data-i18n="xfernote">新しい端末でこのコードを入力すると、セーブと購入したアイテムを引き継げます。コードは1回だけ使えて、使うとこの端末からは遊べなくなります。人に教えないでください。</p>
   <div id="xcode" class="code"></div>
-  <p class="note" style="margin-top:18px">別の端末のデータをこの端末に移す</p>
+  <p class="note" style="margin-top:18px" data-i18n="xfer2">別の端末のデータをこの端末に移す</p>
   <input id="xin" placeholder="XXXX-XXXX-XXXX" maxlength="14" autocomplete="off" autocapitalize="characters">
-  <button class="mbtn pri" id="bXRedeem">引き継ぐ</button><button class="mbtn" id="bXClose">閉じる</button></div></div>
-<div class="ov" id="ending"><h2>第一部 完</h2><p id="endtx"></p><button class="mbtn pri" id="bEndOk">自由行動を続ける</button></div>
+  <button class="mbtn pri" id="bXRedeem" data-i18n="redeem">引き継ぐ</button><button class="mbtn" id="bXClose" data-i18n="close">閉じる</button></div></div>
+<div class="ov" id="ending"><h2 data-i18n="endh">第一部 完</h2><p id="endtx"></p><button class="mbtn pri" id="bEndOk" data-i18n="endok">自由行動を続ける</button></div>
 
 <script>
 'use strict';
@@ -174,6 +175,152 @@ const rand=(a,b)=>a+Math.random()*(b-a),ri=(a,b)=>Math.floor(rand(a,b+1)),pick=a
 const clamp=(v,a,b)=>v<a?a:v>b?b:v,dist=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
 function angDiff(a,b){let d=b-a;while(d>Math.PI)d-=2*Math.PI;while(d<-Math.PI)d+=2*Math.PI;return d;}
 const TAU=Math.PI*2;
+// ================= I18N =================
+// Japanese is the source text. tr() looks up English by the exact Japanese string;
+// L(ja,en) is used where text is built from values.
+let LANG=(()=>{try{const v=localStorage.getItem('jingi_lang');if(v==='ja'||v==='en')return v;}catch(e){}return /^ja/i.test(navigator.language||'')?'ja':'en';})();
+const L=(ja,en)=>LANG==='en'?en:ja;
+const tr=s=>(LANG==='en'&&typeof s==='string'&&Object.prototype.hasOwnProperty.call(EN,s))?EN[s]:s;
+const EN={
+// places & signs
+'鰐淵保釈金事務所':'WANIBUCHI BAIL BONDS','ラーメン ガンボ':'RAMEN GUMBO','カラオケ フラミンゴ':'KARAOKE FLAMINGO','ワニマート':'GATOR MART',
+'喧嘩道場 FIGHT CLUB':'BRAWL DOJO FIGHT CLUB','老人ホーム サンセット':'SUNSET RETIREMENT HOME','オレンジ工場':'ORANGE FACTORY',
+'スナック 鰐':'SNACK BAR GATOR','PAWN 質':'PAWN SHOP','TACO寿司':'TACO SUSHI','パチンコ ALLIGATOR':'PACHINKO ALLIGATOR','居酒屋 ペリカン':'IZAKAYA PELICAN','麻雀 GULF':'MAHJONG GULF',
+'釣具&日本刀':'BAIT & KATANAS','整骨院&TATTOO':'CHIRO & TATTOO','キャバクラ 嵐':'HOSTESS CLUB STORM','24H 教会&雀荘':'24H CHURCH & MAHJONG','回転ステーキ':'CONVEYOR STEAK',
+'ホストクラブ MANGROVE':'HOST CLUB MANGROVE','保険 HURRICANE':'HURRICANE INSURANCE','BBQ 仁義':'BBQ JINGI','ネイル&お祓い':'NAILS & EXORCISM','ドライブスルー寺':'DRIVE-THRU TEMPLE',
+'銭湯 SUNSHINE':'SUNSHINE BATHHOUSE','ワニ肉 焼肉':'GATOR BBQ',
+// handles
+'@紅灯町ウォッチャー':'@kotocho_watcher','@サンシャイン速報':'@sunshine_news','@ハリケーン保険太郎':'@hurricane_ins_taro','@ワニ肉推し':'@gator_meat_stan',
+// HUD
+'降りる':'Exit','乗る':'Drive','買う':'Shop',
+// people
+'フロリダ男':'Florida Man','上裸の自称社長':'Shirtless "CEO"','ワニ連れの男':'Man with Pet Gator','元プロレスラーのDJ':'Ex-Wrestler DJ','ビーチの用心棒':'Beach Bouncer',
+'花火を持った男':'Man with Fireworks','マッチョ配信者':'Swole Streamer','自称CIA':'"Totally CIA"','バーベキューおじさん':'BBQ Uncle','モンスタートラック男':'Monster Truck Guy',
+'ペリカン密売人':'Pelican Smuggler','タトゥー入りの神父':'Tattooed Priest','郡保安官':'County Deputy','野生のワニ':'Wild Gator',
+'ジェイド':'Jade','鉄平':'Teppei','アリゲーター佐藤':'Alligator Sato','ガンボの若い衆':'Gumbo Crew','ゲートボール暴走族':'Gateball Gang','総長ドリス(82)':'Boss Doris (82)',
+'暴走族・特攻隊':'Gang Shock Trooper','ドン・ハリケーン':'Don Hurricane','保険調査員':'Claims Adjuster','ママ・ロザリタ':'Mama Rosalita','マーガレット(91)':'Margaret (91)',
+'ペドロ':'Pedro','レフェリー・ビッグJ':'Referee Big J','オレンジくん':'Orange-kun',
+// feed posts
+'車が爆発してて草':'lmao that car just exploded','また爆発してる…この州ほんと毎日これ':'another explosion... this state, every single day',
+'保険屋が泣いてる #ハリケーン保険':'the insurance guys are crying #HurricaneInsurance','目の前でアロハのヤクザが車パクってった':'a yakuza in an aloha shirt just jacked a car right in front of me',
+'カージャックの手際が職人':'that carjacking technique is artisanal','#鰐淵さん また車盗ってる':'#Wanibuchi stealing cars again',
+'ヤクザが暴れてるって通報あった？ #紅灯町':'anyone else report a yakuza rampage? #Kotocho','ライブ見てる人〜！今やばいよ':'anyone watching the live?? it is insane rn',
+'保安官めっちゃ集まってきてる':'so many deputies showing up','これ映画の撮影？ガチ？':'is this a movie shoot? or real??','人間の動きじゃない':'that is not how humans move',
+'今ヤクザがワニとタイマンしてる':'a yakuza is 1v1ing an alligator rn','アロハの人めちゃ強':'aloha shirt guy is cracked','撮れ高すぎ #紅灯町':'pure content #Kotocho',
+'警察呼ぶ前にとりあえず配信':'streaming first, calling the cops later','オレンジくんが踊りながら逃げてる':'Orange-kun is DANCING while running away',
+'また路上で喧嘩始まった':'another street fight just started','アロハの人に絡むのはやめとけって…':'never pick a fight with the aloha guy...','ポップコーン買ってくる':'brb getting popcorn',
+'【速報】ハリケーン「ジンギ」急接近 外出は控えて':'[BREAKING] Hurricane Jingi approaching. Stay indoors.',
+// toasts & cards
+'左スティックで運転 ／ 「降りる」で降車':'Steer with the left stick / tap Exit to get out','追手を撒いた':'Lost the cops',
+'ヒートゲージが足りない':'Heat gauge isn\'t full','近くに相手がいない':'No one close enough','ドン・ハリケーンの突進！ 回避しろ！':'Don Hurricane is charging! Dodge!',
+'尻尾スピン！ 離れろ！':'Tail spin! Back off!','ストリートファイト！':'STREET FIGHT!','広告を読み込めなかった':'Couldn\'t load the ad','$300 もらった':'Got $300',
+'金が足りねぇ…':'Not enough cash...','武器を持っていない（ワニマートで買える）':'No weapons (buy them at Gator Mart)','素手':'Bare fists',
+'購入ありがとうございます！ ゲームを始めると受け取れます':'Thanks for your purchase! Your items arrive when you start the game','購入をキャンセルしました':'Purchase canceled',
+'購入アイテム受け取り':'PURCHASE RECEIVED','購入前の確認にチェックしてください':'Please tick the confirmation box first','コードを入力してください':'Enter a code',
+'復活！':'REVIVED!','仁義は、まだ尽きちゃいねぇ':'My jingi isn\'t spent yet','え、今のヤクザ生き返らなかった？':'wait, did that yakuza just come back to life?','セーブしました':'Saved',
+'黄色い矢印の方向へ進め':'Follow the yellow arrow','おかえり、ボス':'Welcome back, boss','炎上度 ★3':'INFAMY ★3','警察の視界から消えろ！':'Get out of the cops\' sight!',
+'ペドロがついてきた！':'Pedro is following you!','沼の番人':'SWAMP GUARDIANS','野生のワニ ×3':'Wild Gator ×3','制限時間45秒':'45-second time limit','追跡開始！':'THE CHASE IS ON!',
+'オレンジくんを殴って捕まえろ':'Beat Orange-kun to catch him','フロリダ男 ×3':'Florida Man ×3','BOSS':'BOSS','FINAL BOSS':'FINAL BOSS','COMPLETE':'COMPLETE','FIGHT!':'FIGHT!',
+'ドリス「援軍を呼ぶよ！ 介護タクシー、出しな！」':'Doris: "Calling backup! Send the care taxis!"','ドン「保険調査員ども、来い！」':'Don: "Claims adjusters, get in here!"',
+'殴＝連打でコンボ ／ 蹴＝重い一撃 ／ 避＝回避':'Punch = mash for combos / Kick = heavy hit / Dodge = evade',
+// HEAT
+'極・サーフボード唐竹割り':'Kiwami: Surfboard Skull Splitter','極・フラミンゴ乱舞':'Kiwami: Flamingo Frenzy','極・ビーチチェア挟み':'Kiwami: Beach Chair Sandwich',
+'極・アスファルト大外刈り':'Kiwami: Asphalt Leg Reap','極・パイナップル頭突き':'Kiwami: Pineapple Headbutt','極・保釈金の重み':'Kiwami: Weight of Bail',
+'極・ハリケーン張り手':'Kiwami: Hurricane Slap','極・ネオン看板フルスイング':'Kiwami: Neon Sign Full Swing','極・ワニの餌やり':'Kiwami: Feeding Time',
+'極・沼底ジャーマン':'Kiwami: Swamp Suplex','極・仁義大車輪':'Kiwami: Wheel of Jingi',
+'・ホールインワン':': Hole in One','・満塁ホームラン':': Grand Slam','・ビッグウェーブ':': Big Wave','・峰打ち千本桜':': Thousand Blossoms','・暴風域':': Storm Zone','・天下御免':': Royal Pardon',
+// shop & weapons
+'ガンボおにぎり（HP+35）':'Gumbo Rice Ball (HP +35)','ワニ肉ホットドッグ（HP+70）':'Gator Dog (HP +70)','エナドリ「ワニブル」（全回復＋HEAT満タン）':'"Gator Bull" Energy Drink (full HP + full HEAT)',
+'日焼け止め SPF極（最大HP+10）':'SPF Kiwami Sunscreen (max HP +10)','📺 広告を見てもらえる（3分に1回）':'📺 Watch an ad for free stuff (every 3 min)','ランダムな武器を1つ':'A random weapon',
+'ワニマート協賛金 $300':'Gator Mart sponsorship $300','回復・強化':'Healing & boosts','武器（攻撃が強くなる／壊れるまで使える）':'Weapons (hit harder, usable until they break)',
+'ゴルフクラブ':'Golf Club','金属バット':'Metal Bat','サーフボード':'Surfboard','模造刀（峰打ち）':'Replica Katana (blunt edge)','ハリケーン・ハンマー':'Hurricane Hammer','黄金の扇子':'Golden Fan',
+// karaoke
+'♪ ガルフの夜に 咲いた仁義':'♪ On a Gulf night, jingi in bloom','♪ ワニも泣いてる 桟橋で':'♪ Even gators weep down on the pier','♪ ネオンが沈む ハリケーン':'♪ The neon sinks into the hurricane',
+'♪ それでも俺は 退かねぇ〜':'♪ But I won\'t back down~','ハズレ…':'Off beat...','〜 イントロ 〜':'~ Intro ~',
+'『ガルフの夜は仁義なし』 作詞作曲：アリゲーター佐藤':'"No Jingi on a Gulf Night" — words & music: Alligator Sato','♪が○に重なった瞬間に画面かボタンをタップ！':'Tap the screen or a button when ♪ hits the ○!',
+// intro
+'2027年。日米「歓楽街まるごと姉妹都市協定」により、東京の歓楽街〈紅灯町〉は、ビルごと南国〈ガルフストリーム州〉へ移設された。':'2027. Under the US-Japan "Whole Nightlife District Sister City Agreement," Tokyo\'s nightlife district of Kotocho was moved, buildings and all, to the tropical State of Gulfstream.',
+'ネオン、ワニ、ハリケーン、そして極道。――誰も止めなかった。':'Neon. Gators. Hurricanes. And yakuza. Nobody stopped it.',
+'元・鰐淵組若頭、鰐淵 鉄平（わにぶち てっぺい）。現在の職業――保釈金ハンター。':'Teppei Wanibuchi. Former underboss of the Wanibuchi family. Current occupation: bail bondsman.',
+'……暑ぃな、この街は。':'...Damn, this town is hot.','画面左側をドラッグで移動。黄色い「！」がメインストーリーだ。':'Drag on the left side of the screen to move. The yellow ! marks the main story.',
+// chapter 1
+'第一章 紅灯町、上陸':'Chapter 1: Landing in Kotocho','—— 南国に、仁義の花が咲く ——':'— Jingi blooms in the tropics —',
+'Hey ボス！ 遅刻よ。今日も配信回してるから、カメラ目線よろしく♡':'Hey boss! You\'re late. I\'m streaming again today, so look at the camera ♡',
+'……俺は映らんと言ったはずだ。':'...I told you I don\'t do cameras.',
+'同接120万人が待ってるの。ほら、さっそく「フロリダ男」たちが事務所の前でバーベキュー始めてる。':'1.2 million viewers are waiting. Look, some Florida Men already started a barbecue right outside the office.',
+'人の店の前で火を焚くとは……仁義がなってねぇな。':'Lighting fires in front of a man\'s place of business... No sense of jingi.','フロリダ男たちを片付けろ':'Take out the Florida Men',
+'最高！ 同接8000人超えた！ ボス、ガチで撮れ高の神。':'Amazing! Over 8,000 live viewers! Boss, you\'re a content god.','……撮れ高とは何だ。':'...What\'s "content"?',
+'お金になるってこと。はい、今日の取り分。':'It means money. Here\'s your cut.','あ、ゲージが光ったら「HEAT」ボタン押してみて。視聴者が一番喜ぶやつ。':'Oh, when the gauge glows, hit the HEAT button. Viewers love that.',
+'ボス初登場回、神回確定 #仁義サンシャイン':'boss\'s debut stream is an instant classic #JingiSunshine',
+// chapter 2
+'第二章 ラーメン・ガンボの鰐':'Chapter 2: The Gator of Ramen Gumbo','—— 踏み倒しは許さねぇ ——':'— Nobody skips out on bail —',
+'次の依頼。「ラーメン ガンボ」の店長が保釈金5万ドルを踏み倒して逃げてるの。':'Next job. The owner of Ramen Gumbo skipped out on $50,000 in bail.',
+'ガンボ……あのワニ出汁の店か。':'Gumbo... The place with the gator broth?','店長はワニ本人よ。':'The owner IS a gator.','……は？':'...What?','ラーメン ガンボへ向かえ':'Head to Ramen Gumbo',
+'なんや、取り立てか。ワシはな、この街に来る前は大阪の川で泳いどったんや。':'What, a collector? Before I came here, I used to swim in the rivers of Osaka, y\'know.',
+'ワニが大阪の川を泳ぐな。保釈金を払え。':'Gators don\'t belong in Osaka rivers. Pay your bail.','払うもんは……この牙だけじゃァ！ 若いの、いてまえ！':'The only thing I\'m payin\' is these fangs! Boys, get \'im!',
+'アリゲーター佐藤を倒せ':'Defeat Alligator Sato','アリゲーター佐藤 ― ラーメン屋店主／ワニ':'Alligator Sato — Ramen Chef / Alligator',
+'ま、参った……替え玉一杯、タダにしたる……':'A-alright, I give... Free noodle refill, on the house...','金で払え。':'Pay in cash.',
+'（配信コメント欄：「ワニが土下座してる」「替え玉で手を打て」）':'(Stream chat: "the gator is BOWING" "just take the free refill")','ワニの土下座、世界初では？':'first gator apology bow in history?',
+// chapter 3
+'第三章 バズれ、仁義':'Chapter 3: Go Viral, Jingi','—— アルゴリズムは炎上がお好き ——':'— The algorithm loves chaos —','ボス、最近の配信、伸びが落ちてるの。':'Boss, our streams have been slumping lately.',
+'アルゴリズムは「炎上」が大好き。街で暴れて、炎上度を★3まで上げて！':'The algorithm loves chaos. Cause trouble in town and push your Infamy to ★3!',
+'極道に炎上しろと頼む配信者は初めてだ。':'First streamer I\'ve met who asks a yakuza to go viral for crimes.','で、ちゃんと逃げ切ってね。捕まったら保釈金、自腹だから。':'And make sure you get away. If you get caught, you\'re paying your own bail.',
+'炎上度を★3まで上げろ（市民・車・警官に手を出す）':'Raise Infamy to ★3 (mess with civilians, cars or cops)','追手を撒け（炎上度★0にする）':'Lose the cops (get Infamy back to ★0)',
+'（電話）トレンド世界1位！ #サンシャイン極道 だって！':'(Phone) #1 trending worldwide! #SunshineYakuza!','……喜んでいいのか分からん。':'...Not sure if I should be happy.',
+'喜んで！ スポンサーにワニマートがついたわ。':'Be happy! Gator Mart just signed on as a sponsor.','#サンシャイン極道 トレンド入りしました':'#SunshineYakuza is trending',
+// chapter 4
+'第四章 ゲートボール暴走族':'Chapter 4: The Gateball Gang','—— 老いてなお、ぶっ飛ばす ——':'— Old age, full throttle —',
+'大変！ 老人ホーム「サンセット」の入居者がゲートボール暴走族を結成して、ゴルフ場を占拠したわ。':'Trouble! Residents of the Sunset retirement home formed a gateball biker gang and took over the golf course.',
+'……年寄りに手は上げられん。':'...I can\'t raise a hand to the elderly.','総長のドリス(82)は元海軍特殊部隊よ。':'Their leader, Doris (82), is ex-Navy special forces.','手加減はいらねぇな。':'Then I won\'t hold back.',
+'ゴルフ場は遠いから車で行って。事務所の横にボスのピンクのオープンカー置いてあるから。':'The golf course is far, so take a car. Your pink convertible is parked next to the office.',
+'車に乗れ（車の近くで「乗る」）':'Get in a car (tap Drive next to one)','ゴルフ場へ向かえ':'Head to the golf course',
+'坊や、ここはアタシたちのシマだよ。ホールインワンで頭カチ割ってやろうか？':'Sonny, this is our turf. Want me to crack your skull with a hole-in-one?','ばあさん、悪いが仕事だ。':'Sorry, granny. It\'s business.',
+'いい目だね。……野郎ども！ 杖を構えな！':'You\'ve got good eyes... Boys! Canes up!','総長ドリス(82) ― 元海軍特殊部隊／ゲートボール暴走族':'Boss Doris (82) — Ex-Navy Special Forces / Gateball Gang',
+'いい拳だね坊や。死んだ旦那に似てるよ……今度、ゲートボール教えてやる。':'Good fists, sonny. You remind me of my late husband... I\'ll teach you gateball sometime.',
+'……ああ。肩は大事にしろよ、ばあさん。':'...Sure. Take care of that shoulder, granny.','泣ける回！ 投げ銭すごいことになってる！':'Tearjerker episode! The tips are going crazy!',
+'ヤクザとおばあちゃんの友情で泣いた':'a yakuza and a granny becoming friends made me cry',
+// final chapter
+'最終章 ハリケーン組長':'Final Chapter: The Hurricane Boss','—— 嵐を売る男 ——':'— The man who sells storms —',
+'ボス……ニュース見た？ カテゴリー5のハリケーンが直撃するって。しかもこれ「ドン・ハリケーン」の仕業らしいの。':'Boss... did you see the news? A Category 5 hurricane is about to hit. And they say it\'s Don Hurricane\'s doing.',
+'人間がハリケーンを起こせるか。':'No man can make a hurricane.',
+'この州ならできるの。気象操作で嵐を起こして、自分の会社の保険を売りつけてるんだって。今、桟橋の先で「儀式」の最中。':'In this state, he can. He rigs the weather to make storms, then sells insurance from his own company. He\'s at the end of the pier doing some "ritual" right now.',
+'……行ってくる。配信は切っとけ。':'...I\'m going. Turn off the stream.','絶対切らない♡':'Never ♡','桟橋の先端へ向かえ（嵐で押し流されるぞ）':'Go to the end of the pier (the storm will push you around)',
+'ようこそ、ジャパニーズ。この州じゃ、嵐も商品なのさ。':'Welcome, my Japanese friend. In this state, even storms are merchandise.','嵐を売る奴には、仁義でお釣りを返してやる。':'For a man who sells storms, your change comes in jingi.',
+'ハハハ！ 保険には入ったか？ 入ってないなら――ここで終わりだ！':'Ha ha ha! Got insurance? No? Then this is where you end!','ドン・ハリケーン ― 気象操作保険王':'Don Hurricane — Weather-Rigging Insurance King',
+'バ、バカな……風が……止んだ……':'Im-impossible... The wind... stopped...','ボス！ 同接1億人！ 州知事と国連から感謝状が届いてる！':'Boss! 100 million live viewers! The governor and the UN sent thank-you letters!',
+'……保釈金の請求書も一緒に送っとけ。':'...Send them a bail invoice while you\'re at it.','こうして紅灯町には今日も、ネオンとワニと仁義が輝く。':'And so, in Kotocho, the neon, the gators and the jingi shine on.',
+'―― 第一部 完 ――':'— End of Part One —','世界を救ったのアロハのヤクザで草':'the guy who saved the world is a yakuza in an aloha shirt lmao',
+// substories
+'サブストーリー「十八番を取り戻せ」':'Substory: Signature Song','あら色男。うちの看板曲『ガルフの夜は仁義なし』、誰も歌いこなせなくて客が来ないのよ。':'Well hello, handsome. Nobody can sing our signature song, "No Jingi on a Gulf Night," so the customers stopped coming.',
+'俺は歌わん。':'I don\'t sing.','あんた、歌える顔してるわ。一曲だけ。ね？':'You have a singer\'s face. Just one song. Please?','……一曲だけだ。':'...Just one.','看板にはならん。':'I\'m not your headliner.',
+'ヤクザの演歌ラップ、鳥肌立った':'yakuza enka rap gave me chills',
+'サブストーリー「ピンクの家出」':'Substory: The Pink Runaway','あんた、強そうだねぇ。うちのペドロが沼に家出しちゃったのよ。':'You look strong, dear. My Pedro ran away into the swamp.','ペドロ？':'Pedro?',
+'フラミンゴよ。ワニに食べられちゃう……お願い、連れて帰ってきて。':'My flamingo. The gators will eat him... Please bring him home.','沼地でフラミンゴのペドロを探せ':'Find Pedro the flamingo in the swamp',
+'ペドロをマーガレットの元へ連れて帰れ':'Bring Pedro back to Margaret','ペドロ！ おかえり！ ……あんた、極道なのに優しいのねぇ。':'Pedro! Welcome home! ...For a yakuza, you\'re a sweetheart.','極道だから、だ。':'That\'s what a yakuza is.',
+'フラミンゴを抱えたヤクザ、尊い':'yakuza carrying a flamingo. wholesome.',
+'サブストーリー「フロリダマン選手権」':'Substory: The Florida Man Championship','ようこそフロリダマン選手権へ！ ルールは簡単、45秒以内に挑戦者6人をぶっ飛ばせ！':'Welcome to the Florida Man Championship! Simple rules: knock out 6 challengers in 45 seconds!',
+'始めろ。':'Start.','優勝ーーッ！ 新チャンピオン誕生だ！ ベルトはワニ革製だぜ！':'WINNER! A new champion is born! The belt is genuine gator leather!','フロリダマン選手権 新王者誕生':'new Florida Man Champion crowned',
+'タイムアップ！ 惜しかったな、また挑戦しに来な！':'Time\'s up! So close. Come back and try again!',
+'サブストーリー「着ぐるみの逃亡者」':'Substory: The Mascot on the Run','（電話）ボス！ 保釈中の男が、オレンジジュース工場のマスコット「オレンジくん」の着ぐるみで逃走中！':'(Phone) Boss! A bail jumper is on the run in the costume of Orange-kun, the juice factory mascot!',
+'なぜ着ぐるみで逃げる。':'Why run in a costume?','脱げないんだって。60秒以内に捕まえて！':'He can\'t get it off. Catch him within 60 seconds!','ジュースを搾るのだけはやめてくれぇ〜！':'Please, anything but juicing me~!',
+'搾らん。保釈金を払え。':'I won\'t juice you. Pay your bail.','オレンジくん確保の瞬間、腹筋崩壊':'the moment they caught Orange-kun I died laughing','逃げられちゃった……工場の前で待ってるって噂よ。':'He got away... Word is he hangs around outside the factory.',
+// server messages
+'リクエストが多すぎます。少し待ってから試してください':'Too many requests. Please wait a moment and try again.','ログイン情報が無効です':'Your session is no longer valid','JSONが不正です':'Invalid request',
+'セーブデータが不正です':'Invalid save data','引き継ぎコードが見つかりません':'Transfer code not found','商品が見つかりません':'Product not found','注文が見つかりません':'Order not found','サーバーエラーが発生しました':'A server error occurred',
+};
+// Static page text, keyed by data-i18n.
+const EN_HTML={infamy:'INFAMY',tap:'▼ Tap',
+  intro:'2027. Under the US-Japan "Whole Nightlife District Sister City Agreement," Tokyo\'s nightlife district of Kotocho was moved, buildings and all, to the tropical State of Gulfstream.<br>Neon. Gators. Hurricanes. And yakuza. Nobody stopped it.',
+  newgame:'NEW GAME',cont:'CONTINUE',hint:'Drag on the left half to move / fight with the buttons on the right<br>PC: WASD move · J punch · K kick · L dodge · H heat · E car · Q weapon',
+  deadh:'Your Jingi Runs Dry...',deadp:'You\'re headed to the hospital. The bill costs 10% of your cash.',adrevive:'📺 Watch an ad to revive on the spot',revive:'Wake up in the hospital',
+  adtest:'Ad (test display)',shoph:'🐊 GATOR MART',shopsub:'From groceries to weapons. All legal in this state.',prem2:'💎 Premium Shop (real money)',shopclose:'Leave the store',
+  pauseh:'PAUSED',pausep:'Yellow <b style="color:#ffd84f">!</b> = main story<br>Cyan <b style="color:#4fffe1">?</b> = substory<br>Green <b style="color:#7dff6a">$</b> = Gator Mart (healing)<br>Full gauge + <b style="color:#4fffe1">HEAT</b> = Kiwami move.<br>Hitting civilians or cops raises your <b style="color:#ff9a3c">Infamy</b>. Get out of the cops\' sight to lower it.',
+  resume:'Resume',save:'Save',prem:'💎 Premium Shop',xfer:'Move to another device',endh:'END OF PART ONE',endok:'Keep playing',
+  premh:'💎 Premium Shop',premnote:'Buy weapons with real money (tax included). Purchased weapons carry over when you change devices.',consent:'I am 18 or older, or I have a parent\'s or guardian\'s permission',
+  legal:'Legal notices are in Japanese: <a href="/legal/tokushoho.html" target="_blank" rel="noopener">特定商取引法に基づく表記</a> · <a href="/legal/terms.html" target="_blank" rel="noopener">Terms</a> · <a href="/legal/privacy.html" target="_blank" rel="noopener">Privacy</a>',
+  close:'Close',xferh:'Move to another device',xfernote:'Enter this code on your new device to move your save and purchased items. The code works once, and this device will be signed out. Don\'t share it.',
+  xfer2:'Move data from another device to this one',redeem:'Transfer'};
+
 
 // ================= AUDIO =================
 let AC=null,master=null,muted=false,noiseBuf=null;
@@ -267,29 +414,29 @@ const cam={x:P.x,y:P.y,z:1};
 const input={jx:0,jy:0,punch:false,kick:false,dodge:false,heat:false,act:false};
 
 // ================= UI =================
-function toast(t,dur=2.2){const e=$('toast');e.textContent=t;e.style.display='block';clearTimeout(toast.h);toast.h=setTimeout(()=>e.style.display='none',dur*1000);}
-function card(t,s){const e=$('card');e.innerHTML=`<div class="t">${t}</div>${s?`<div class="s">${s}</div>`:''}`;e.style.display='block';SFX.card();clearTimeout(card.h);card.h=setTimeout(()=>e.style.display='none',2300);}
-function setObj(t){const e=$('obj');if(t){e.textContent=t;e.style.display='block';}else e.style.display='none';}
+function toast(t,dur=2.2){const e=$('toast');e.textContent=tr(t);e.style.display='block';clearTimeout(toast.h);toast.h=setTimeout(()=>e.style.display='none',dur*1000);}
+function card(t,s){const e=$('card');e.innerHTML=`<div class="t">${tr(t)}</div>${s?`<div class="s">${tr(s)}</div>`:''}`;e.style.display='block';SFX.card();clearTimeout(card.h);card.h=setTimeout(()=>e.style.display='none',2300);}
+function setObj(t){const e=$('obj');if(t){e.textContent=tr(t);e.style.display='block';}else e.style.display='none';}
 const HANDLES=['@gator_lover','@紅灯町ウォッチャー','@FloridaMan_jp','@サンシャイン速報','@nanami_beach','@ハリケーン保険太郎','@retired_navy_82','@ワニ肉推し','@kabuki_beach_cam','@jade_fan_club'];
-function post(t,h){const f=$('feed');const d=document.createElement('div');d.className='post';d.innerHTML=`<b>${h||pick(HANDLES)}</b> ${t}`;f.prepend(d);
+function post(t,h){const f=$('feed');const d=document.createElement('div');d.className='post';d.innerHTML=`<b>${tr(h||pick(HANDLES))}</b> ${tr(t)}`;f.prepend(d);
   while(f.children.length>3)f.lastChild.remove();setTimeout(()=>{d.style.opacity=0;setTimeout(()=>d.remove(),700);},5500);}
 function addFollowers(n){S.followers+=Math.floor(n);}
-const fmtN=n=>n>=1e8?(n/1e8).toFixed(1)+'億':n>=1e4?(n/1e4).toFixed(1)+'万':String(n);
+const fmtN=n=>LANG==='en'?(n>=1e6?(n/1e6).toFixed(1)+'M':n>=1e3?(n/1e3).toFixed(1)+'K':String(n)):(n>=1e8?(n/1e8).toFixed(1)+'億':n>=1e4?(n/1e4).toFixed(1)+'万':String(n));
 let hudCache={};
 function updateHUD(){const set=(k,v,f)=>{if(hudCache[k]!==v){hudCache[k]=v;f(v);}};
   set('hp',Math.round(P.hp),v=>$('hpb').style.width=(v/P.maxHp*100)+'%');
   set('ht',Math.round(P.heat),v=>{$('htb').style.width=v+'%';$('htw').classList.toggle('full',v>=100);$('bH').classList.toggle('ready',v>=100);});
-  set('wp',S.wpn?S.wpn+S.wdur[S.wpn]+'/'+S.inv[S.wpn]:'',v=>{const e=$('wpn');if(!S.wpn){e.style.display='none';return;}const w=WEAPONS[S.wpn];e.style.display='block';e.textContent=`⚔ ${w.n}  耐久${S.wdur[S.wpn]}/${w.dur}`+(S.inv[S.wpn]>1?`  予備×${S.inv[S.wpn]-1}`:'');});
+  set('wp',S.wpn?S.wpn+S.wdur[S.wpn]+'/'+S.inv[S.wpn]:'',v=>{const e=$('wpn');if(!S.wpn){e.style.display='none';return;}const w=WEAPONS[S.wpn];e.style.display='block';e.textContent=`⚔ ${tr(w.n)}  ${L('耐久','Uses ')}${S.wdur[S.wpn]}/${w.dur}`+(S.inv[S.wpn]>1?L(`  予備×${S.inv[S.wpn]-1}`,`  spare ×${S.inv[S.wpn]-1}`):'');});
   set('m',S.money,v=>$('money').textContent='$'+v.toLocaleString());set('f',S.followers,v=>$('foll').textContent='👁 '+fmtN(v));
   set('w',wanted,v=>{[...document.querySelectorAll('#stars .f')].forEach((e,i)=>e.classList.toggle('on',i<v));});
   set('wc',wanted>0&&wcool>0,v=>$('stars').classList.toggle('flash',v));
-  const lab=P.car?'降りる':nearCar()?'乗る':nearShop()?'買う':'';set('x',lab,v=>{$('bX').style.display=v?'flex':'none';$('bX').textContent=v;});
-  const boss=actors.find(a=>a.boss&&!a.dead&&a.hostile);set('boss',boss?boss.name+Math.ceil(boss.hp):'',v=>{$('boss').style.display=v?'block':'none';if(boss){$('bossn').textContent=boss.name;$('bossb').style.width=clamp(boss.hp/boss.maxHp*100,0,100)+'%';}});}
+  const lab=P.car?'降りる':nearCar()?'乗る':nearShop()?'買う':'';set('x',lab,v=>{$('bX').style.display=v?'flex':'none';$('bX').textContent=tr(v);});
+  const boss=actors.find(a=>a.boss&&!a.dead&&a.hostile);set('boss',boss?boss.name+Math.ceil(boss.hp):'',v=>{$('boss').style.display=v?'block':'none';if(boss){$('bossn').textContent=tr(boss.name);$('bossb').style.width=clamp(boss.hp/boss.maxHp*100,0,100)+'%';}});}
 
 // dialog
 let dlg=null;
 function openDialog(lines,cb){dlg={lines,i:0,cb,shown:0,full:''};if(mode!=='dialog')prevMode=mode;mode='dialog';$('dlgwrap').style.display='block';showLine();}
-function showLine(){const[nm,tx]=dlg.lines[dlg.i];const d=$('dlg');d.className=nm?'':'narr';d.querySelector('.nm').style.display=nm?'block':'none';d.querySelector('.nm').textContent=nm||'';dlg.full=tx;dlg.shown=0;d.querySelector('.tx').textContent='';}
+function showLine(){const[nm,tx]=dlg.lines[dlg.i];const d=$('dlg');d.className=nm?'':'narr';d.querySelector('.nm').style.display=nm?'block':'none';d.querySelector('.nm').textContent=tr(nm)||'';dlg.full=tr(tx);dlg.shown=0;d.querySelector('.tx').textContent='';}
 function advance(){if(!dlg)return;if(dlg.shown<dlg.full.length){dlg.shown=dlg.full.length;return;}SFX.ui();dlg.i++;
   if(dlg.i>=dlg.lines.length){const cb=dlg.cb;dlg=null;$('dlgwrap').style.display='none';mode=prevMode==='dialog'?'play':prevMode;cb&&cb();}else showLine();}
 $('dlgwrap').addEventListener('pointerdown',e=>{e.preventDefault();initAudio();advance();});
@@ -385,7 +532,7 @@ function hurtPlayer(dmg,src){if(P.inv>0||mode!=='play')return;if(P.car){dmg*=.4;
   P.atk=0;P.queued=null;if(P.hp<=0){P.hp=0;die();}}
 const WTH=[0,1,45,110,200,320];
 function crime(v){S.wpts=Math.min(450,S.wpts+v);const old=wanted;let l=0;for(let i=1;i<6;i++)if(S.wpts>=WTH[i])l=i;wanted=Math.max(wanted,l);wcool=0;
-  if(wanted>old){addFollowers(800*wanted);toast(`炎上度 ★${wanted}  警察が動き出した！`);post(pick(['ヤクザが暴れてるって通報あった？ #紅灯町','ライブ見てる人〜！今やばいよ','保安官めっちゃ集まってきてる','これ映画の撮影？ガチ？']));}}
+  if(wanted>old){addFollowers(800*wanted);toast(L(`炎上度 ★${wanted}  警察が動き出した！`,`INFAMY ★${wanted}  The cops are on the move!`));post(pick(['ヤクザが暴れてるって通報あった？ #紅灯町','ライブ見てる人〜！今やばいよ','保安官めっちゃ集まってきてる','これ映画の撮影？ガチ？']));}}
 function updateWanted(dt){if(wanted===0)return;let seen=false;
   for(const a of actors)if(a.type==='cop'&&!a.dead&&a.downT<=0&&dist(a,P)<380){seen=true;break;}
   if(!seen)for(const c of cars)if(c.kind==='police'&&!c.wreck&&dist(c,P)<460){seen=true;break;}
@@ -428,11 +575,11 @@ const HEATN=['極・サーフボード唐竹割り','極・フラミンゴ乱舞
 function tryHeat(){if(P.heat<100){toast('ヒートゲージが足りない');return;}
   const tg=actors.filter(a=>!a.dead&&!a.npc&&(a.hostile||a.type==='cop'||a.type==='civ')&&dist(a,P)<130);if(!tg.length){toast('近くに相手がいない');return;}
   let nm=pick(HEATN);let wet=false;for(let dy=-3;dy<=3;dy++)for(let dx=-3;dx<=3;dx++)if(tAt(Math.floor(P.x/T)+dx,Math.floor(P.y/T)+dy)===WATER)wet=true;
-  if(wet)nm='極・ワニの餌やり';if(tileUnder(P)===SWAMP)nm='極・沼底ジャーマン';if(S.wpn)nm='極・'+WEAPONS[S.wpn].n.replace(/（.*）/,'')+WEAPONS[S.wpn].heat;if(tg.some(a=>a.boss))nm='極・仁義大車輪';
-  P.heat=0;cine={t:0,dur:1.5,nm,tg,done:false};mode='cine';SFX.heat();}
+  if(wet)nm='極・ワニの餌やり';if(tileUnder(P)===SWAMP)nm='極・沼底ジャーマン';if(S.wpn)nm=L('極・'+WEAPONS[S.wpn].n.replace(/（.*）/,'')+WEAPONS[S.wpn].heat,'Kiwami: '+tr(WEAPONS[S.wpn].n).replace(/ \(.*\)/,'')+tr(WEAPONS[S.wpn].heat));if(tg.some(a=>a.boss))nm='極・仁義大車輪';
+  P.heat=0;cine={t:0,dur:1.5,nm:tr(nm),tg,done:false};mode='cine';SFX.heat();}
 function updateCine(dt){cine.t+=dt;if(!cine.done&&cine.t>=.95){cine.done=true;for(const a of cine.tg){const ang=Math.atan2(a.y-P.y,a.x-P.x);hitActor(a,a.boss?75:95,420,ang);}
   SFX.boom();shake=20;flash=.5;for(let i=0;i<30;i++)parts.push({x:P.x,y:P.y,vx:rand(-300,300),vy:rand(-300,300),life:rand(.3,.8),max:.8,col:pick(['#4fffe1','#fff','#ff4fd8']),s:rand(3,7)});
-  addFollowers(rand(3000,9000));post(pick(['今の技なに！？ '+cine.nm,'「'+cine.nm+'」で同接爆増してて草','切り抜き班はよ #'+cine.nm.replace('極・',''),'人間の動きじゃない']),'@jade_fan_club');}
+  addFollowers(rand(3000,9000));post(pick(L(['今の技なに！？ '+cine.nm,'「'+cine.nm+'」で同接爆増してて草','切り抜き班はよ #'+cine.nm.replace('極・',''),'人間の動きじゃない'],['what was that?! '+cine.nm,'"'+cine.nm+'" just blew up the viewer count lol','clip it! '+cine.nm,'that is not how humans move'])),'@jade_fan_club');}
   if(cine.t>=cine.dur){cine=null;mode='play';}}
 
 // ---------- actor AI ----------
@@ -460,7 +607,7 @@ function aiHostile(a,dt){const d=dist(a,P),ang=Math.atan2(P.y-a.y,P.x-a.x);
   else if(a.type==='gator'){a.t-=dt;if(a.t<=0){a.t=rand(1,3);a.wd=rand(0,TAU);}step(a,Math.cos(a.wd)*30,Math.sin(a.wd)*30,dt);}}
 function updateActors(dt){for(let i=actors.length-1;i>=0;i--){const a=actors[i];a.anim+=dt;a.flash-=dt;a.moving=false;
   if(a.dead){a.deadT-=dt;if(a.deadT<=0)actors.splice(i,1);continue;}
-  if(Math.abs(a.vx)+Math.abs(a.vy)>2){if(moveCircle(a,a.vx*dt,a.vy*dt)&&Math.hypot(a.vx,a.vy)>250){a.hp-=6;ftext(a.x,a.y-20,'壁!','#ffd84f',14);if(a.hp<=0&&!a.dead){kill(a);continue;}}const f=Math.exp(-7*dt);a.vx*=f;a.vy*=f;}
+  if(Math.abs(a.vx)+Math.abs(a.vy)>2){if(moveCircle(a,a.vx*dt,a.vy*dt)&&Math.hypot(a.vx,a.vy)>250){a.hp-=6;ftext(a.x,a.y-20,L('壁!','WALL!'),'#ffd84f',14);if(a.hp<=0&&!a.dead){kill(a);continue;}}const f=Math.exp(-7*dt);a.vx*=f;a.vy*=f;}
   if(a.downT>0){a.downT-=dt;continue;}if(a.stun>0){a.stun-=dt;continue;}
   if(a.type==='cop')a.hostile=wanted>0||a.aggro2;
   if(a.follow){const d=dist(a,P);if(d>55){const g=Math.atan2(P.y-a.y,P.x-a.x);step(a,Math.cos(g)*Math.min(170,d*1.5),Math.sin(g)*Math.min(170,d*1.5),dt);}continue;}
@@ -502,7 +649,7 @@ function spawnManager(dt){spawnT-=dt;if(spawnT>0)return;spawnT=.4;const night=ni
 function spawnOwned(){mkCar(POS.office.x+3.5*T,POS.office.y,0,{ai:false,owned:true,kind:'conv',col:'#ff6fc8',max:290,keep:true,hp:160});}
 function encounters(dt){if(mission&&mission.fight||P.car||wanted>0||mode!=='play')return;encT-=dt;if(encT>0)return;encT=rand(45,75);
   if(tileUnder(P)===SWAMP||!S.intro)return;const n=ri(2,4);const nm=[];for(let i=0;i<n;i++){const s=findSpot(P.x,P.y,220,320,v=>v===SIDE||v===ROAD||v===PLAZA||v===SAND);if(s){const t=mkThug(s.x,s.y,{enc:true,aggro:600});nm.push(t.name);}}
-  if(nm.length){card('ストリートファイト！',[...new Set(nm)].join('・')+(nm.length>1?` ほか`:''));post(pick(['また路上で喧嘩始まった','アロハの人に絡むのはやめとけって…','ポップコーン買ってくる']));}}
+  if(nm.length){card('ストリートファイト！',[...new Set(nm)].map(tr).join(L('・',', '))+(nm.length>1?L(' ほか',' & co.'):''));post(pick(['また路上で喧嘩始まった','アロハの人に絡むのはやめとけって…','ポップコーン買ってくる']));}}
 
 // ---------- items, projectiles, particles ----------
 function updateMisc(dt){for(let i=items.length-1;i>=0;i--){const it=items[i];it.t-=dt;it.bob+=dt*5;const d=dist(it,P);
@@ -518,18 +665,18 @@ const SHOPS=['mart1','mart2','mart3'];
 function nearShop(){if(P.car)return null;for(const k of SHOPS)if(dist(P,POS[k])<70)return k;return null;}
 const GOODS=[['ガンボおにぎり（HP+35）',25,()=>P.hp=Math.min(P.maxHp,P.hp+35)],['ワニ肉ホットドッグ（HP+70）',60,()=>P.hp=Math.min(P.maxHp,P.hp+70)],
   ['エナドリ「ワニブル」（全回復＋HEAT満タン）',150,()=>{P.hp=P.maxHp;P.heat=100;}],['日焼け止め SPF極（最大HP+10）',400,()=>{P.maxHp+=10;P.hp=P.maxHp;}]];
-function openShop(){mode='shop';const box=$('shopitems');box.innerHTML='';const hd=t=>{const h=document.createElement('div');h.className='shead';h.textContent=t;box.appendChild(h);};
+function openShop(){mode='shop';const box=$('shopitems');box.innerHTML='';const hd=t=>{const h=document.createElement('div');h.className='shead';h.textContent=tr(t);box.appendChild(h);};
   if(Ads.ready){hd('📺 広告を見てもらえる（3分に1回）');const fr=Ads.freeReady(),wait=Math.ceil((Ads.freeAt-Date.now())/1000);
-    const adItem=(label,give)=>{const b=document.createElement('button');b.className='item';b.disabled=!fr;b.style.opacity=fr?1:.45;b.innerHTML=`<div>${label}<small>${fr?'広告を最後まで見るともらえる':`あと${Math.floor(wait/60)}分${wait%60}秒`}</small></div><span>無料</span>`;
+    const adItem=(label,give)=>{const b=document.createElement('button');b.className='item';b.disabled=!fr;b.style.opacity=fr?1:.45;b.innerHTML=`<div>${tr(label)}<small>${fr?L('広告を最後まで見るともらえる','Watch the whole ad to get it'):L(`あと${Math.floor(wait/60)}分${wait%60}秒`,`Ready in ${Math.floor(wait/60)}m ${wait%60}s`)}</small></div><span>${L('無料','FREE')}</span>`;
       b.onclick=async()=>{if(!Ads.freeReady())return;const ok=await Ads.rewarded();if(!ok){toast('広告を読み込めなかった');return;}Ads.freeAt=Date.now()+180000;give();SFX.coin();updateHUD();save();openShop();};box.appendChild(b);};
-    adItem('ランダムな武器を1つ',()=>{const id=pick(['club','club','bat','bat','board','katana','hammer']);giveWeapon(id);toast('もらった： '+WEAPONS[id].n);});
+    adItem('ランダムな武器を1つ',()=>{const id=pick(['club','club','bat','bat','board','katana','hammer']);giveWeapon(id);toast(L('もらった： ','Got: ')+tr(WEAPONS[id].n));});
     adItem('ワニマート協賛金 $300',()=>{S.money+=300;toast('$300 もらった');});}
-  hd('回復・強化');GOODS.forEach(([n,p,f])=>{const b=document.createElement('button');b.className='item';b.innerHTML=`${n}<span>$${p}</span>`;
-    b.onclick=()=>{if(S.money<p){toast('金が足りねぇ…');SFX.hurt();return;}S.money-=p;f();SFX.coin();toast('まいどあり！ '+n.split('（')[0]);updateHUD();};box.appendChild(b);});
+  hd('回復・強化');GOODS.forEach(([n,p,f])=>{const b=document.createElement('button');b.className='item';b.innerHTML=`${tr(n)}<span>$${p}</span>`;
+    b.onclick=()=>{if(S.money<p){toast('金が足りねぇ…');SFX.hurt();return;}S.money-=p;f();SFX.coin();toast(L('まいどあり！ '+n.split('（')[0],'Thanks! '+tr(n).split(' (')[0]));updateHUD();};box.appendChild(b);});
   hd('武器（攻撃が強くなる／壊れるまで使える）');
   for(const id in WEAPONS){const w=WEAPONS[id];if(w.premium)continue;const b=document.createElement('button');b.className='item';
-    b.innerHTML=`<div>${w.n}<small>攻撃×${w.mul} ／ 耐久${w.dur}回 ／ 所持${S.inv[id]||0}</small></div><span>$${w.p.toLocaleString()}</span>`;
-    b.onclick=()=>{if(S.money<w.p){toast('金が足りねぇ…');SFX.hurt();return;}S.money-=w.p;giveWeapon(id);SFX.coin();toast('装備した： '+w.n);updateHUD();save();openShop();};box.appendChild(b);}
+    b.innerHTML=`<div>${tr(w.n)}<small>${L(`攻撃×${w.mul} ／ 耐久${w.dur}回 ／ 所持${S.inv[id]||0}`,`Power ×${w.mul} / ${w.dur} uses / owned ${S.inv[id]||0}`)}</small></div><span>$${w.p.toLocaleString()}</span>`;
+    b.onclick=()=>{if(S.money<w.p){toast('金が足りねぇ…');SFX.hurt();return;}S.money-=w.p;giveWeapon(id);SFX.coin();toast(L('装備した： ','Equipped: ')+tr(w.n));updateHUD();save();openShop();};box.appendChild(b);}
   $('shop').style.display='flex';}
 // ---------- weapons ----------
 const WEAPONS={club:{n:'ゴルフクラブ',mul:1.4,rng:22,arc:1.0,dur:40,p:200,col:'#d8d8e0',len:30,w:3,heat:'・ホールインワン'},
@@ -540,9 +687,9 @@ const WEAPONS={club:{n:'ゴルフクラブ',mul:1.4,rng:22,arc:1.0,dur:40,p:200,
   fan:{n:'黄金の扇子',mul:2.8,rng:20,arc:1.6,dur:60,p:0,premium:true,col:'#ffcc33',len:24,w:13,heat:'・天下御免'}};
 function giveWeapon(id){const had=S.inv[id]||0;S.inv[id]=had+1;if(!had)S.wdur[id]=WEAPONS[id].dur;S.wpn=id;}
 function wearWeapon(){const id=S.wpn;S.wdur[id]--;if(S.wdur[id]>0)return;S.inv[id]--;spark(P.x+Math.cos(P.dir)*30,P.y+Math.sin(P.dir)*30,WEAPONS[id].col,14);
-  if(S.inv[id]>0){S.wdur[id]=WEAPONS[id].dur;toast(WEAPONS[id].n+'が壊れた！ 予備に持ち替えた');}else{toast(WEAPONS[id].n+'が壊れた！');S.wpn=null;}SFX.crash();}
+  if(S.inv[id]>0){S.wdur[id]=WEAPONS[id].dur;toast(L(WEAPONS[id].n+'が壊れた！ 予備に持ち替えた',tr(WEAPONS[id].n)+' broke! Switched to a spare'));}else{toast(L(WEAPONS[id].n+'が壊れた！',tr(WEAPONS[id].n)+' broke!'));S.wpn=null;}SFX.crash();}
 function cycleWeapon(){const own=Object.keys(WEAPONS).filter(id=>S.inv[id]>0);if(!own.length){toast('武器を持っていない（ワニマートで買える）');return;}
-  const list=[null,...own];S.wpn=list[(list.indexOf(S.wpn)+1)%list.length];SFX.ui();toast(S.wpn?'装備： '+WEAPONS[S.wpn].n:'素手');}
+  const list=[null,...own];S.wpn=list[(list.indexOf(S.wpn)+1)%list.length];SFX.ui();toast(S.wpn?L('装備： ','Equipped: ')+tr(WEAPONS[S.wpn].n):'素手');}
 $('bW').onclick=()=>{initAudio();if(mode==='play')cycleWeapon();};
 $('bShopClose').onclick=()=>{$('shop').style.display='none';mode='play';save();};
 
@@ -566,12 +713,12 @@ function drawKara(){ctx.setTransform(DPR,0,0,DPR,0,0);const g=ctx.createLinearGr
   for(const n of kara.notes){if(n.j==='P'||n.j==='G')continue;const x=hx+(n.t-kara.t)*spd;if(x<-40||x>W+40)continue;
     ctx.fillStyle=n.j==='M'?'#555':'#ff4fd8';ctx.beginPath();ctx.arc(x,hy,20,0,TAU);ctx.fill();ctx.fillStyle='#fff';ctx.font='bold 16px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('♪',x,hy+1);}
   let ly='';for(const[b,t]of KL)if(kara.t>=b*.5-.5)ly=t;
-  ctx.textAlign='center';ctx.textBaseline='middle';ctx.font=`900 ${Math.min(30,W/14)}px sans-serif`;ctx.fillStyle='#fff';ctx.shadowColor='#ff4fd8';ctx.shadowBlur=14;ctx.fillText(ly||'〜 イントロ 〜',W/2,H*.27);ctx.shadowBlur=0;
-  ctx.font='bold 15px sans-serif';ctx.fillStyle='#ffd84f';ctx.fillText('『ガルフの夜は仁義なし』 作詞作曲：アリゲーター佐藤',W/2,H*.17);
+  ctx.textAlign='center';ctx.textBaseline='middle';ctx.font=`900 ${Math.min(30,W/14)}px sans-serif`;ctx.fillStyle='#fff';ctx.shadowColor='#ff4fd8';ctx.shadowBlur=14;ctx.fillText(tr(ly||'〜 イントロ 〜'),W/2,H*.27,W*.94);ctx.shadowBlur=0;
+  ctx.font='bold 15px sans-serif';ctx.fillStyle='#ffd84f';ctx.fillText(tr('『ガルフの夜は仁義なし』 作詞作曲：アリゲーター佐藤'),W/2,H*.17,W*.94);
   if(kara.t<0){ctx.font='900 60px sans-serif';ctx.fillStyle='#fff';ctx.fillText(Math.ceil(-kara.t),W/2,H*.72);}
-  if(kara.fbT>0){ctx.font='900 30px sans-serif';ctx.fillStyle=kara.fb==='PERFECT!'?'#4fffe1':kara.fb==='GOOD'?'#ffd84f':'#ff6f6f';ctx.fillText(kara.fb,hx+20,hy-64);}
+  if(kara.fbT>0){ctx.font='900 30px sans-serif';ctx.fillStyle=kara.fb==='PERFECT!'?'#4fffe1':kara.fb==='GOOD'?'#ffd84f':'#ff6f6f';ctx.fillText(tr(kara.fb),hx+20,hy-64);}
   if(kara.combo>2){ctx.font='bold 18px sans-serif';ctx.fillStyle='#fff';ctx.fillText(kara.combo+' COMBO',hx+20,hy+60);}
-  ctx.font='bold 14px sans-serif';ctx.fillStyle='rgba(255,255,255,.8)';ctx.fillText('♪が○に重なった瞬間に画面かボタンをタップ！',W/2,H-30-(W<700?150:0));}
+  ctx.font='bold 14px sans-serif';ctx.fillStyle='rgba(255,255,255,.8)';ctx.fillText(tr('♪が○に重なった瞬間に画面かボタンをタップ！'),W/2,H-30-(W<700?150:0));}
 
 // ================= MISSIONS =================
 let mission=null,runToken=0;const waiters=[];
@@ -582,7 +729,7 @@ async function goto(pos,text,rad=70){S.target=pos;setObj(text);await wait(()=>di
 async function fight(list,title,sub){mission.fight=(mission.fight||0)+1;for(const a of list){a.m=true;a.hostile=true;a.aggro=900;}if(title)card(title,sub);
   await wait(()=>list.every(a=>a.dead));if(mission)mission.fight--;}
 function spawnAround(cx,cy,n,fn,rmin=120,rmax=220){const out=[];for(let i=0;i<n;i++){const s=findSpot(cx,cy,rmin,rmax,v=>!SOLID(v))||{x:cx+rand(-40,40),y:cy+rand(-40,40)};out.push(fn(s.x,s.y));}return out;}
-function reward(money,foll,msg){S.money+=money;addFollowers(foll);SFX.coin();card('COMPLETE',`報酬 $${money.toLocaleString()} ／ フォロワー +${fmtN(foll)}`);if(msg)post(msg,'@jade_sunshine');}
+function reward(money,foll,msg){S.money+=money;addFollowers(foll);SFX.coin();card('COMPLETE',L(`報酬 $${money.toLocaleString()} ／ フォロワー +${fmtN(foll)}`,`Reward $${money.toLocaleString()} / Followers +${fmtN(foll)}`));if(msg)post(msg,'@jade_sunshine');}
 function startMission(def){if(mission)return;mission={id:def.id,fight:0};runToken++;const tok=runToken;card(def.title,def.sub||'');setObj('');
   def.run().then(()=>{if(tok===runToken){mission=null;setObj('');S.target=null;save();Ads.happy();setTimeout(()=>{if(mode==='play'&&!mission)Ads.midgame();},2500);}}).catch(e=>{if(e!=='abort')console.error(e);});}
 function abortMission(msg){if(!mission)return;runToken++;mission=null;S.target=null;S.storm=false;setObj('');
@@ -643,13 +790,13 @@ const CHAPTERS=[
   await talk([['ドン・ハリケーン','バ、バカな……風が……止んだ……'],[J,'ボス！ 同接1億人！ 州知事と国連から感謝状が届いてる！'],[TP,'……保釈金の請求書も一緒に送っとけ。'],
    [null,'こうして紅灯町には今日も、ネオンとワニと仁義が輝く。'],[null,'―― 第一部 完 ――']]);
   reward(10000,1e6,'世界を救ったのアロハのヤクザで草');S.chapter=5;S.ended=true;save();
-  $('endtx').innerHTML=`所持金 $${S.money.toLocaleString()}<br>フォロワー ${fmtN(S.followers)}<br>倒した相手 ${S.kills}人<br><br>サブストーリー ${Object.keys(S.subs).length}/${SUBS.length} クリア`;$('ending').style.display='flex';mode='ending';}}];
+  $('endtx').innerHTML=L(`所持金 $${S.money.toLocaleString()}<br>フォロワー ${fmtN(S.followers)}<br>倒した相手 ${S.kills}人<br><br>サブストーリー ${Object.keys(S.subs).length}/${SUBS.length} クリア`,`Cash $${S.money.toLocaleString()}<br>Followers ${fmtN(S.followers)}<br>Enemies defeated ${S.kills}<br><br>Substories cleared ${Object.keys(S.subs).length}/${SUBS.length}`);$('ending').style.display='flex';mode='ending';}}];
 const SUBS=[
  {id:'s_kara',title:'サブストーリー「十八番を取り戻せ」',at:()=>POS.karaoke,run:async()=>{
   await talk([['ママ・ロザリタ','あら色男。うちの看板曲『ガルフの夜は仁義なし』、誰も歌いこなせなくて客が来ないのよ。'],[TP,'俺は歌わん。'],['ママ・ロザリタ','あんた、歌える顔してるわ。一曲だけ。ね？'],[TP,'……一曲だけだ。']]);
   const sc=await karaoke();const pct=Math.round(sc*100);
-  if(sc>=.6){await talk([['ママ・ロザリタ',`採点 ${pct}点！ ブラボー！ 今夜からあんたがうちの看板よ！`],[TP,'看板にはならん。']]);reward(600,30000,'ヤクザの演歌ラップ、鳥肌立った');S.subs.s_kara=1;}
-  else{await talk([['ママ・ロザリタ',`採点 ${pct}点……。60点取れたらギャラ出すわ。また来てね。`]]);S.markerCool=3;}}},
+  if(sc>=.6){await talk([['ママ・ロザリタ',L(`採点 ${pct}点！ ブラボー！ 今夜からあんたがうちの看板よ！`,`Score: ${pct}! Bravo! From tonight, you're our headliner!`)],[TP,'看板にはならん。']]);reward(600,30000,'ヤクザの演歌ラップ、鳥肌立った');S.subs.s_kara=1;}
+  else{await talk([['ママ・ロザリタ',L(`採点 ${pct}点……。60点取れたらギャラ出すわ。また来てね。`,`Score: ${pct}... Hit 60 and I'll pay you. Come back anytime.`)]]);S.markerCool=3;}}},
  {id:'s_flam',title:'サブストーリー「ピンクの家出」',at:()=>POS.lady,run:async()=>{
   await talk([['マーガレット(91)','あんた、強そうだねぇ。うちのペドロが沼に家出しちゃったのよ。'],[TP,'ペドロ？'],['マーガレット(91)','フラミンゴよ。ワニに食べられちゃう……お願い、連れて帰ってきて。']]);
   await goto(POS.swamp,'沼地でフラミンゴのペドロを探せ',150);
@@ -665,7 +812,7 @@ const SUBS=[
   await talk([['レフェリー・ビッグJ','ようこそフロリダマン選手権へ！ ルールは簡単、45秒以内に挑戦者6人をぶっ飛ばせ！'],[TP,'始めろ。']]);
   let left=45;const e=spawnAround(P.x,P.y,6,(x,y)=>mkThug(x,y,{temp:true,cash:30}),120,240);
   for(const a of e){a.m=true;a.hostile=true;a.aggro=900;}mission.fight++;card('FIGHT!','制限時間45秒');
-  await wait(()=>{left-=lastDt;setObj(`挑戦者を全員倒せ  残り ${Math.max(0,Math.ceil(left))}秒  (${e.filter(a=>a.dead).length}/6)`);return left<=0||e.every(a=>a.dead);});
+  await wait(()=>{left-=lastDt;setObj(L(`挑戦者を全員倒せ  残り ${Math.max(0,Math.ceil(left))}秒  (${e.filter(a=>a.dead).length}/6)`,`Defeat every challenger  ${Math.max(0,Math.ceil(left))}s left  (${e.filter(a=>a.dead).length}/6)`));return left<=0||e.every(a=>a.dead);});
   mission.fight--;
   if(e.every(a=>a.dead)){await talk([['レフェリー・ビッグJ','優勝ーーッ！ 新チャンピオン誕生だ！ ベルトはワニ革製だぜ！']]);reward(800,40000,'フロリダマン選手権 新王者誕生');S.subs.s_fight=1;}
   else{for(const a of e)a.dead=true,a.deadT=.1;await talk([['レフェリー・ビッグJ','タイムアップ！ 惜しかったな、また挑戦しに来な！']]);S.markerCool=3;}}},
@@ -674,7 +821,7 @@ const SUBS=[
   const s=findSpot(P.x,P.y,160,220,v=>!SOLID(v))||{x:P.x+150,y:P.y};
   const fu=mk('fugi',s.x,s.y,{type:'fugi',fugitive:true,r:17,hp:70,name:'オレンジくん',cash:200,temp:true});
   let left=60;card('追跡開始！','オレンジくんを殴って捕まえろ');
-  await wait(()=>{left-=lastDt;S.target=fu;setObj(`オレンジくんを捕まえろ  残り ${Math.max(0,Math.ceil(left))}秒`);return left<=0||fu.dead;});S.target=null;
+  await wait(()=>{left-=lastDt;S.target=fu;setObj(L(`オレンジくんを捕まえろ  残り ${Math.max(0,Math.ceil(left))}秒`,`Catch Orange-kun  ${Math.max(0,Math.ceil(left))}s left`));return left<=0||fu.dead;});S.target=null;
   if(fu.dead){await talk([['オレンジくん','ジュースを搾るのだけはやめてくれぇ〜！'],[TP,'搾らん。保釈金を払え。']]);reward(700,35000,'オレンジくん確保の瞬間、腹筋崩壊');S.subs.s_fugi=1;}
   else{const i=actors.indexOf(fu);if(i>=0)actors.splice(i,1);await talk([[J,'逃げられちゃった……工場の前で待ってるって噂よ。']]);S.markerCool=3;}}}];
 function markerList(){const m=[];if(!mission){const ch=CHAPTERS[S.chapter];if(ch)m.push({p:ch.at(),k:'main',def:ch});for(const s of SUBS)if(!S.subs[s.id])m.push({p:s.at(),k:'sub',def:s});}
@@ -707,7 +854,7 @@ const Ads={platform:window.AD_PLATFORM||new URLSearchParams(location.search).get
       if(this.platform==='crazygames'){this.cg().ad.requestAd(kind==='rewarded'?'rewarded':'midgame',{adStarted:()=>{},adFinished:()=>done(true),adError:()=>done(false)});}
       else if(this.platform==='poki'){(kind==='rewarded'?PokiSDK.rewardedBreak(()=>{}):PokiSDK.commercialBreak(()=>{}).then(()=>true)).then(ok=>done(!!ok)).catch(()=>done(false));}
       else if(this.platform==='gd'){this.gdReward=false;(kind==='rewarded'?gdsdk.showAd('rewarded'):gdsdk.showAd()).then(()=>done(kind==='rewarded'?this.gdReward:true)).catch(()=>done(false));}
-      else{const ov=$('adov');ov.style.display='flex';let n=kind==='rewarded'?3:2;const tick=()=>{$('adtx').textContent=`（ここに${kind==='rewarded'?'リワード':'インタースティシャル'}広告が入ります）あと ${n} 秒`;if(n--<=0){ov.style.display='none';done(true);}else setTimeout(tick,1000);};tick();}
+      else{const ov=$('adov');ov.style.display='flex';let n=kind==='rewarded'?3:2;const tick=()=>{$('adtx').textContent=L(`（ここに${kind==='rewarded'?'リワード':'インタースティシャル'}広告が入ります）あと ${n} 秒`,`(A ${kind==='rewarded'?'rewarded':'interstitial'} ad plays here) ${n}s`);if(n--<=0){ov.style.display='none';done(true);}else setTimeout(tick,1000);};tick();}
     }catch(e){done(false);}});},
   rewarded(){return this.show('rewarded');},
   midgame(){if(!this.ready||Date.now()-this.lastMid<180000)return Promise.resolve(false);this.lastMid=Date.now();return this.show('midgame');},
@@ -717,9 +864,9 @@ window.__gdEvent=e=>{if(e&&e.name==='SDK_REWARDED_WATCH_COMPLETE')Ads.gdReward=t
 // Enabled only when served by server/server.js, which injects window.GAME_API.
 const lsGet=k=>{try{return localStorage.getItem(k);}catch(e){return null;}},lsSet=(k,v)=>{try{localStorage.setItem(k,v);}catch(e){}};
 const Net={on:typeof window.GAME_API==='string',api:window.GAME_API||'',ready:false,token:null,me:null,products:[],
-  async req(m,p,body){const h={'Content-Type':'application/json'};if(this.token)h.Authorization='Bearer '+this.token;
+  async req(m,p,body){const h={'Content-Type':'application/json','X-Lang':LANG};if(this.token)h.Authorization='Bearer '+this.token;
     const r=await fetch(this.api+p,{method:m,headers:h,body:body===undefined?undefined:JSON.stringify(body)});const j=await r.json().catch(()=>({}));
-    if(!r.ok)throw new Error(j.error||('通信エラー（'+r.status+'）'));return j;},
+    if(!r.ok)throw new Error(j.error||L('通信エラー（'+r.status+'）','Connection error ('+r.status+')'));return j;},
   async init(){if(!this.on)return;try{
       this.token=lsGet('jingi_token');
       if(this.token){try{this.me=await this.req('GET','/api/me');}catch(e){this.token=null;}}
@@ -743,18 +890,18 @@ const Net={on:typeof window.GAME_API==='string',api:window.GAME_API||'',ready:fa
   async pullGrants(){if(!this.ready||this.pulling)return;this.pulling=true;try{
       const{grants}=await this.req('GET','/api/grants');if(!grants.length)return;const names=[];
       for(const g of grants){if(S.gotGrants.includes(g.id))continue;S.gotGrants.push(g.id);
-        for(const id in g.items){if(!WEAPONS[id])continue;for(let i=0;i<g.items[id];i++)giveWeapon(id);names.push(WEAPONS[id].n+'×'+g.items[id]);}}
+        for(const id in g.items){if(!WEAPONS[id])continue;for(let i=0;i<g.items[id];i++)giveWeapon(id);names.push(tr(WEAPONS[id].n)+'×'+g.items[id]);}}
       save();await this.saveNow();await this.req('POST','/api/grants/ack',{ids:grants.map(g=>g.id)});
-      if(names.length){card('購入アイテム受け取り',names.join('・'));SFX.coin();}
+      if(names.length){card('購入アイテム受け取り',names.join(L('・',', ')));SFX.coin();}
     }catch(e){console.warn(e);}finally{this.pulling=false;}}};
 async function openPrem(){if(!Net.ready)return;try{Net.me=await Net.req('GET','/api/me');}catch(e){}
   const box=$('premitems');box.innerHTML='';
-  for(const p of Net.products){const b=document.createElement('button');b.className='item';b.innerHTML=`<div>${p.name}<small>${p.desc}</small></div><span>¥${p.price.toLocaleString()}</span>`;
+  for(const p of Net.products){const b=document.createElement('button');b.className='item';b.innerHTML=`<div>${L(p.name,p.name_en||p.name)}<small>${L(p.desc,p.desc_en||p.desc)}</small></div><span>¥${p.price.toLocaleString()}</span>`;
     b.onclick=()=>buyPrem(p,b);box.appendChild(b);}
-  const me=Net.me;$('premlimit').textContent=me?`今月の購入額 ¥${me.spentThisMonth.toLocaleString()} ／ 上限 ¥${me.monthlyLimit.toLocaleString()}`+(me.paymentMode==='mock'?'（テスト決済モード：請求は発生しません）':''):'';
+  const me=Net.me;$('premlimit').textContent=me?L(`今月の購入額 ¥${me.spentThisMonth.toLocaleString()} ／ 上限 ¥${me.monthlyLimit.toLocaleString()}`,`Spent this month ¥${me.spentThisMonth.toLocaleString()} / limit ¥${me.monthlyLimit.toLocaleString()}`)+(me.paymentMode==='mock'?L('（テスト決済モード：請求は発生しません）',' (test payment mode: no charge)'):''):'';
   $('prem').style.display='flex';}
 async function buyPrem(p,b){if(!$('premConsent').checked){toast('購入前の確認にチェックしてください',3);return;}
-  b.disabled=true;try{save();await Net.saveNow();const{url}=await Net.req('POST','/api/checkout',{product:p.id,consent:true});location.href=url;}
+  b.disabled=true;try{save();await Net.saveNow();const{url}=await Net.req('POST','/api/checkout',{product:p.id,consent:true,lang:LANG});location.href=url;}
   catch(e){toast(e.message,4);b.disabled=false;}}
 $('bPrem').onclick=openPrem;$('bPrem2').onclick=openPrem;$('bPremClose').onclick=()=>$('prem').style.display='none';
 $('bXfer').onclick=()=>{$('xcode').textContent=Net.me?Net.me.transferCode:'';$('xfer').style.display='flex';};
@@ -790,7 +937,7 @@ addEventListener('keydown',e=>{if(e.repeat||(e.target&&e.target.tagName==='INPUT
   const map={j:'punch',k:'kick',l:'dodge',h:'heat',e:'act'};if(map[k])press(map[k]);if(k==='q'&&mode==='play')cycleWeapon();if(k===' '||k==='enter'){if(mode==='dialog')advance();else if(mode==='karaoke')karaTap();else press('punch');}
   if(k==='escape'||k==='p')togglePause();});
 addEventListener('keyup',e=>{keys[e.key.toLowerCase()]=false;});
-document.addEventListener('touchmove',e=>{if(!(e.target.closest&&e.target.closest('.panel')))e.preventDefault();},{passive:false});
+document.addEventListener('touchmove',e=>{if(!(e.target.closest&&e.target.closest('.panel,#title')))e.preventDefault();},{passive:false});
 document.addEventListener('gesturestart',e=>e.preventDefault());
 function readStick(){if(joy.id!==null){const dx=joy.x-joy.bx,dy=joy.y-joy.by;input.jx=clamp(dx/55,-1,1);input.jy=clamp(dy/55,-1,1);return;}
   let x=0,y=0;if(keys.a||keys.arrowleft)x--;if(keys.d||keys.arrowright)x++;if(keys.w||keys.arrowup)y--;if(keys.s||keys.arrowdown)y++;const m=Math.hypot(x,y)||1;input.jx=x/m;input.jy=y/m;}
@@ -816,6 +963,12 @@ $('bNew').onclick=()=>{const old=load();try{localStorage.removeItem('jingi_save'
   beginGame(false);};
 $('bCont').onclick=()=>beginGame(true);
 if(load())$('bCont').style.display='block';
+function applyLang(){document.documentElement.lang=LANG;
+  document.querySelectorAll('[data-i18n]').forEach(el=>{if(el.dataset.ja===undefined)el.dataset.ja=el.innerHTML;const k=el.dataset.i18n;el.innerHTML=LANG==='en'&&EN_HTML[k]!==undefined?EN_HTML[k]:el.dataset.ja;});
+  ['bLang','bLang2'].forEach(id=>$(id).textContent=LANG==='en'?'🌐 日本語':'🌐 English');$('bW').textContent=L('武','⚔');hudCache={};}
+function setLang(l){LANG=l;try{localStorage.setItem('jingi_lang',l);}catch(e){}applyLang();SFX.ui();}
+$('bLang').onclick=$('bLang2').onclick=()=>setLang(LANG==='en'?'ja':'en');
+applyLang();
 Ads.init();Net.init();
 
 // ================= RENDER =================
@@ -849,12 +1002,12 @@ function drawBuildings(vb,night){ctx.textAlign='center';ctx.textBaseline='middle
     ctx.fillStyle=b.wall;ctx.fillRect(bx,by+bh-wh,bw,wh);
     const nw=Math.floor(bw/22);for(let i=0;i<nw;i++){const lit=night>.2&&((b.lit+i*7)%5<3);ctx.fillStyle=lit?'#ffe9a0':'rgba(150,200,230,.35)';ctx.fillRect(bx+6+i*22,by+bh-wh+30,12,10);}
     ctx.fillStyle='#0d0b12';ctx.fillRect(bx+bw/2-10,by+bh-16,20,16);
-    if(b.sign){ctx.font='bold 13px sans-serif';const tw=Math.min(bw-8,ctx.measureText(b.sign).width+14);ctx.fillStyle='#0b0812';rr(bx+bw/2-tw/2,by+bh-wh+5,tw,22,5);ctx.fill();
-      ctx.strokeStyle=b.sc;ctx.lineWidth=1.5;ctx.stroke();ctx.fillStyle=b.sc;ctx.fillText(b.sign,bx+bw/2,by+bh-wh+16.5,tw-6);}}}
+    if(b.sign){const sg=tr(b.sign);ctx.font='bold 13px sans-serif';const tw=Math.min(bw-8,ctx.measureText(sg).width+14);ctx.fillStyle='#0b0812';rr(bx+bw/2-tw/2,by+bh-wh+5,tw,22,5);ctx.fill();
+      ctx.strokeStyle=b.sc;ctx.lineWidth=1.5;ctx.stroke();ctx.fillStyle=b.sc;ctx.fillText(sg,bx+bw/2,by+bh-wh+16.5,tw-6);}}}
 function drawNeon(vb,night){ctx.save();ctx.globalCompositeOperation='lighter';ctx.textAlign='center';ctx.textBaseline='middle';ctx.font='bold 13px sans-serif';
   for(const b of vb){if(!b.sign)continue;const bx=b.x*T+b.w*T/2,by=b.y*T+b.h*T-T*1.15+16.5;
     const g=ctx.createRadialGradient(bx,by+40,4,bx,by+40,90);g.addColorStop(0,b.sc+'55');g.addColorStop(1,b.sc+'00');ctx.fillStyle=g;ctx.fillRect(bx-90,by-50,180,180);
-    if(Math.sin(S.time*7+b.lit)>-.95){ctx.shadowColor=b.sc;ctx.shadowBlur=14;ctx.fillStyle=b.sc;ctx.fillText(b.sign,bx,by,b.w*T-14);}}
+    if(Math.sin(S.time*7+b.lit)>-.95){ctx.shadowColor=b.sc;ctx.shadowBlur=14;ctx.fillStyle=b.sc;ctx.fillText(tr(b.sign),bx,by,b.w*T-14);}}
   ctx.restore();}
 function drawHuman(a,isP){const r=a.r;ctx.save();ctx.translate(a.x,a.y);ctx.fillStyle='rgba(0,0,0,.28)';ell(2,r*.55,r*1.05,r*.5);
   if(a.dead||a.downT>0){ctx.globalAlpha=a.dead?clamp(a.deadT,0,1):1;ctx.rotate(a.dir+Math.PI);ctx.fillStyle=a.col;ell(0,0,r*1.2,r*.62);ctx.fillStyle=a.skin;circ(r*1.15,0,r*.5);ctx.fillStyle=a.hair;circ(r*1.3,0,r*.4);ctx.restore();return;}
@@ -935,7 +1088,7 @@ function drawWorld(){const t=S.time;const z=ZOOM*(P.car?.78:1)*(cine?1+Math.min(
       if(a.spin){ctx.strokeStyle='rgba(255,40,40,.6)';ctx.lineWidth=3;ctx.beginPath();ctx.arc(a.x,a.y,a.r+P.r+70,0,TAU);ctx.stroke();}
       if(a.charge){ctx.strokeStyle='rgba(255,40,40,.5)';ctx.lineWidth=a.r*2;ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(a.x+Math.cos(a.dir)*300,a.y+Math.sin(a.dir)*300);ctx.stroke();}}
     if((a.hostile||a.m)&&!a.boss&&a.hp<a.maxHp){ctx.fillStyle='rgba(0,0,0,.6)';ctx.fillRect(a.x-16,a.y-a.r-12,32,5);ctx.fillStyle='#ff4f4f';ctx.fillRect(a.x-16,a.y-a.r-12,32*clamp(a.hp/a.maxHp,0,1),5);}
-    if(a.npc&&a.name){ctx.font='bold 11px sans-serif';ctx.fillStyle='#fff';ctx.strokeStyle='#000';ctx.lineWidth=3;ctx.strokeText(a.name,a.x,a.y-a.r-14);ctx.fillText(a.name,a.x,a.y-a.r-14);}}
+    if(a.npc&&a.name){ctx.font='bold 11px sans-serif';ctx.fillStyle='#fff';ctx.strokeStyle='#000';ctx.lineWidth=3;ctx.strokeText(tr(a.name),a.x,a.y-a.r-14);ctx.fillText(tr(a.name),a.x,a.y-a.r-14);}}
   for(const p of projs){ctx.fillStyle='#ffff6a';ctx.shadowColor='#ffff00';ctx.shadowBlur=8;circ(p.x,p.y,4);ctx.shadowBlur=0;}
   for(const p of palms)if(p.x>vx0-40&&p.x<vx1+40&&p.y>vy0-40&&p.y<vy1+40)drawPalm(p);
   for(const p of parts){ctx.globalAlpha=clamp(p.life/p.max,0,1);if(p.txt!==undefined){ctx.font=`900 ${p.s}px sans-serif`;ctx.lineWidth=4;ctx.strokeStyle='#000';ctx.strokeText(p.txt,p.x,p.y);ctx.fillStyle=p.col;ctx.fillText(p.txt,p.x,p.y);}
@@ -978,7 +1131,7 @@ function drawOverlay(zz){ctx.setTransform(DPR,0,0,DPR,0,0);
   // heat cinematic
   if(cine){const b=Math.min(1,cine.t*4)*H*.12;ctx.fillStyle='#000';ctx.fillRect(0,0,W,b);ctx.fillRect(0,H-b,W,b);
     ctx.save();ctx.translate(W/2,H*.28);const s=cine.t<.2?2-cine.t*5:1;ctx.scale(s,s);ctx.rotate(-.06);ctx.font=`900 ${Math.min(44,W/11)}px sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';
-    ctx.lineWidth=8;ctx.strokeStyle='#000';ctx.strokeText(cine.nm,0,0);ctx.fillStyle='#4fffe1';ctx.shadowColor='#4fffe1';ctx.shadowBlur=20;ctx.fillText(cine.nm,0,0);ctx.restore();}
+    ctx.lineWidth=8;ctx.strokeStyle='#000';ctx.strokeText(cine.nm,0,0,W*.9);ctx.fillStyle='#4fffe1';ctx.shadowColor='#4fffe1';ctx.shadowBlur=20;ctx.fillText(cine.nm,0,0,W*.9);ctx.restore();}
   // clock
   const d=(S.time%DAY)/DAY;const hh=Math.floor(d*24),mi=Math.floor((d*24%1)*60);ctx.font='bold 11px sans-serif';ctx.textAlign='center';ctx.fillStyle='#fff';ctx.strokeStyle='#000';ctx.lineWidth=3;
   const ct=(S.storm?'☈ ':'')+String(hh).padStart(2,'0')+':'+String(mi).padStart(2,'0');ctx.strokeText(ct,mx+ms/2,my+ms+14);ctx.fillText(ct,mx+ms/2,my+ms+14);}

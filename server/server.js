@@ -154,7 +154,7 @@ function send(res, status, body, type = 'application/json; charset=utf-8') {
   res.writeHead(status, { 'Content-Type': type, 'Cache-Control': 'no-store', ...SEC_HEADERS });
   res.end(typeof body === 'string' ? body : JSON.stringify(body));
 }
-const err = (status, message) => Object.assign(new Error(message), { status });
+const err = (status, message, en) => Object.assign(new Error(message), { status, en });
 const hits = new Map();
 function rateLimit(key, max, windowMs) {
   const t = now(); const h = hits.get(key);
@@ -174,7 +174,7 @@ async function json(req) {
   if (!raw) return {};
   try { return JSON.parse(raw); } catch { throw err(400, 'JSONが不正です'); }
 }
-const publicProduct = p => ({ id: p.id, name: p.name, desc: p.desc, price: p.price, items: p.items });
+const publicProduct = p => ({ id: p.id, name: p.name, desc: p.desc, name_en: p.name_en, desc_en: p.desc_en, price: p.price, items: p.items });
 
 // ---------- static ----------
 function gameHtml() {
@@ -247,13 +247,13 @@ async function handle(req, res) {
     const prod = PRODUCTS.find(x => x.id === b.product);
     if (!prod) throw err(400, '商品が見つかりません');
     if (b.consent !== true) throw err(400, '購入前の確認にチェックしてください');
-    if (spentThisMonth(u.id) + prod.price > CFG.monthlyLimit) throw err(403, `今月の購入上限（¥${CFG.monthlyLimit.toLocaleString()}）を超えるため購入できません`);
+    if (spentThisMonth(u.id) + prod.price > CFG.monthlyLimit) throw err(403, `今月の購入上限（¥${CFG.monthlyLimit.toLocaleString()}）を超えるため購入できません`, `This purchase would go over the monthly limit (¥${CFG.monthlyLimit.toLocaleString()})`);
     const orderId = 'o_' + rid(12);
     q.insOrder.run(orderId, u.id, prod.id, prod.price, 'pending', now());
     if (CFG.mode === 'mock') return send(res, 200, { url: `/mock-checkout?order=${orderId}` });
     const s = await stripe('POST', '/checkout/sessions', {
-      mode: 'payment', locale: 'ja', client_reference_id: u.id,
-      line_items: { 0: { quantity: 1, price_data: { currency: 'jpy', unit_amount: prod.price, product_data: { name: prod.name, description: prod.desc } } } },
+      mode: 'payment', locale: b.lang === 'en' ? 'en' : 'ja', client_reference_id: u.id,
+      line_items: { 0: { quantity: 1, price_data: { currency: 'jpy', unit_amount: prod.price, product_data: b.lang === 'en' ? { name: prod.name_en || prod.name, description: prod.desc_en || prod.desc } : { name: prod.name, description: prod.desc } } } },
       metadata: { order_id: orderId, user_id: u.id, product: prod.id },
       success_url: `${CFG.publicUrl}/?purchase=success&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${CFG.publicUrl}/?purchase=cancel`,
@@ -308,7 +308,8 @@ async function handle(req, res) {
 const server = http.createServer((req, res) => {
   handle(req, res).catch(e => {
     if (!e.status) console.error(e);
-    if (!res.headersSent) send(res, e.status || 500, { error: e.status ? e.message : 'サーバーエラーが発生しました' });
+    const en = req.headers['x-lang'] === 'en';
+    if (!res.headersSent) send(res, e.status || 500, { error: e.status ? (en && e.en ? e.en : e.message) : 'サーバーエラーが発生しました' });
   });
 });
 if (require.main === module) {
