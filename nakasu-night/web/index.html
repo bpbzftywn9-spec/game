@@ -6,7 +6,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&display=swap" rel="stylesheet">
 <style>
-/* VOICE: 博多の夜を走る極道アクション。荒っぽく、でも人情がある。
+/* VOICE: 博多の夜の治安を裏から守るアクション。荒っぽく、でも人情がある。
    IDEA: 那珂川に映る中洲のネオン看板そのものがUIになる。
    PICTURE: Three.jsで描く天神・中洲の夜景（川・橋・屋台・ネオン）。
    COLOUR and TYPE: 夜の藍 #07081a、ネオン桃 #ff3d8b、提灯の橙 #ffb238、川の水色 #3de0ff／Dela Gothic One。
@@ -27,7 +27,7 @@ button{font-family:inherit;touch-action:none;cursor:pointer}
 #htw.full>div{background:linear-gradient(90deg,#fff,#3de0ff,#fff);animation:pulse .45s infinite alternate}
 @keyframes pulse{from{opacity:.55}to{opacity:1}}
 #stats{display:flex;gap:10px;font-weight:900;font-size:15px;text-shadow:0 2px 0 #000,0 0 6px #000}
-#money{color:#8dff7a}#spd{color:#ffe08a;display:none}
+#money{color:#8dff7a}#clock{color:#cfd6ff}#clock.night{color:#d49bff}#spd{color:#ffe08a;display:none}
 #obj{margin-top:8px;background:linear-gradient(90deg,rgba(0,0,0,.82),rgba(0,0,0,.5));border-left:5px solid #ffd84a;padding:7px 10px 8px;border-radius:0 10px 10px 0;display:none;box-shadow:0 2px 10px rgba(0,0,0,.45)}
 #obj .ot{font-size:11px;font-weight:900;color:#ffd84a;letter-spacing:.06em;line-height:1.3}
 #obj .ox{font-size:15px;font-weight:800;line-height:1.4;margin-top:2px;text-shadow:0 1px 2px #000}
@@ -136,7 +136,7 @@ body.ttl #hud,body.ttl #mapw,body.ttl #topbtns,body.ttl #btns,body.ttl #feed{dis
   <div id="pname" class="dg">黒田 鉄二</div>
   <div class="bar" id="hpw"><div id="hpb"></div></div>
   <div class="bar" id="htw"><div id="htb"></div></div>
-  <div id="stats"><span id="money">¥0</span><span id="spd">0 km/h</span></div>
+  <div id="stats"><span id="money">¥0</span><span id="clock">20:00</span><span id="spd">0 km/h</span></div>
   <div id="obj"><div class="ot" id="objt"></div><div class="ox" id="objx"></div><div class="od" id="objd"></div></div>
 </div>
 <div id="mapw"><canvas id="map" width="248" height="248"></canvas><div id="arealb"></div><div id="wanted"><span id="wlb">手配度</span><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div></div>
@@ -160,7 +160,7 @@ body.ttl #hud,body.ttl #mapw,body.ttl #topbtns,body.ttl #btns,body.ttl #feed{dis
 <div class="ov" id="title">
   <h1 class="dg">仁義<br><em>中洲</em>ナイト</h1>
   <div class="en">JINGI NAKASU NIGHT</div>
-  <p>五年の刑期を終え、黒田鉄二は博多に帰ってきた。<br>天神のビル風、那珂川に揺れる中洲のネオン。<br>だが街は、半グレ集団〈玄海連合〉に食い荒らされようとしていた――。</p>
+  <p>五年ぶりに博多へ帰ってきた男、黒田鉄二。<br>天神のビル風、那珂川に揺れる中洲のネオン。<br>だが夜の街は、ギャング〈玄海連合〉と、SNSで集められた匿名・流動型犯罪グループ〈トクリュウ〉に脅かされていた。<br>表では裁けない悪を、裏で成敗し、街をきれいにする――。</p>
   <button class="mbtn pri" id="bNew" disabled>はじめから</button>
   <button class="mbtn" id="bCont" style="display:none">つづきから</button>
   <button class="mbtn" id="bXfer2" style="display:none;font-size:14px;padding:9px">機種変更（引き継ぎ）</button>
@@ -189,7 +189,7 @@ body.ttl #hud,body.ttl #mapw,body.ttl #topbtns,body.ttl #btns,body.ttl #feed{dis
   <div class="pnote plinks" id="pclegal"><a data-legal="tokushoho" target="_blank" rel="noopener">特定商取引法に基づく表記</a>　<a data-legal="terms" target="_blank" rel="noopener">利用規約</a>　<a data-legal="privacy" target="_blank" rel="noopener">プライバシー</a></div>
   <button class="mbtn pri" id="bPcBuy">購入する</button><button class="mbtn" id="bPcNo">やめる</button></div></div>
 <div class="ov" id="pause"><div class="panel" style="text-align:center"><h3 class="dg" style="color:var(--pink)">ポーズ</h3>
-  <p style="font-size:13px;line-height:1.75;text-align:left">黄色の<b style="color:#ffd84a">◆</b>とミニマップの<b style="color:#ffd84a">黄色い線</b>＝次の目的地<br>黄色の<b style="color:#ffd84a">！</b>＝メインストーリー<br>水色の<b style="color:#3de0ff">？</b>＝サブストーリー<br>緑の<b style="color:#8dff7a">¥</b>＝屋台・コンビニ・飲み屋（回復）<br>攻撃を当ててゲージ満タンで<b style="color:#3de0ff">極</b>＝ヒートアクション。川・屋台・車・壁の近くで技が変わる。<br>市民や警官を殴る・車を奪うと<b style="color:#ffd84a">手配度</b>が上がる。警察の視界から消えれば下がる。</p>
+  <p style="font-size:13px;line-height:1.75;text-align:left">黄色の<b style="color:#ffd84a">◆</b>とミニマップの<b style="color:#ffd84a">黄色い線</b>＝次の目的地<br>黄色の<b style="color:#ffd84a">！</b>＝メインストーリー<br>水色の<b style="color:#3de0ff">？</b>＝サブストーリー<br>緑の<b style="color:#8dff7a">¥</b>＝屋台・コンビニ・飲み屋（回復）<br>ミニマップの<b style="color:#c06bff">紫の点</b>＝売人（22時〜4時に街灯の下に現れる。倒すと商店会から報奨金）<br>攻撃を当ててゲージ満タンで<b style="color:#3de0ff">極</b>＝ヒートアクション。川・屋台・車・壁の近くで技が変わる。<br>市民や警官を殴る・車を奪うと<b style="color:#ffd84a">手配度</b>が上がる。警察の視界から消えれば下がる。</p>
   <p id="pobj" style="font-size:14px;line-height:1.6;text-align:left;background:rgba(255,216,74,.12);border-left:4px solid #ffd84a;padding:8px 10px;border-radius:0 8px 8px 0"></p><button class="mbtn pri" id="bResume">再開</button><button class="mbtn" id="bSave">セーブ</button><button class="mbtn" id="bPrem" style="border-color:#ffd84a;color:#ffe9a0">💎 プレミアムショップ</button><button class="mbtn" id="bMyCar" style="display:none">🚗 マイカーを呼ぶ</button><button class="mbtn" id="bQ">画質</button><button class="mbtn" id="bSpon">協力店舗：BAR YAHMAN</button><button class="mbtn" id="bTitle">タイトルへ</button></div></div>
 <div class="ov" id="ending"><h2 class="dg">第一部 完</h2><p id="endtx"></p><button class="mbtn pri" id="bEndOk">自由行動を続ける</button><button class="mbtn" id="bSpon2">協力店舗：BAR YAHMAN</button></div>
 <div class="ov" id="spon" style="background:rgba(0,0,0,.7);z-index:36"><div class="panel" style="text-align:left">
@@ -459,7 +459,7 @@ function streetFurniture(){
   for(const [x,z,ry] of [[-121.5,-86,Math.PI/2],[-98.5,-114,-Math.PI/2],[-121.5,104,Math.PI/2],[-180,-86,Math.PI/2]]){if(inBld(x,z,1))continue;const g=boxGeo(2.4,2.6,4.4,0,1.3,0,ry);g.translate(x,0,z);addGeo('glass',g);BLD.push({x0:x-1.3,x1:x+1.3,z0:z-2.3,z1:z+2.3,h:2.6});addSign('地下鉄 天神','#3d8bff',false,x+Math.sin(ry)*1.25,2.2,z+Math.cos(ry)*1.25,ry,2.2,.6);}
 }
 // ================= BUILD WORLD =================
-const LSRC=[];const SIGNGEO={},REFL={};const addSign=(text,col,vert,x,y,z,ry,w,h)=>{const s=signTex(text,col,vert);if(y<12&&Math.random()<.5)LSRC.push({x:x+Math.sin(ry)*1.5,y,z:z+Math.cos(ry)*1.5,c:parseInt(col.slice(1),16),i:1.6});const g=new THREE.PlaneGeometry(w,h);g.rotateY(ry);g.translate(x,y,z);(SIGNGEO[s.key]||(SIGNGEO[s.key]={s,g:[]})).g.push(g);
+const LSRC=[],LAMPS=[];const SIGNGEO={},REFL={};const addSign=(text,col,vert,x,y,z,ry,w,h)=>{const s=signTex(text,col,vert);if(y<12&&Math.random()<.5)LSRC.push({x:x+Math.sin(ry)*1.5,y,z:z+Math.cos(ry)*1.5,c:parseInt(col.slice(1),16),i:1.6});const g=new THREE.PlaneGeometry(w,h);g.rotateY(ry);g.translate(x,y,z);(SIGNGEO[s.key]||(SIGNGEO[s.key]={s,g:[]})).g.push(g);
   if(y<14){const nx=Math.sin(ry),nz=Math.cos(ry);const flat=Math.abs(x-Math.round(x))>.01||Math.abs(z-Math.round(z))>.01;const cx=x+nx*(vert?0:3),cz=z+nz*(vert?0:3);if(!isWater(cx,cz)){const rg=new THREE.PlaneGeometry(Math.max(1,Math.min(w,5))*.8,vert?6:5.5);rg.rotateX(-Math.PI/2);rg.rotateY(ry+(vert?Math.PI/2:0));rg.translate(cx,.07,cz);(REFL[col]||(REFL[col]=[])).push(rg);}}};
 let BMATS=[];
 function bldGeo(w,h,d){const g=new THREE.BoxGeometry(w,h,d);const uv=g.attributes.uv;const S=[[d,h],[d,h],[w,d],[w,d],[w,h],[w,h]];
@@ -518,7 +518,7 @@ function buildWorld(){
     for(let x=b.x0+3;x<b.x1;x+=6){addGeo('pole',boxGeo(.18,4.2,.18,x,2.1,b.z-b.w/2));addGeo(b.ped?'bulbB':'bulb',boxGeo(.5,.35,.5,x,4.3,b.z-b.w/2));addGeo('pole',boxGeo(.18,4.2,.18,x,2.1,b.z+b.w/2));addGeo(b.ped?'bulbB':'bulb',boxGeo(.5,.35,.5,x,4.3,b.z+b.w/2));}}
   // street lamps
   for(const r of ROADS){const horiz=r.x1-r.x0>r.z1-r.z0;for(let s=(horiz?r.x0:r.z0)+6;s<(horiz?r.x1:r.z1);s+=26){for(const side of [-1,1]){const x=horiz?s:(side<0?r.x0-1:r.x1+1),z=horiz?(side<0?r.z0-1:r.z1+1):s;if(isWater(x,z))continue;
-    addGeo('pole',boxGeo(.2,6,.2,x,3,z));addGeo('bulb',boxGeo(.7,.3,.7,x,6,z));LSRC.push({x,y:5.6,z,c:0xffc890,i:1.5});const pg=new THREE.PlaneGeometry(11,11);pg.rotateX(-Math.PI/2);pg.translate(x,.065,z);addGeo('pool',pg);}}}
+    addGeo('pole',boxGeo(.2,6,.2,x,3,z));addGeo('bulb',boxGeo(.7,.3,.7,x,6,z));LSRC.push({x,y:5.6,z,c:0xffc890,i:1.5});LAMPS.push({x,z});const pg=new THREE.PlaneGeometry(11,11);pg.rotateX(-Math.PI/2);pg.translate(x,.065,z);addGeo('pool',pg);}}}
   // custom buildings: snack, bar, shops, hospital
   const sn=addBld(40,54,-31,-13,14,1);addSign('スナック月光','#ff3d8b',true,39.9,7,-17,-Math.PI/2,1.6,8);addSign('月光','#ffe14d',false,39.93,3.2,-22,-Math.PI/2,4,1.2);
   box(.1,2.3,1.4,bas(0x552233),39.95,1.15,-22);
@@ -662,6 +662,7 @@ const LOOK={
   student:()=>({shirt:pick([0x3a6aaa,0x8a8a8a,0xc84a4a,0x2a2a2a]),pants:pick([0x2a3a5a,0xd8c8a8,0x111111]),hair:pick([0x111111,0x5a3a20]),skin:pick(SKIN),shoes:0xeeeeee}),
   oldman:()=>({shirt:pick([0x8a7a5a,0x5a6a5a,0x7a5a4a]),pants:0x4a4a40,hair:0xcccccc,skin:pick(SKIN),scale:.94}),
   mama:()=>({shirt:0x6a1a6a,pants:0x6a1a6a,skirt:0x6a1a6a,hair:0x1a0a0a,skin:0xf0d0b8,long:1}),
+  dealer:()=>({shirt:0x18181c,pants:0x202228,cap:0x111114,hair:0x111111,skin:pick(SKIN),shoes:0xf0f0f0}),
   gen:()=>({shirt:0xf4f4f4,pants:0x2a2a2a,hair:0xaaaaaa,skin:0xd8a070,cap:0xf4f4f4}),
   taiki:()=>({shirt:0x46464a,pants:0x18181c,hair:0x4a3220,skin:0xe8b898,shoes:0xf0f0f0,pomp:1}),
   onyo:()=>({shirt:0xeef0e0,pants:0xeef0e0,cap:0x141414,hair:0x111111,skin:0xf0c8a8,shoes:0xf4f4f4,scale:1.05}),
@@ -669,16 +670,78 @@ const LOOK={
 // ---- rigged human models (GLB + retargeted mocap clips) ----
 const RIG={ok:false,man:null,woman:null,clips:{},tex:{}};
 const pk=a=>a[Math.floor(Math.random()*a.length)];
-function rigLook(lk){const fem=lk==='ol'||lk==='hostess'||lk==='mama';
+// ---- 顔のバリエーション：男性12種・女性6種（通行人などにランダム）＋主人公専用の顔
+// 女性はモデルが1種類しかないため、肌の色と小物（サングラス＋ヘッドホン／丸眼鏡）で6通りにしている ----
+// skin=肌の色(額の色) hair=髪型 hc=髪色 brow=[太さ,色,角度] beard=ひげ wr=しわ scar=傷 gl=1眼鏡 smile=笑顔 hs=頭の形 b=[体の幅,身長] age=y若/m中/o年配
+const FACES_M=[
+  {id:'m1',skin:[222,178,152],hair:'side',hc:0x141010,brow:[5,0x2a1a10,0],smile:.1,age:'m'},
+  {id:'m2',skin:[226,190,170],hair:'short',hc:0x3a2414,brow:[3,0x3a2414,0],gl:1,smile:.2,hs:[.97,1.03,1],age:'y'},
+  {id:'m3',skin:[180,128,98],hair:'perm',hc:0x0c0a08,brow:[9,0x140c08,.12],beard:'mus',wr:1,hs:[1.07,.98,1.03],b:[1.08,.98],age:'o'},
+  {id:'m4',skin:[218,176,152],hair:'slick',hc:0x9a9a9a,brow:[5,0x7a7a7a,0],beard:'mus',wr:2,age:'o'},
+  {id:'m5',skin:[226,188,166],hair:'spiky',hc:0xd8b060,brow:[3,0x8a6a3a,0],smile:.35,hs:[.96,1.02,.98],b:[.96,1.02],age:'y'},
+  {id:'m6',skin:[196,148,116],hair:'buzz',hc:0x141010,brow:[9,0x140c08,.18],beard:'stubble',scar:1,hs:[.98,1.05,1],b:[1.06,1.02],age:'m'},
+  {id:'m7',skin:[184,132,100],hair:'bald',hc:0x141010,brow:[8,0x1a120c,.08],beard:'goatee',hs:[1.03,1,1.02],age:'m'},
+  {id:'m8',skin:[222,180,156],hair:'long',hc:0x4a2c18,brow:[4,0x3a2414,0],beard:'stubble',age:'y'},
+  {id:'m9',skin:[200,152,120],hair:'short',hc:0x0c0a08,brow:[7,0x140c08,.05],beard:'full',b:[1.1,1],age:'m'},
+  {id:'m10',skin:[228,192,172],hair:'short',hc:0x1a1410,brow:[4,0x2a1a10,-.05],smile:.45,mole:1,blush:1,hs:[1.1,.95,1.04],b:[1.12,.97],age:'m'},
+  {id:'m11',skin:[226,186,162],hair:'twoblock',hc:0x2a1c14,brow:[3,0x2a1a10,.05],smile:.15,hs:[.97,1.02,.99],age:'y'},
+  {id:'m12',skin:[170,120,92],hair:'short',hc:0xe8e8e8,brow:[6,0xd0d0d0,0],beard:'mus',wr:2,b:[.96,.96],age:'o'}];
+const FACE_PLAYER={id:'hero',skin:[196,146,112],hair:'pomp',hc:0x0c0a08,brow:[9,0x0c0806,.15],beard:'stubble',scar:2,hs:[1.03,1.01,1.02]};
+const FACE_GEN={id:'gen',skin:[204,156,124],hair:'bald',hc:0xaaaaaa,brow:[6,0xb0b0b0,0],wr:2,smile:.3,age:'o'};
+const FACES_F=[{id:'f1',fskin:0},{id:'f2',fskin:[226,182,150],plain:1},{id:'f3',fskin:[240,206,182]},{id:'f4',fskin:[200,150,112],plain:1},{id:'f5',fskin:[240,206,182],plain:1},{id:'f6',fskin:[150,104,76],plain:1}];
+const FACE_MAMA={id:'mama',plain:1,fskin:[230,190,160]};
+function faceFor(lk,fem){if(fem)return lk==='mama'?FACE_MAMA:pk(FACES_F);
+  if(lk==='player')return FACE_PLAYER;if(lk==='gen')return FACE_GEN;if(lk==='taiki'||lk==='onyo')return null;// 実在の二人の見た目は変えない
+  const pool=lk==='oldman'?FACES_M.filter(f=>f.age==='o'):lk==='student'?FACES_M.filter(f=>f.age==='y'):FACES_M.filter(f=>f.age!=='o'||Math.random()<.3);return pk(pool);}
+// 顔のテクスチャ（頭のUV：眉 y≈141、目 y≈158、鼻 y≈212、口 y≈246、あご y≈290、左右の中心 x=256）
+function faceTex(F){const key='face'+F.id;if(RIG.tex[key])return RIG.tex[key];const c=document.createElement('canvas');c.width=c.height=512;const g=c.getContext('2d');g.drawImage(RIG.img.head,0,0,512,512);
+  const d=g.getImageData(0,0,512,512),a=d.data,k=[F.skin[0]/192,F.skin[1]/152,F.skin[2]/144];for(let i=0;i<a.length;i+=4){a[i]=Math.min(255,a[i]*k[0]);a[i+1]=Math.min(255,a[i+1]*k[1]);a[i+2]=Math.min(255,a[i+2]*k[2]);}g.putImageData(d,0,0);
+  const skin=`rgb(${F.skin.join(',')})`,hx=h=>'#'+h.toString(16).padStart(6,'0'),sh=(r)=>`rgba(${Math.round(F.skin[0]*r)},${Math.round(F.skin[1]*r)},${Math.round(F.skin[2]*r)},`;
+  const mir=fn=>{fn(1);g.save();g.translate(512,0);g.scale(-1,1);fn(-1);g.restore();};
+  // 元の眉を消して描き直す
+  mir(()=>{for(const [rx,ry,al] of [[40,16,.6],[34,12,1]]){g.globalAlpha=al;g.fillStyle=skin;g.beginPath();g.ellipse(207,142,rx,ry,0,0,TAU);g.fill();}g.globalAlpha=1;});
+  const [bw,bc,ang]=F.brow;mir(()=>{g.strokeStyle=hx(bc);g.lineCap='round';g.lineWidth=bw;g.beginPath();g.moveTo(178,146-ang*10);g.quadraticCurveTo(205,134-bw*.3,236,140+ang*40);g.stroke();
+    if(bw>=7){g.globalAlpha=.35;g.lineWidth=bw+4;g.stroke();g.globalAlpha=1;}});
+  const dots=(cx,cy,rx,ry,n,col,alpha,skip)=>{g.fillStyle=col;for(let i=0;i<n;i++){const t=Math.random()*TAU,r=Math.sqrt(Math.random());const x=cx+Math.cos(t)*rx*r,y=cy+Math.sin(t)*ry*r;if(skip&&skip(x,y))continue;g.globalAlpha=alpha*rand(.5,1);g.fillRect(x,y,1.6,1.6);}g.globalAlpha=1;};
+  const lips=(x,y)=>Math.hypot((x-256)/40,(y-246)/13)<1;const hc=hx(F.hc);
+  if(F.beard==='stubble'||F.beard==='full'){dots(256,262,86,58,F.beard==='full'?5200:2600,hc,F.beard==='full'?.55:.32,(x,y)=>lips(x,y)||y<224);}
+  if(F.beard==='mus'||F.beard==='full'){g.fillStyle=hc;g.beginPath();g.moveTo(220,240);g.quadraticCurveTo(256,222,292,240);g.quadraticCurveTo(256,232,220,240);g.fill();g.globalAlpha=.6;g.lineWidth=5;g.strokeStyle=hc;g.stroke();g.globalAlpha=1;}
+  if(F.beard==='goatee'){g.fillStyle=hc;g.globalAlpha=.85;g.beginPath();g.ellipse(256,284,22,18,0,0,TAU);g.fill();g.beginPath();g.moveTo(226,240);g.quadraticCurveTo(256,226,286,240);g.lineTo(282,244);g.quadraticCurveTo(256,234,230,244);g.fill();g.globalAlpha=1;dots(256,270,30,14,500,hc,.5);}
+  if(F.wr){g.strokeStyle=sh(.72)+(F.wr>1?.6:.4)+')';g.lineWidth=2;for(let i=0;i<F.wr+1;i++){g.beginPath();g.moveTo(204,104+i*11);g.quadraticCurveTo(256,98+i*11,308,104+i*11);g.stroke();}
+    mir(()=>{g.beginPath();g.moveTo(236,222);g.quadraticCurveTo(222,236,224,258);g.stroke();if(F.wr>1){g.beginPath();g.moveTo(172,156);g.lineTo(162,150);g.moveTo(172,162);g.lineTo(161,163);g.stroke();}});}
+  if(F.scar){g.strokeStyle='rgba(150,80,80,.7)';g.lineWidth=3;g.beginPath();if(F.scar===2){g.moveTo(296,126);g.lineTo(312,162);}else{g.moveTo(300,178);g.lineTo(320,214);}g.stroke();g.strokeStyle='rgba(240,200,190,.5)';g.lineWidth=1;g.stroke();}
+  if(F.mole){g.fillStyle='#3a2418';g.beginPath();g.arc(298,232,3,0,TAU);g.fill();}
+  if(F.blush)mir(()=>{const r=g.createRadialGradient(196,206,0,196,206,26);r.addColorStop(0,'rgba(230,110,110,.28)');r.addColorStop(1,'rgba(230,110,110,0)');g.fillStyle=r;g.fillRect(160,170,72,72);});
+  const t=new THREE.CanvasTexture(c);t.flipY=false;t.encoding=THREE.sRGBEncoding;t.anisotropy=4;return RIG.tex[key]=t;}
+function skinMat(orig,rgb){const key='skin'+rgb.join('_');if(RIG.tex[key])return RIG.tex[key];const m=orig.clone();m.map=null;m.color.setRGB(rgb[0]/255,rgb[1]/255,rgb[2]/255).convertSRGBToLinear();m.userData.lin=1;return RIG.tex[key]=m;}
+// 髪型（頭のボーンに付ける）
+function addHair(hd,style,col){if(style==='bald'||!hd)return;const h=HS(hd),hm=hairMat(col);const put=(geo,x,y,z,sx,sy,sz,rx)=>{const m=new THREE.Mesh(geo,hm);m.castShadow=true;m.position.set(x*h,y*h,z*h);m.scale.set(sx*h,sy*h,sz*h);if(rx)m.rotation.x=rx;hd.add(m);return m;};
+  const S={short:[.104,.098,.118,.118],side:[.105,.1,.119,.12],slick:[.103,.09,.124,.112],pomp:[.104,.098,.118,.118],perm:[.112,.106,.124,.12],spiky:[.104,.098,.118,.118],buzz:[.1,.093,.112,.116],long:[.106,.1,.12,.118],twoblock:[.1,.104,.114,.126]}[style]||[.104,.098,.118,.118];
+  const cap=put(style==='perm'?PERMG:HAIRM,0,S[3]-.008,-.012,S[0],S[1],S[2]);
+  if(style!=='buzz')put(SPHG,0,S[3]+.035,.045,S[0]*.84,.04,.075);// 前髪の生え際（おでこの上が見えないように）
+  if(style==='pomp')put(SPHG,0,.19,.055,.075,.05,.07);
+  if(style==='side')put(SPHG,.045,.17,.01,.07,.045,.1);
+  if(style==='twoblock')put(SPHG,0,.175,.03,.095,.05,.1);
+  if(style==='long'){put(SPHG,0,.07,-.085,.1,.12,.05);}
+  if(style==='spiky')for(let i=0;i<9;i++){const a=i/9*TAU;const sp=new THREE.Mesh(SPIKEG,hm);sp.position.set(Math.sin(a)*.06*h,.2*h,(Math.cos(a)*.06-.01)*h);sp.rotation.set(Math.cos(a)*.6,0,-Math.sin(a)*.6);sp.scale.setScalar(h);hd.add(sp);}
+  if(style==='slick')cap.material=MC['hs'+col]||(MC['hs'+col]=linMat(new THREE.MeshStandardMaterial({color:col,roughness:.18,metalness:.25})));}
+const HAIRM=new THREE.SphereGeometry(1,22,12,0,Math.PI*2,0,Math.PI*.64),SPHG=new THREE.SphereGeometry(1,14,10),SPIKEG=new THREE.ConeGeometry(.022,.07,5);SPIKEG.translate(0,.03,0);
+const PERMG=(()=>{const g=new THREE.SphereGeometry(1,22,12,0,Math.PI*2,0,Math.PI*.64);const p=g.attributes.position;for(let i=0;i<p.count;i++){const k=1+.06*Math.sin(p.getX(i)*31)*Math.sin(p.getY(i)*29+p.getZ(i)*23);p.setXYZ(i,p.getX(i)*k,p.getY(i)*k,p.getZ(i)*k);}g.computeVertexNormals();return g;})();
+function addGlasses(hd,frame,lens,op){if(!hd)return;const h=HS(hd);const fm=std(frame,.3,.4,1),lm=MC['gl'+lens+op]||(MC['gl'+lens+op]=linMat(new THREE.MeshStandardMaterial({color:lens,roughness:.1,metalness:.3,transparent:true,opacity:op})));
+  for(const sx of [-1,1]){const r=new THREE.Mesh(new THREE.TorusGeometry(.024,.004,6,16),fm);r.position.set(sx*.036*h,.074*h,.1*h);r.scale.setScalar(h);hd.add(r);const l=new THREE.Mesh(new THREE.CircleGeometry(.024,16),lm);l.position.set(sx*.036*h,.074*h,.099*h);l.scale.setScalar(h);hd.add(l);}
+  const br=new THREE.Mesh(new THREE.BoxGeometry(.024,.004,.004),fm);br.position.set(0,.078*h,.101*h);br.scale.setScalar(h);hd.add(br);}
+function rigLook(lk){const L=rigLook0(lk);if(L.face===undefined)L.face=faceFor(lk,!!L.fem);return L;}
+function rigLook0(lk){const fem=lk==='ol'||lk==='hostess'||lk==='mama';
   const P_={player:{j:0x2e2e36,v:0x24242a,s:0xa8121e,t:0x111111,p:0x26262c,f:0x1a120c,hair:0x0a0806},
     suit:{j:0x0e0e11,v:0x16161a,s:0xe8e8e8,t:0x7a0010,p:0x0e0e11,f:0x0a0a0a,hair:0x9a9a9a},
     cop:{j:0x8db4dc,v:0x8db4dc,s:0x9cc0e6,t:0x1b2846,p:0x1a2540,f:0x0a0a0a,hair:0x0c0a08,police:1},
     taiki:{j:0x46464a,v:0x46464a,s:0x46464a,t:0x46464a,p:0x18181c,f:0xf0f0f0,hair:0x4a3220,glasses:1,fluff:1},
     onyo:{j:0xeef0e0,v:0xeef0e0,s:0xeef0e0,t:0xeef0e0,p:0xeef0e0,f:0xf4f4f4,hat:0x141414,floral:1,towel:1,wide:1},
+    dealer:{j:0x18181c,v:0x18181c,s:0x2a2a30,t:0x18181c,p:0x202228,f:0xf0f0f0,bcap:0x111114,mask:1},
     gen:{j:0xeeeeea,v:0xdcdcd4,s:0xf4f4f0,t:0x2a2a2a,p:0x2a2a2e,f:0x2a1a10,beard:1}};
-  if(fem){const pants={ol:[0x1a1a22,0x3a3a46],hostess:[0xd8206a,0x111111,0x7a2ad0,0xf0f0f0],mama:[0x5a1460]}[lk];return {fem:1,pal:{p:pk(pants)}};}
-  if(lk==='player')return {pal:Object.assign({},P_.player,outfitPal())};
-  if(P_[lk])return {pal:P_[lk]};
+  if(fem){const pants={ol:[0x1a1a22,0x3a3a46],hostess:[0xd8206a,0x111111,0x7a2ad0,0xf0f0f0],mama:[0x5a1460]}[lk];return {fem:1,pal:{p:pk(pants)},face:faceFor(lk,1)};}
+  if(lk==='player')return {pal:Object.assign({},P_.player,outfitPal()),face:FACE_PLAYER};
+  if(P_[lk]){const pal=Object.assign({},P_[lk]);if(lk==='suit'||lk==='cop')delete pal.hair;return {pal,face:faceFor(lk)};}
   if(lk==='thug'){const j=pk([0xc89818,0x5a1e7a,0xe0e0e0,0x7a2a4a,0x1e7a3a,0xb03a10,0x141414]);return {pal:{j,v:j,s:pk([0x111111,0x8a1020,0xe8e8e8]),t:0x111111,p:pk([0x111111,0xd0c8b8,0x1e2e50]),f:pk([0xeeeeee,0x111111])},beard:Math.random()<.4};}
   if(lk==='host'){const j=pk([0xf0f0f0,0x111111,0x22224a,0x5a0a22]);return {pal:{j,v:0x111111,s:pk([0x111111,0xe03a7a,0xe8e8e8]),t:0x111111,p:j===0xf0f0f0?0xf0f0f0:0x111111,f:0x0a0a0a,rose:1}};}
   if(lk==='student'){return {pal:{j:pk([0x2e5a9a,0x7a7a80,0xa83a3a,0x2a2a2a]),v:0x222222,s:0xf0f0f0,t:0x222222,p:pk([0x24345a,0xc8b898,0x111111]),f:0xeeeeee}};}
@@ -702,7 +765,8 @@ function topTex(p){const key='top'+[p.j,p.v,p.s,p.t,p.rose,p.floral].join('_');i
     if(l<.3&&h<60)return shade(p.t,.4+l);
     return shade(p.j,l/.58);});}
 function lumTex(which,hex,ref){const key=which+hex;if(RIG.tex[key])return RIG.tex[key];return RIG.tex[key]=recolor(RIG.img[which],256,(r,g,b,h,sat,l)=>shade(hex,Math.min(1.3,l/ref)));}
-function pantsW(hex){const key='wp'+hex;if(RIG.tex[key])return RIG.tex[key];return RIG.tex[key]=recolor(RIG.img.woman,512,(r,g,b,h,sat,l)=>(h>35&&h<70&&sat>.45)?shade(hex,Math.min(1.25,l/.55)):null);}
+function pantsW(hex,fs){const key='wp'+hex+(fs?fs.join('_'):'');if(RIG.tex[key])return RIG.tex[key];const k=fs?fs.map(v=>v/255):null;
+  return RIG.tex[key]=recolor(RIG.img.woman,512,(r,g,b,h,sat,l)=>(h>35&&h<70&&sat>.45)?shade(hex,Math.min(1.25,l/.55)):(k&&h>=8&&h<=32&&sat>.25&&sat<.8&&l>.12&&l<.7)?k.map(v=>Math.min(1,v*Math.min(1.2,l/.26))):null);}
 function matFor(orig,key,map,col){const k=key;if(RIG.tex['m'+k])return RIG.tex['m'+k];const m=orig.clone();if(map)m.map=map;if(col!==undefined)m.color.setHex(col).convertSRGBToLinear();m.userData.lin=1;return RIG.tex['m'+k]=m;}
 async function loadRig(){if(!THREE.GLTFLoader||!THREE.SkeletonUtils)return;const L=new THREE.GLTFLoader();const ld=u=>new Promise((r,j)=>L.load(u,r,null,j));
   const [man,woman,an]=await Promise.all([ld('models/man_q.glb'),ld('models/woman_q.glb'),fetch('models/anims.json').then(r=>r.json())]);
@@ -711,8 +775,20 @@ async function loadRig(){if(!THREE.GLTFLoader||!THREE.SkeletonUtils)return;const
     for(const c in an)RIG.clips[nm][c]=new THREE.AnimationClip(c,an[c].d,an[c].t.map(([bn,t,v])=>{if(bn==='Hips'){v=v.slice();for(let i=0;i<v.length;i+=4){tq.fromArray(v,i).premultiply(iq);tq.toArray(v,i);}}return new THREE.QuaternionKeyframeTrack(pre+bn+'.quaternion',t,v);}));
     gl.scene.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=false;[].concat(o.material).forEach(m=>{m.userData.lin=1;if(m.envMapIntensity!==undefined)m.envMapIntensity=.7;});}});}
   const mm={};RIG.man.traverse(o=>{if(o.isMesh)mm[o.name]=o.material;});RIG.mm=mm;
-  RIG.img={top:mm.Wolf3D_Outfit_Top.map.image,bottom:mm.Wolf3D_Outfit_Bottom.map.image,foot:mm.Wolf3D_Outfit_Footwear.map.image};
-  let wm;RIG.woman.traverse(o=>{if(o.isMesh)wm=o.material;});RIG.wm=wm;RIG.img.woman=wm.map.image;RIG.ok=true;}
+  RIG.img={head:mm.Wolf3D_Head.map.image,top:mm.Wolf3D_Outfit_Top.map.image,bottom:mm.Wolf3D_Outfit_Bottom.map.image,foot:mm.Wolf3D_Outfit_Footwear.map.image};
+  let wm;RIG.woman.traverse(o=>{if(o.isMesh)wm=o.material;});RIG.wm=wm;RIG.img.woman=wm.map.image;
+  try{stripWoman();}catch(e){console.warn('strip',e);}RIG.ok=true;}
+// 女性モデルのサングラスのレンズとヘッドホン（頭に付いた赤い部品）を消した形状を作る（丸眼鏡の縁は残る）
+function stripWoman(){let mesh;RIG.woman.traverse(o=>{if(o.isSkinnedMesh)mesh=o;});if(!mesh)return;const geo=mesh.geometry;const bi=mesh.skeleton.bones.findIndex(b=>/Head$/.test(b.name));
+  const img=RIG.img.woman,cv=document.createElement('canvas');cv.width=img.width;cv.height=img.height;const cg=cv.getContext('2d');cg.drawImage(img,0,0);const px=cg.getImageData(0,0,cv.width,cv.height).data;
+  const uv=geo.attributes.uv,si=geo.attributes.skinIndex,sw=geo.attributes.skinWeight,n=uv.count,bad=new Uint8Array(n);let cnt=0;
+  const dn=at=>{const ar=at.isInterleavedBufferAttribute?at.data.array:at.array;return !at.normalized?1:ar instanceof Uint8Array?255:ar instanceof Uint16Array?65535:ar instanceof Int16Array?32767:ar instanceof Int8Array?127:1;};const dn0=at=>!at.normalized?1:at.array instanceof Uint8Array?255:at.array instanceof Uint16Array?65535:at.array instanceof Int16Array?32767:at.array instanceof Int8Array?127:1;const un=dn(uv),wn=dn(sw);
+  const C=(at,i,k)=>k===0?at.getX(i):k===1?at.getY(i):k===2?at.getZ(i):at.getW(i);
+  for(let i=0;i<n;i++){let w=0;for(let k=0;k<4;k++)if(C(si,i,k)===bi)w+=C(sw,i,k)/wn;if(w<.5)continue;
+    const x=Math.min(cv.width-1,Math.max(0,Math.floor(uv.getX(i)/un*cv.width))),y=Math.min(cv.height-1,Math.max(0,Math.floor(uv.getY(i)/un*cv.height)));const o=(y*cv.width+x)*4,r=px[o],g=px[o+1],b=px[o+2];
+    if(r>110&&r>g*1.7&&r>b*1.7){bad[i]=1;cnt++;}}
+  const idx=geo.index.array,keep=[];for(let t=0;t<idx.length;t+=3){if(bad[idx[t]]||bad[idx[t+1]]||bad[idx[t+2]])continue;keep.push(idx[t],idx[t+1],idx[t+2]);}
+  const g2=geo.clone();g2.setIndex(keep);RIG.wplain=g2;RIG.wstrip={removed:cnt,tris:(idx.length-keep.length)/3};}
 const HAIRG=new THREE.SphereGeometry(1,20,12,0,Math.PI*2,0,Math.PI*.56);
 const hairMat=c=>MC['h'+c]||(MC['h'+c]=linMat(new THREE.MeshStandardMaterial({color:c,roughness:.45,metalness:.1})));
 function HS(b){let s=1,o=b;while(o&&o.parent){o=o.parent;if(o.isBone||o.type==='Object3D'||o.isGroup)s*=o.scale.x;}return 1/s;}
@@ -746,18 +822,26 @@ function dressCop(model){const M=copMats();const add=(bn,geo,mat,x,y,z,rx,ry,rz,
   add('Head',new THREE.CylinderGeometry(.103,.103,.034,24),M.black,0,.142,.0,-.1,0,0,1,1,1.05);
   add('Head',new THREE.CylinderGeometry(.1,.1,.008,24,1,false,-Math.PI/2,Math.PI),M.black,0,.128,.035,.28,0,0,1,1,1);
   add('Head',new THREE.CircleGeometry(.022,16),M.gold,0,.168,.118,-.1,0,0);}
-function makeRigged(lk,scale){const L=rigLook(lk);const fem=!!L.fem;const tpl=fem?RIG.woman:RIG.man;const model=THREE.SkeletonUtils.clone(tpl);model.rotation.y=Math.PI;
+function makeRigged(lk,scale,fo){const L=rigLook(lk);if(fo!==undefined)L.face=fo;const fem=!!L.fem;const tpl=fem?RIG.woman:RIG.man;const model=THREE.SkeletonUtils.clone(tpl);model.rotation.y=Math.PI;
   const p=L.pal;
-  model.traverse(o=>{if(!o.isMesh)return;o.castShadow=true;o.frustumCulled=true;
-    if(fem){o.material=matFor(RIG.wm,'w'+p.p,pantsW(p.p));return;}
-    const n=o.name,M=RIG.mm;
+  model.traverse(o=>{if(!o.isMesh)return;o.castShadow=true;o.frustumCulled=!fem&&!/Head|Eye|Teeth|Beard/.test(o.name);
+    if(fem){const fs=L.face&&L.face.fskin;if(L.face&&L.face.plain&&RIG.wplain&&o.isSkinnedMesh)o.geometry=RIG.wplain;o.material=matFor(RIG.wm,'w'+p.p+(fs?fs.join('_'):''),pantsW(p.p,fs));return;}
+    const n=o.name,M=RIG.mm,F=L.face;
+    if(F&&o.morphTargetDictionary&&o.morphTargetInfluences){const k=o.morphTargetDictionary.mouthSmile;if(k!==undefined)o.morphTargetInfluences[k]=F.smile||0;}
+    if(F&&n==='Wolf3D_Head'){const fm=matFor(M[n],'face'+F.id,faceTex(F));fm.roughness=Math.max(fm.roughness,.82);fm.metalness=0;fm.envMapIntensity=.35;o.material=fm;return;}
+    if(F&&n==='Wolf3D_Body'){o.material=skinMat(M[n],F.skin);return;}
     if(n==='Wolf3D_Outfit_Top')o.material=matFor(M[n],'top'+[p.j,p.v,p.s,p.t,p.rose].join('_'),topTex(p));
     else if(n==='Wolf3D_Outfit_Bottom')o.material=p.floral?matFor(M[n],'botfl',topTex(p)):matFor(M[n],'bot'+p.p,lumTex('bottom',p.p,.55));
     else if(n==='Wolf3D_Outfit_Footwear')o.material=matFor(M[n],'ft'+p.f,lumTex('foot',p.f,.35));
     else if(n==='Wolf3D_Headwear'){o.visible=!!p.hat;if(p.hat)o.material=matFor(M[n],'hat'+p.hat,null,p.hat);}
-    else if(n==='Wolf3D_Beard')o.visible=!!(p.beard||L.beard);});
-  if(!fem&&!p.hat){const hd=model.getObjectByName('Head');if(hd){const hc=p.hair??pk([0x0c0a08,0x0c0a08,0x2a1a10,0x6a5030,0x8a8a8a]);const hm=hairMat(hc);
+    else if(n==='Wolf3D_Beard'){o.visible=!!(p.beard||(L.beard&&!F)||(F&&F.beard==='full'));if(o.visible&&F)o.material=matFor(M[n],'beard'+F.hc,null,F.hc);}});
+  const F=L.face;
+  if(!fem&&!p.hat&&!p.bcap&&F){const hd=model.getObjectByName('Head');addHair(hd,F.hair,p.hair??F.hc);}
+  else if(!fem&&!p.hat){const hd=model.getObjectByName('Head');if(hd){const hc=p.hair??pk([0x0c0a08,0x0c0a08,0x2a1a10,0x6a5030,0x8a8a8a]);const hm=hairMat(hc);
     const cap=new THREE.Mesh(HAIRG,hm);cap.castShadow=true;hd.add(cap);const sc=1/((hd.getWorldScale(_v).x)||1)*(model.parent?1:1);cap.position.set(0,.118*HS(hd),-.014*HS(hd));cap.scale.set(.104*HS(hd),.098*HS(hd),.118*HS(hd));if(p.fluff){cap.scale.multiplyScalar(1.16);cap.position.y*=1.08;}}}
+  if(F&&!fem){const hd=model.getObjectByName('Head');if(hd&&F.hs)hd.scale.set(F.hs[0],F.hs[1],F.hs[2]);if(F.gl)addGlasses(hd,0x111111,0x9ab0c0,.25);if(F.b){model.scale.x*=F.b[0];model.scale.z*=F.b[0];model.scale.y*=F.b[1];}}
+  if(p.bcap||p.mask){const hd=model.getObjectByName('Head');if(hd){const h=HS(hd);if(p.bcap){const cm=std(p.bcap,.7,0,.5);const c1=new THREE.Mesh(HAIRG,cm);c1.position.set(0,.12*h,-.01*h);c1.scale.set(.11*h,.1*h,.124*h);hd.add(c1);const br=new THREE.Mesh(new THREE.BoxGeometry(.15,.01,.09),cm);br.position.set(0,.13*h,.11*h);br.rotation.x=.12;br.scale.setScalar(h);hd.add(br);}
+    if(p.mask){const mk=new THREE.Mesh(new THREE.SphereGeometry(.07,12,8,0,Math.PI*2,Math.PI*.3,Math.PI*.45),std(0x1a1a1c,.9,0,.3));mk.rotation.x=-Math.PI/2;mk.position.set(0,.025*h,.05*h);mk.scale.set(h*1.05,h*.9,h*.95);hd.add(mk);}}}
   if(p.glasses){const hd=model.getObjectByName('Head');if(hd){const gm=new THREE.MeshStandardMaterial({color:0xf0d0b0,roughness:.2,transparent:true,opacity:.55});for(const sx of [-1,1]){const fr=new THREE.Mesh(new THREE.BoxGeometry(.068,.05,.008),gm);fr.position.set(sx*.036*HS(hd),.072*HS(hd),.098*HS(hd));fr.scale.setScalar(HS(hd));hd.add(fr);}const br=new THREE.Mesh(new THREE.BoxGeometry(.014,.008,.008),gm);br.position.set(0,.08*HS(hd),.1*HS(hd));br.scale.setScalar(HS(hd));hd.add(br);}}
   if(p.police)dressCop(model);
   if(lk==='player')dressPlayer(model);
@@ -793,7 +877,7 @@ function animRig(e,dt,rig){const g=e.g;let y=e.y,rx=0;if(e.down){rx=-Math.PI/2;y
   else if(guard){rotC(rig,B.RightArm,AX,-.85);rotC(rig,B.RightForeArm,AX,-1.35);rotC(rig,B.LeftArm,AX,-.95);rotC(rig,B.LeftForeArm,AX,-1.35);rotC(rig,B.Spine,AX,.12);}}
 const PEDLOOKS=['salary','salary','ol','hostess','host','student','oldman','salary','ol'];
 const actors=[];let P=null;
-function spawnActor(type,x,z,o={}){const lk=o.look||type;const g=RIG.ok?makeRigged(LOOK[lk]?lk:'salary'):lin(makeHuman((LOOK[lk]||LOOK.salary)()));scene.add(g);
+function spawnActor(type,x,z,o={}){const lk=o.look||type;const g=RIG.ok?makeRigged(LOOK[lk]?lk:'salary',undefined,o.face):lin(makeHuman((LOOK[lk]||LOOK.salary)()));scene.add(g);
   const e={type,x,z,a:o.a??rand(0,TAU),g,hp:o.hp||40,maxhp:o.hp||40,r:.42,kx:0,kz:0,speed:o.speed||3.8,dmg:o.dmg||9,reach:o.reach||1.7,windT:o.windT||.45,
     phase:rand(0,6),mv:0,t:0,cd:rand(.6,1.6),wind:0,hitT:0,atkT:0,down:false,dead:false,hostile:!!o.hostile,name:o.name||'',boss:!!o.boss,guard:o.guard||0,m:!!o.m,
     money:o.money||ri(600,1800),flee:0,strafe:Math.random()<.5?1:-1,rushCd:rand(3,6),rush:0,tough:!!o.tough,getUp:0,sink:0,y:0,npc:!!o.npc,talkCd:0};
@@ -855,7 +939,7 @@ const goalPil=new THREE.Mesh(pillarG,linMat(new THREE.MeshBasicMaterial({color:0
 
 // ================= STATE =================
 let mode='loading',tScale=1,hitstop=0,shake=0,camYaw=0,camLookT=0,mission=null,runToken=0;
-const S={gotGrants:[],own:{},eq:{outfit:null,weapon:null,car:null,acc:[]},t:0,money:0,ch:0,subs:{},maxhp:100,atk:1,wanted:0,lostT:0,seen:false,crimeCd:0,room:null,goal:null,goalLabel:'',boss:null,cine:null,nextEnc:60,target:null,targetT:0,news:'天神ビジョン　今夜の博多は晴れ。中洲の屋台は通常営業中。夜のディズニーランド・BAR YAHMANは中洲2丁目で深夜営業中！',flicker:0};
+const S={clock:20*60,gotGrants:[],own:{},eq:{outfit:null,weapon:null,car:null,acc:[]},t:0,money:0,ch:0,subs:{},maxhp:100,atk:1,wanted:0,lostT:0,seen:false,crimeCd:0,room:null,goal:null,goalLabel:'',boss:null,cine:null,nextEnc:60,target:null,targetT:0,news:'天神ビジョン　今夜の博多は晴れ。中洲の屋台は通常営業中。夜のディズニーランド・BAR YAHMANは中洲2丁目で深夜営業中！',flicker:0};
 function makePlayer(){P=spawnActor('player',POS.start.x,POS.start.z,{look:'player',hp:100});P.a=Math.PI/2;P.heat=0;P.act=null;P.queue=null;P.combo=0;P.comboT=0;P.dodge=0;P.inv=0;P.downT=0;P.car=null;P.dcd=0;P.regenT=0;}
 
 // ================= UI =================
@@ -1002,6 +1086,7 @@ function doHit(act){const range=act.k==='k'?2.3:1.95,cone=act.k==='k'?1.0:.9;let
     hurtActor(e,dmg,ang,kb,act.k==='k');any=true;}
   if(any){P.heat=Math.min(100,P.heat+(act.k==='k'?11:7)*heatNow());hitstop=.055;shake=Math.max(shake,.18);(act.k==='k'?SFX.kick:SFX.hit)();}}
 function hurtActor(e,dmg,ang,kb,isKick){
+  if(e.dealer&&!e.hostile){e.hostile=true;e.ai=null;e.flee=0;toast(pick(['売人「やる気か、コラ！」','売人「なんしよっとか！」']),1.4);}
   if(e.guard&&!isKick&&e.hitT<=0&&!e.down&&Math.abs(angDiff(e.a,Math.atan2(P.x-e.x,P.z-e.z)))<.9&&Math.random()<e.guard){dmg*=.15;kb*=.3;burst(e.x,1.4,e.z,6,0x6ab8ff,4,.5,6,.25);SFX.block();if(Math.random()<.3)toast('ガードされた！ 蹴りで崩せ',1.4);}
   else burst(e.x,1.4,e.z,9,0xfff0a0,5,.55,8,.3);
   e.hp-=dmg;e.hitT=isKick?.45:.28;e.wind=0;e.kx=Math.sin(ang)*kb;e.kz=Math.cos(ang)*kb;
@@ -1010,7 +1095,8 @@ function hurtActor(e,dmg,ang,kb,isKick){
   else if(e.type==='ped'&&!e.hostile){panic(e);if(e.tough&&e.hp>0){e.hostile=true;e.speed=3.6;toast(pick(['「なんしよっとかキサン！」','「やるんか、こら！」','「痛かろうが！」']),1.6);}else crimeSeen(1);}
   if(e.hp<=0)knockOut(e,ang);}
 function knockOut(e,ang){e.down=true;e.dead=true;e.hp=0;e.deadT=0;e.kx=Math.sin(ang)*7;e.kz=Math.cos(ang)*7;
-  if(e.hostile&&e.type!=='cop'&&!e.npc){const m=e.money;S.money+=m;toast(`${fmt(m)} 手に入れた`,1.4);SFX.coin();}
+  if(e.dealer)dealerBounty(e);
+  else if(e.hostile&&e.type!=='cop'&&!e.npc){const m=e.money;S.money+=m;toast(`${fmt(m)} 手に入れた`,1.4);SFX.coin();}
   if(e===S.boss){showBoss(null);}if(e===S.target)S.target=null;}
 function panic(src){for(const a of actors)if(a.type==='ped'&&!a.hostile&&!a.npc&&dist(a,src)<16){a.flee=rand(4,7);a.fleeOff=rand(-.5,.5);}}
 function crimeSeen(n){if(S.crimeCd>0)return;for(const a of actors)if(a.type==='cop'&&!a.down&&dist(a,P)<38){addWanted(n);S.crimeCd=6;return;}if(Math.random()<.25)post(pick(['中洲で人が殴られとる…','今、天神でケンカ見た。こわ','オッサンが通行人どついとった']));}
@@ -1032,7 +1118,7 @@ function btnH(){if(P.car||P.heat<100||P.downT>0||S.cine)return;let t=nearestFoe(
   $('heatname').textContent=name;$('heatname').style.display='block';SFX.whiff();}
 function updCine(rdt){const c=S.cine;if(!c)return;c.t+=rdt;const t=c.tgt;
   if(!c.done&&c.t>.55){c.done=true;tScale=.45;const ang=Math.atan2(t.x-P.x,t.z-P.z);let dmg=t.boss?75:t.down?40:60;dmg*=atkNow();SFX.heat();shake=.6;hitstop=.12;burst(t.x,1.2,t.z,26,0x9ff0ff,8,.8,6,.5);burst(t.x,1.2,t.z,14,0xffffff,5,.5,4,.35);
-    if(c.kind==='river'){t.hp=0;t.down=true;t.dead=true;t.flying={t:0,sx:t.x,sz:t.z,ex:t.x+Math.sin(ang)*7,ez:t.z+Math.cos(ang)*7};if(t.hostile){S.money+=t.money;toast(`${fmt(t.money)} 手に入れた`,1.4);}if(t===S.boss)showBoss(null);post(pick(['人が那珂川に投げ込まれた！？','今、中洲で人が川に飛んだ','那珂川にドボンって音した']));}
+    if(c.kind==='river'){t.hp=0;t.down=true;t.dead=true;t.flying={t:0,sx:t.x,sz:t.z,ex:t.x+Math.sin(ang)*7,ez:t.z+Math.cos(ang)*7};if(t.dealer)dealerBounty(t);else if(t.hostile){S.money+=t.money;toast(`${fmt(t.money)} 手に入れた`,1.4);}if(t===S.boss)showBoss(null);post(pick(['人が那珂川に投げ込まれた！？','今、中洲で人が川に飛んだ','那珂川にドボンって音した']));}
     else{t.hitT=.5;t.hp-=dmg;t.kx=Math.sin(ang)*12;t.kz=Math.cos(ang)*12;if(t.hp<=0)knockOut(t,ang);else if(t===S.boss){t.downT=1.6;}S.target=t;S.targetT=3;}}
   if(c.t>1.15){S.cine=null;tScale=1;$('heatname').style.display='none';}}
 
@@ -1155,6 +1241,27 @@ function updWanted(dt){S.crimeCd-=dt;if(S.wanted<=0){S.seen=false;return;}let se
   for(const a of actors)if(a.type==='cop'&&a.chase&&!a.down&&dist(a,P)<36){seen=true;break;}
   if(!seen)for(const c of cars)if(c.police&&c.driver==='npc'&&!c.leave&&dist(c,P)<46){seen=true;break;}
   S.seen=seen;if(seen)S.lostT=0;else{S.lostT+=dt;if(S.lostT>4+S.wanted*1.4){S.wanted--;S.lostT=0;if(S.wanted===0){toast('警察を振り切った！',2.2);post('サイレン止んだね。逃げ切ったんかな','@博多っ子速報');}}}}
+
+// ================= 売人（ゲーム内の22時〜朝4時、街灯の下に現れる） =================
+// 1秒＝ゲーム内の1分。20:00から始まり、朝6:00になると次の夜（20:00）へ。売人を倒すと商店会から報奨金（手配度は上がらない）
+const DEALN=[2,3,4];
+const isDealerTime=()=>S.clock>=22*60&&S.clock<28*60;
+function clockTx(){const m=Math.floor(S.clock)%(24*60);return String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0');}
+function dealerBounty(e){if(e.paid)return;e.paid=true;const m=e.money;S.money+=m;S.dealers=(S.dealers||0)+1;toast(`売人を成敗！ 商店会から報奨金 ${fmt(m)}`,2.4);SFX.coin();
+  post(pick(['中洲の街灯の下におった怪しい売人、誰かに成敗されとった','最近、天神の裏通りが静かになった気がする','売人が倒れとって、すぐ警察が来とった。誰がやったんやろ']),'@中洲の夜回り');}
+function manageDealers(){const on=isDealerTime()&&!mission&&!S.room&&S.ch>=1;
+  for(const d of actors.filter(a=>a.dealer&&!a.dead))if((!on&&!d.hostile)||dist(d,P)>160)removeActor(d);
+  if(!on||!LAMPS.length)return;
+  if(!S.dealTip){S.dealTip=1;toast('22時を過ぎた。街灯の下に売人が立ち始める（ミニマップの紫の点）。倒すと報奨金',4.5);}
+  if(actors.filter(a=>a.dealer&&!a.dead).length>=DEALN[Q])return;
+  for(let k=0;k<8;k++){const L=pick(LAMPS);const dd=Math.hypot(L.x-P.x,L.z-P.z);if(dd<30||dd>110)continue;let pt=null;
+    for(const o of [[1.3,0],[-1.3,0],[0,1.3],[0,-1.3]]){const x=L.x+o[0],z=L.z+o[1];if(walkable(x,z)&&!ROADS.some(r=>inR(x,z,r))){pt={x,z};break;}}if(!pt)continue;
+    const e=spawnActor('dealer',pt.x,pt.z,{look:'dealer',hp:50,dmg:8,speed:4.4,name:'売人',money:ri(8000,15000)});e.dealer=true;e.ai=aiDealer;break;}}
+function aiDealer(e,dt){e.mv=0;const d=dist(e,P);
+  if(e.flee>0){e.flee-=dt;const ang=Math.atan2(e.x-P.x,e.z-P.z)+(e.fleeOff||0);e.a=lerpAng(e.a,ang,dt*5);if(go(e,5,dt))e.fleeOff=rand(-1.4,1.4);return;}
+  if(d<5&&!P.car){if(!e.seen){e.seen=true;toast(pick(['売人「……なんや、客か？」','売人「見とらんで、さっさと行けや」','売人「ちっ、面倒なやつが来た」']),1.8);if(Math.random()<.5)e.flee=8;}
+    e.a=lerpAng(e.a,Math.atan2(P.x-e.x,P.z-e.z),dt*4);return;}
+  if(Math.random()<dt*.2)e.a+=rand(-1,1);}
 
 // ================= MARKERS / SHOPS =================
 const MAINLOC=[POS.snack,POS.snack,POS.snack,POS.snack,POS.yahman,POS.yatai,POS.bridge];
@@ -1347,16 +1454,16 @@ let gen=null,miki=null;
 function ensureGen(){if(!gen||!actors.includes(gen))gen=npc('gen',-8.4,32.2,Math.PI/2,'源さん');}
 const MAINS=[
  {id:'c0',run:async(tok)=>{await enterRoom(ROOMS.snack);card('第一章 中洲、帰還','—— 五年ぶりのネオン ——');
-  await still('c1',[['千鶴ママ','……テツ？ テツやろ！ あんた、いつ出てきたと？'],['鉄二','今朝だ。ママは相変わらず綺麗だな。'],['千鶴ママ','口のうまさは変わらんねぇ。……ばってん、のんびり再会を喜べる状況じゃなかとよ。'],['千鶴ママ','〈玄海連合〉って知っとう？ 最近この辺を仕切りよる半グレたい。'],['千鶴ママ','那珂川沿いの屋台に「みかじめ料」払えって、毎晩絡みよる。源さんの屋台も……'],['鉄二','源さんの？ ……分かった。顔を出してくる。']]);
+  await still('c1',[['千鶴ママ','……テツ？ テツやろ！ あんた、いつ帰ってきたと？'],['鉄二','今朝だ。ママは相変わらず綺麗だな。'],['千鶴ママ','口のうまさは変わらんねぇ。……ばってん、のんびり再会を喜べる状況じゃなかとよ。'],['千鶴ママ','最近、中洲も天神も物騒になった。SNSの「高収入バイト」で集められた若い子らが、顔も知らん「指示役」の言いなりで悪さしよる。警察は〈トクリュウ〉って呼びよるらしか。'],['千鶴ママ','その手先のギャング〈玄海連合〉が、那珂川沿いの屋台に「みかじめ料」払えって毎晩絡みよる。源さんの屋台も……'],['鉄二','源さんの？ ……分かった。表で騒ぎにならんよう、片をつけてくる。']]);
   await exitRoom();ensureGen();await reach({x:-3,z:31},4,'那珂川沿いの屋台通りへ行け');
   const f=spawnFoes({x:-3,z:31},3,{r0:4,r1:7});
   await talk([['チンピラ','おいジジイ、今月分まだやろうが！'],['源さん','屋台は博多の灯たい！ あんたらにやる金なんか一円もなか！'],['チンピラ','あぁ？ ……なんや、お前。'],['鉄二','その屋台のラーメンが食えなくなると、困るんでな。']]);
   await fight(f,'玄海連合のチンピラを倒せ');if(tok!==runToken)return;
-  await talk([['源さん','テツ坊……！ 五年ぶりに見る顔が、相変わらずケンカ帰りとはな。'],['源さん','腹減っとうやろ。ラーメン食っていき。屋台はいつでも開けとくけん。'],['','屋台（緑の¥）で食事をすると体力が回復する。']]);
-  S.ch=1;reward(20000,'中洲の屋台でチンピラ3人が一瞬でのされたらしい','@yatai_lover');}},
+  await talk([['源さん','テツ坊……！ 五年ぶりに見る顔が、相変わらず頼もしかね。'],['源さん','腹減っとうやろ。ラーメン食っていき。屋台はいつでも開けとくけん。'],['','屋台（緑の¥）で食事をすると体力が回復する。']]);
+  S.ch=1;reward(20000,'中洲の屋台に絡んどったチンピラ3人、誰かに成敗されたらしい','@yatai_lover');}},
  {id:'c1',run:async(tok)=>{await enterRoom(ROOMS.snack);card('第二章 ぼったくりBAR','—— 一杯五十万の酒 ——');
   const ya=npc('salary',ROOMS.snack.cx-3,ROOMS.snack.cz+.5,Math.PI/2,'山中');
-  await talk([['山中','うっ……うっ……'],['千鶴ママ','この人、山中さん。うちの常連さんたい。'],['山中','「BAR 玄」って店で一杯だけ飲んだら……請求が五十万円って……'],['山中','払えんって言ったら、免許証とカード取り上げられて……会社にバラすぞって……'],['千鶴ママ','BAR 玄は玄海連合の店たい。テツ、お願いできる？'],['鉄二','一杯五十万か。どんな味か確かめてくる。']]);
+  await talk([['山中','うっ……うっ……'],['千鶴ママ','この人、山中さん。うちの常連さんたい。'],['山中','「BAR 玄」って店で一杯だけ飲んだら……請求が五十万円って……'],['山中','払えんって言ったら、免許証とカード取り上げられて……会社にバラすぞって……'],['千鶴ママ','BAR 玄は玄海連合の店たい。稼いだ金は、トクリュウの指示役に流れよるって噂よ。テツ、お願いできる？'],['鉄二','一杯五十万か。どんな味か確かめてくる。']]);
   removeActor(ya);await exitRoom();await reach(POS.bar,2.6,'中洲の「BAR 玄」へ乗り込め');if(tok!==runToken)return;
   await enterRoom(ROOMS.bar);const r=ROOMS.bar;const boss=spawnActor('thug',r.cx,r.cz+1.8,{look:'host',hostile:false,m:true,name:'店長 蛇沼',a:Math.PI});boss.npc=true;
   const f=spawnFoes({x:r.cx,z:r.cz},4,{r0:2.5,r1:4.5,look:'suit',hp:70,name:'用心棒'});f.forEach(e=>{e.hostile=false;e.npc=true;});
@@ -1364,7 +1471,7 @@ const MAINS=[
   f.forEach(e=>{e.npc=false;e.hostile=true;});await fight(f,'用心棒を片付けろ');if(tok!==runToken)return;
   removeActor(boss);const b=spawnBoss({x:r.cx,z:r.cz+1.8},{name:'店長 蛇沼',hp:170,look:'host',dmg:13,guard:.35,money:15000});
   await talk([['店長 蛇沼','役立たずどもが……。俺が直々に「お会計」してやるよ！']]);await fight([b],'店長 蛇沼を倒せ');if(tok!==runToken)return;
-  await talk([['店長 蛇沼','ぐっ……な、なんなんだお前……'],['鉄二','山中さんの財布と……これは、帳簿か？'],['','カウンター裏の金庫に、分厚い裏帳簿。中洲じゅうの店から吸い上げた金の流れが記されていた。'],['店長 蛇沼','そ、それを持ち出したら……鬼塚会長が黙っとらんぞ……！']]);
+  await talk([['店長 蛇沼','ぐっ……な、なんなんだお前……'],['鉄二','山中さんの財布と……これは、帳簿か？'],['','カウンター裏の金庫に、分厚い裏帳簿。中洲じゅうの店から吸い上げた金が、匿名の口座へ流れていた。送金先は「指示役」としか書かれていない。'],['店長 蛇沼','そ、それを持ち出したら……指示役が黙っとらんぞ……！ 俺らも顔すら知らんっちゃけん……！']]);
   await exitRoom();S.ch=2;reward(50000,'中洲のぼったくりバー、昨夜で閉店したってマジ？','@中洲の夜回り');}},
  {id:'y1',run:async(tok)=>{await enterRoom(ROOMS.snack);card('第三章 夜のディズニーランド','—— ようこそ、YAHMANの世界へ ——');
   await talk([['千鶴ママ','テツ、帳簿ば見たよ。……みかじめの取り立て先リストに「BAR YAHMAN」って書いてある。'],['鉄二','ヤーマン？'],['千鶴ママ','中洲2丁目のエンターテイメントバーたい。「夜のディズニーランド」って呼ばれて、今や中洲の名物よ。TAIKI社長とおにょ代表がやりよる店。'],['千鶴ママ','あの子らは絶対にみかじめなんか払わん。……やけん、玄海連合が今夜ちょっかい出しに行くらしいと。'],['鉄二','……様子を見てくる。']]);
@@ -1378,18 +1485,18 @@ const MAINS=[
   S.callBoost=true;S.callT=3;await fight(f,'取り立て屋を叩き出せ（コールでヒートゲージが溜まる）');if(tok!==runToken){S.callBoost=false;return;}
   const b=spawnBoss({x:r.cx,z:r.cz-3.5},{name:'取り立て屋頭 鮫島',hp:210,look:'suit',dmg:14,guard:.4,money:20000});
   await talk([['鮫島','ガキの遊び場が……大人の世界ばなめるなよ！'],['おにょ','ここは大人の遊び場っすよ！ ゴーゴーレッツゴー！！']]);await fight([b],'取り立て屋頭 鮫島を倒せ');S.callBoost=false;if(tok!==runToken)return;
-  await talk([['TAIKI','鉄二さん、強すぎっす……！ 今日から鉄二さんはYAHMANの永久VIPで！'],['おにょ','これからもよろしくおねがいマチュピチュ空中都市！！'],['鉄二','……何語だ、それは。'],['TAIKI','そうだ、鉄二さん。うちの常連に天神の情報屋がおるんすよ。玄海連合の裏金のこと、何か知っとるかも。'],['おにょ','ミキちゃんっす。月光のママにも伝えときます！'],['','BAR YAHMANの「飲む」（緑の¥）で、体力とヒートゲージを回復できるようになった。']]);
+  await talk([['TAIKI','鉄二さん、強すぎっす……！ 今日から鉄二さんはYAHMANの永久VIPで！'],['おにょ','これからもよろしくおねがいマチュピチュ空中都市！！'],['鉄二','……何語だ、それは。'],['TAIKI','そうだ、鉄二さん。うちの常連に天神の情報屋がおるんすよ。トクリュウの指示役のこと、何か知っとるかも。'],['おにょ','ミキちゃんっす。月光のママにも伝えときます！'],['','BAR YAHMANの「飲む」（緑の¥）で、体力とヒートゲージを回復できるようになった。']]);
   [tk,on,...crowd].forEach(removeActor);await exitRoom();S.ch=3;reward(60000,'中洲のYAHMANで、シャンパンコールの中で強面の男が大暴れしてたらしい','@nakasu_watcher');}},
  {id:'c2',run:async(tok)=>{await enterRoom(ROOMS.snack);card('第四章 天神逃走線','—— 追われる男 ——');
-  await talk([['千鶴ママ','裏帳簿……これで玄海連合ば潰せるかもしれん。'],['千鶴ママ','YAHMANのおにょ君から聞いたよ。天神の「ミキ」って情報屋が、残りの証拠を持っとるらしいと。天神の広場で待っとるって。'],['鉄二','天神か。橋を渡ればすぐだな。']]);
+  await talk([['千鶴ママ','裏帳簿で、玄海連合の金の流れは分かった。ばってん、指示役の正体はまだ分からん。'],['千鶴ママ','YAHMANのおにょ君から聞いたよ。天神の「ミキ」って子が、指示役とのやり取りを持っとるらしいと。天神の広場で待っとるって。'],['鉄二','天神か。橋を渡ればすぐだな。']]);
   await exitRoom();miki=npc('hostess',POS.info.x,POS.info.z+1.2,0,'ミキ');await reach(POS.info,3,'天神の広場で情報屋ミキと会え');if(tok!==runToken)return;
-  await still('c3',[['ミキ','あんたがテツ？ ……遅かったね。'],['ミキ','これ。玄海連合が県警の誰かに渡しとる裏金のリスト。USBに入っとる。'],['ミキ','……待って。あいつら通報した。「中洲の乱闘犯が天神におる」って。'],['','（サイレンの音が、四方から近づいてくる）'],['ミキ','走って！ 警察の一部は買収されとる。捕まったら証拠ごと消される！']]);
+  await still('c3',[['ミキ','あんたがテツ？ ……遅かったね。'],['ミキ','あたし、去年「高収入バイト」の募集に応募して……気づいたら抜けられんくなっとった。身分証も握られて。'],['ミキ','これ。指示役とのやり取りの記録。USBに入っとる。これがあれば、捕まっとる子たちも助けられる。'],['ミキ','……待って。あいつら嘘の通報をした。「中洲の乱闘犯が天神におる」って。'],['','（サイレンの音が、四方から近づいてくる）'],['ミキ','警察は本気であんたを捕まえに来る。でも警察は敵やない。手は出さんで、逃げ切って！']]);
   if(miki){miki.npc=false;miki.type='ped';miki.flee=20;}
-  await playVideo('v1');if(tok!==runToken)return;addWanted(3);card('逃走開始','パトカーを振り切れ');toast('ヒント：車に近づいて「奪う」で車を奪える',3.5);
+  await playVideo('v1');if(tok!==runToken)return;addWanted(3);card('逃走開始','警官には手を出さず、パトカーを振り切れ');toast('ヒント：車に近づいて「奪う」で車を奪える',3.5);
   setGoal(POS.snack,'警察を振り切り（手配度0）、中洲の「月光」へ戻れ');
   await waitUntil(()=>S.wanted===0&&dist(P,POS.snack)<3.2&&!P.car);if(tok!==runToken)return;setGoal(null,'');
   await enterRoom(ROOMS.snack);
-  await talk([['千鶴ママ','テツ！ 無事でよかった……！'],['鉄二','ミキのUSBだ。帳簿と合わせりゃ、県警の汚れも洗い出せる。'],['千鶴ママ','預かっとく。信用できる刑事さんに、うちから渡すけん。'],['千鶴ママ','……テツ、さっきYAHMANのTAIKI君から電話。すぐ店に来てほしいって。……声が普通やなかった。'],['鉄二','……YAHMANへ行く。']]);
+  await talk([['千鶴ママ','テツ！ 無事でよかった……！'],['鉄二','ミキのUSBだ。帳簿と合わせりゃ、指示役までたどれる。'],['千鶴ママ','預かっとく。知り合いの芦塚刑事さんに、うちから渡すけん。表のことは表の人に任せるたい。'],['千鶴ママ','……テツ、さっきYAHMANのTAIKI君から電話。すぐ店に来てほしいって。……声が普通やなかった。'],['鉄二','……YAHMANへ行く。']]);
   await exitRoom();S.ch=4;reward(80000,'天神でカーチェイスあったらしい。映画の撮影？','@tenjin_cam');}},
  {id:'y2',run:async(tok)=>{const tk=npc('taiki',POS.yahman.x-1.6,POS.yahman.z-1.2,0,'TAIKI');card('第五章 ゴーゴーレッツゴー','—— 相棒を取り戻せ ——');
   await talk([['TAIKI','鉄二さん！ 大変っす！ おにょが……黒いバンに無理やり乗せられて！'],['TAIKI','「黒田の居場所を吐かせる」って……玄海連合っす！'],['鉄二','どっちへ行った。'],['TAIKI','中洲中央通りの方っす！ 俺の車そこに停めてるんで、使ってください！']]);
@@ -1401,27 +1508,27 @@ const MAINS=[
   const pt={x:van.x,z:van.z};const f=spawnFoes(pt,3,{r0:3,r1:6,name:'玄海連合の構成員'});
   await talk([['構成員','くそっ、追いつかれた！ やっちまえ！']]);if(P.car)exitCar(true);await fight(f,'おにょを連れ去った連中を倒せ');if(tok!==runToken)return;
   const sp=ring(pt,1,2,3)[0];const on=npc('onyo',sp.x,sp.z,0,'おにょ');tk.x=P.x+1.5;tk.z=P.z+1.5;
-  await still('y2',[['おにょ','鉄二さん……！ 助かりました……。'],['TAIKI','おにょー！ 無事でよかった……！'],['おにょ','あいつら、県警の誰かと電話しよりました。「明日の夜、屋台に火をつける」って……'],['鉄二','……屋台か。源さんのところだな。'],['おにょ','（ポケットからミニボトルを出して一口）……っしゃ、元気出た！ 鉄二さん、ゴーゴーレッツゴーっす！']]);
+  await still('y2',[['おにょ','鉄二さん……！ 助かりました……。'],['TAIKI','おにょー！ 無事でよかった……！'],['おにょ','あいつら、スマホで「指示役」から命令受けよりました。「明日の夜、屋台に火をつけろ」って……'],['鉄二','……屋台か。源さんのところだな。'],['おにょ','（ポケットからミニボトルを出して一口）……っしゃ、元気出た！ 鉄二さん、ゴーゴーレッツゴーっす！']]);
   removeActor(on);removeActor(tk);van.keep=false;mine.keep=false;S.ch=5;reward(90000,'中洲で黒いバンと乗用車のカーチェイス！ 最後はバンが止まって拍手起きてた','@中洲の夜回り');}},
  {id:'c3',run:async(tok)=>{ensureGen();card('第六章 屋台の灯を守れ','—— 博多の夜を消させるな ——');
   await still('c4',[['源さん','テツ坊、来たか！ あいつら、灯油缶ば持って集まりよる！'],['鉄二','源さんは下がってろ。……ここは俺が守る。']]);
   const c={x:-3,z:31};for(const [n,hp] of [[3,60],[4,70]]){const f=spawnFoes(c,n,{r0:8,r1:14,hp});await fight(f,`屋台を襲う玄海連合を倒せ`);if(tok!==runToken)return;await waitT(.8);}
   const g=spawnFoes(c,2,{r0:6,r1:9,hp:80,look:'suit',name:'玄海連合 幹部'});const b=spawnBoss({x:-3,z:42},{name:'マムシの井上',hp:240,look:'thug',dmg:15,guard:.45,money:25000});
-  await talk([['マムシの井上','五年前、全部の罪をかぶって消えた男が、今さら何の用や。'],['鉄二','屋台のラーメンが好きなだけさ。'],['マムシの井上','ほざけ。……会長は「福博であい橋」でお前を待っとる。俺に勝てたらの話やけどな！']]);
+  await talk([['マムシの井上','闇バイトで集めたガキは使い捨て、俺ら玄海連合は指示役の財布。……それで回っとった街に、今さら何の用や。'],['鉄二','屋台のラーメンが好きなだけさ。'],['マムシの井上','ほざけ。……指示役は「福博であい橋」でお前を待っとる。俺に勝てたらの話やけどな！']]);
   await fight([...g,b],'マムシの井上を倒せ');if(tok!==runToken)return;
-  await talk([['マムシの井上','……会長は、強いぞ……'],['源さん','テツ坊……屋台の灯は、あんたが守ってくれた。'],['TAIKI','鉄二さーん！ 加勢に来ました……って、もう終わっとるやん！'],['おにょ','鉄二さん、決着ついたらYAHMANで祝杯っすよ。約束っす！'],['鉄二','まだ終わってない。……那珂川へ行く。']]);
+  await talk([['マムシの井上','……指示役は、強いぞ……'],['源さん','テツ坊……屋台の灯は、あんたが守ってくれた。'],['TAIKI','鉄二さーん！ 加勢に来ました……って、もう終わっとるやん！'],['おにょ','鉄二さん、決着ついたらYAHMANで祝杯っすよ。約束っす！'],['鉄二','まだ終わってない。……那珂川へ行く。']]);
   S.ch=6;reward(100000,'中洲の屋台通りで大乱闘→屋台は無事。おっちゃんたち強すぎん？','@hakata_ramen_bot');}},
  {id:'c4',run:async(tok)=>{await reach(POS.bridge,4,'福博であい橋へ向かえ');if(tok!==runToken)return;card('最終章 那珂川の決闘','—— 第七章 ・ 川は誰のものでもない ——');
   const oni=spawnActor('npc',-20,4.5,{look:'suit',a:Math.PI,name:'鬼塚 剛'});oni.npc=true;oni.g.scale.setScalar(1.2);
-  await still('c5',[['鬼塚 剛','来たか、黒田鉄二。'],['鬼塚 剛','五年前、お前が全部の罪をかぶって消えたおかげで、この街は俺のもんになった。'],['鉄二','……あの時の取引も、お前の差し金だったのか。'],['鬼塚 剛','中洲も天神も、金が流れる川たい。川の流れを握った者が勝つ。'],['鉄二','川は誰のもんでもねぇよ。'],['鬼塚 剛','……やれ。']]);
+  await still('c5',[['鬼塚 剛','来たか、黒田鉄二。'],['鬼塚 剛','顔も名前も出さず、SNSでガキを集めて、使い捨てる。捕まるのは下っ端だけ。……それが俺のやり方たい。'],['鉄二','お前が「指示役」か。'],['鬼塚 剛','中洲も天神も、金が流れる川たい。川の流れを握った者が勝つ。'],['鉄二','川は誰のもんでもねぇよ。……この街は、ここで暮らす人間のもんだ。'],['鬼塚 剛','……やれ。']]);
   const g1=spawnFoes(P,4,{r0:5,r1:8,hp:75,look:'suit',name:'玄海連合 親衛隊'});await fight(g1,'親衛隊を倒せ');if(tok!==runToken)return;
-  removeActor(oni);const b=spawnBoss({x:-20,z:4.5},{name:'玄海連合会長 鬼塚 剛',hp:460,dmg:18,guard:.5,speed:4.6,scale:1.2,money:50000});
+  removeActor(oni);const b=spawnBoss({x:-20,z:4.5},{name:'トクリュウ指示役 鬼塚 剛',hp:460,dmg:18,guard:.5,speed:4.6,scale:1.2,money:50000});
   await playVideo('v2');if(tok!==runToken)return;await talk([['鬼塚 剛','雑魚じゃ相手にならんか。……よか。博多の流儀で決着つけちゃる！']]);await fight([b],'鬼塚 剛を倒せ');if(tok!==runToken)return;
-  await talk([['鬼塚 剛','ぐ……は……'],['','遠くからサイレン。今度は県警本部の捜査車両だった。'],['芦塚刑事','黒田鉄二だな。……ママさんから帳簿とUSBは受け取った。汚れた連中は、こっちで洗う。'],['芦塚刑事','鬼塚剛、恐喝および贈賄の容疑で逮捕する。'],['千鶴ママ','テツ！'],['鉄二','……ママ。ラーメンでも食いに行くか。']]);
+  await talk([['鬼塚 剛','ぐ……は……'],['','遠くからサイレン。今度は、鉄二を追う音ではなかった。'],['芦塚刑事','黒田鉄二だな。……ママさんから帳簿とUSBは受け取った。おかげで、闇バイトで縛られとった若い子たちも保護できる。'],['芦塚刑事','鬼塚剛、組織的な詐欺と恐喝の容疑で逮捕する。……黒田、お前のことは見なかったことにしておく。'],['千鶴ママ','テツ！'],['鉄二','……ママ。ラーメンでも食いに行くか。']]);
   await enterRoom(ROOMS.yahman);{const r=ROOMS.yahman;window._yk=[npc('taiki',r.cx-1.2,r.cz+2.2,Math.PI,'TAIKI'),npc('onyo',r.cx+1.2,r.cz+2.2,Math.PI,'おにょ'),npc('mama',r.cx-2.6,r.cz+.6,Math.PI*.8,'千鶴ママ'),npc('gen',r.cx+2.6,r.cz+.6,-Math.PI*.8,'源さん')];}
   await still('y3',[['TAIKI','鉄二さん、お疲れさまでした！ 今夜はYAHMANの奢りっす！'],['おにょ','いきますよー！ 中洲の英雄・鉄二さんに、シャンパンいただきましたー！'],['一同','ゴーゴーレッツゴー！！'],['源さん','屋台の次はシャンパンか。テツ坊も出世したのう。'],['千鶴ママ','……五年分、ちゃんと飲みなさいよ。'],['鉄二','……騒がしい街だな。だが、悪くねぇ。']]);
-  S.ch=7;reward(200000,'玄海連合の会長が那珂川の橋で逮捕されたらしい','@博多っ子速報');
-  await showStill('c6');$('endtx').innerHTML='玄海連合は壊滅し、中洲のネオンは今夜も那珂川に揺れている。<br>源さんの屋台には、また湯気が立ちのぼる。<br>――だが、博多の夜は長い。<br><br><small style="opacity:.85">協力：BAR YAHMAN（福岡・中洲）</small>';mode='ending';$('ending').style.display='flex';}}];
+  S.ch=7;reward(200000,'トクリュウの指示役が、那珂川の橋で逮捕されたらしい','@博多っ子速報');
+  await showStill('c6');$('endtx').innerHTML='トクリュウの指示役は逮捕され、玄海連合も解散した。<br>中洲のネオンは今夜も那珂川に揺れ、源さんの屋台には湯気が立ちのぼる。<br>――街を汚す者がいる限り、鉄二の夜回りは続く。<br><br><small style="opacity:.85">協力：BAR YAHMAN（福岡・中洲）</small>';mode='ending';$('ending').style.display='flex';}}];
 const SUBS={
  snatch:{run:async(tok)=>{const v=npc('ol',POS.sSnatch.x+1,POS.sSnatch.z+1.4,Math.PI,'被害者');
   await still('s0',[['女性','きゃあっ！ 誰か！ バッグ取られた！'],['鉄二','……任せろ。']]);
@@ -1430,7 +1537,7 @@ const SUBS={
   await waitUntil(()=>dist(P,s)<1.7||dist(P,s)>90);if(tok!==runToken)return;
   if(dist(P,s)>90){toast('見失った……',2);removeActor(s);removeActor(v);setObj('');return;}
   s.ai=null;s.hostile=true;s.speed=4;toast('ひったくり犯「しつこかぁ！」',1.6);await fight([s],'ひったくり犯を倒せ');if(tok!==runToken)return;
-  v.x=P.x+1.5;v.z=P.z+1;await talk([['女性','はぁ、はぁ……ありがとうございます！ これ、少ないですけどお礼です。']]);removeActor(v);
+  v.x=P.x+1.5;v.z=P.z+1;await talk([['ひったくり犯','す、すんません……SNSの闇バイトで……やらんと家族に何かするって脅されて……'],['鉄二','……交番に行け。脅されてるなら、警察が守ってくれる。'],['女性','はぁ、はぁ……ありがとうございます！ これ、少ないですけどお礼です。']]);removeActor(v);
   S.subs.snatch=1;reward(15000,'天神でひったくり捕まえた人おった！ かっこよ','@天神OL日記');}},
  drunk:{run:async(tok)=>{const dr=npc('salary',POS.sDrunk.x+1,POS.sDrunk.z+1,Math.PI,'部長');
   await still('s1',[['部長','うぃ〜……君ぃ、タクシー乗り場はどっちかね……'],['部長','西大橋を渡った、天神側の……ひっく'],['鉄二','（放っておくと那珂川に落ちそうだな）……ついてきな。']]);
@@ -1450,7 +1557,7 @@ const SUBS={
 // random street encounters
 function updEncounter(){if(mission||S.room||P.car||S.ch<1||S.wanted>0||S.t<S.nextEnc)return;S.nextEnc=S.t+rand(55,95);
   const f=ring(P,ri(2,3),9,13).map(q=>spawnActor('thug',q.x,q.z,{look:'thug',hostile:true,hp:55,name:pick(NAMES),money:ri(1000,2600)}));
-  toast(pick(['チンピラ「おいオッサン、なんガン飛ばしとーとや！」','チンピラ「肩ぶつかったろうが。治療費払えや」','半グレ「玄海連合に逆らう男ってお前か？」']),2.6);}
+  toast(pick(['チンピラ「おいオッサン、なんガン飛ばしとーとや！」','チンピラ「肩ぶつかったろうが。治療費払えや」','半グレ「玄海連合に逆らう男ってお前か？」','トクリュウの実行役「指示役の命令や。お前、ちょっと痛い目見てもらうぞ」']),2.6);}
 
 // ================= DEATH / SAVE =================
 function die(){mode='dead';$('dead').style.display='flex';}
@@ -1474,13 +1581,13 @@ function begin(data){initAudio();document.body.classList.remove('ttl');$('title'
   P.x=POS.start.x;P.z=POS.start.z;P.a=Math.PI/2;
   if(data){try{const r=JSON.parse(sessionStorage.getItem('nakasu_ret')||'null');sessionStorage.removeItem('nakasu_ret');if(r&&walkable(r.x,r.z)){P.x=r.x;P.z=r.z;}}catch(e){}}
   camYaw=P.a;refreshMarkers();S.nextEnc=S.t+50;setTimeout(()=>Net.pullGrants(),1500);
-  if(!data){playVideo('v0').then(()=>still('c0',[['','五年。塀の中で数えた年月だ。'],['','天神の街は、記憶よりずっと眩しかった。'],['鉄二','……変わったな、博多も。'],['','那珂川の向こうで、中洲のネオンが呼んでいる。']])).then(()=>{card('序章 帰ってきた男','—— 天神・中洲 ——');S.ch=0;save();setTimeout(()=>toast('画面の黄色い◆と、ミニマップの黄色い線をたどれば目的地に着く',4.5),3200);});}
+  if(!data){playVideo('v0').then(()=>still('c0',[['','五年。博多を離れ、遠い街で用心棒をしてきた。'],['','久しぶりの天神は、記憶よりずっと眩しかった。'],['鉄二','……変わったな、博多も。'],['','だがネオンの陰で、何かがこの街を汚し始めていた。']])).then(()=>{card('序章 帰ってきた男','—— 天神・中洲 ——');S.ch=0;save();setTimeout(()=>toast('画面の黄色い◆と、ミニマップの黄色い線をたどれば目的地に着く',4.5),3200);});}
   else{card('おかえり',S.ch>=7?'自由行動':'第'+(S.ch+1)+'章から');}}
 $('bNew').onclick=()=>begin(null);$('bCont').onclick=()=>begin(load());
 
 // ================= HUD / MAP =================
 const mctx=$('map').getContext('2d');
-function updHUD(){$('hpb').style.width=(P.hp/S.maxhp*100)+'%';$('htb').style.width=P.heat+'%';$('htw').classList.toggle('full',P.heat>=100);$('bH').classList.toggle('ready',P.heat>=100);$('money').textContent=fmt(S.money);
+function updHUD(){$('hpb').style.width=(P.hp/S.maxhp*100)+'%';$('htb').style.width=P.heat+'%';$('htw').classList.toggle('full',P.heat>=100);$('bH').classList.toggle('ready',P.heat>=100);$('money').textContent=fmt(S.money);{const ct=clockTx(),ce=$('clock');if(ce.textContent!==ct){ce.textContent=ct;ce.classList.toggle('night',isDealerTime());}}
   const st=$('wanted').children;for(let i=1;i<=5;i++)st[i].className=i<=S.wanted?'on':'';$('wanted').classList.toggle('seen',S.seen);
   if(S.boss)$('bossb').style.width=Math.max(0,S.boss.hp/S.boss.maxhp*100)+'%';
   const t=S.target;if(t&&!S.boss&&S.targetT>0&&actors.includes(t)){$('ebar').style.display='block';$('ebarn').textContent=t.name||(t.type==='cop'?'警官':'通行人');$('ebarb').style.width=Math.max(0,t.hp/t.maxhp*100)+'%';}else $('ebar').style.display='none';}
@@ -1496,7 +1603,7 @@ function drawMap(){const c=mctx,Wm=248,cx=124,cy=124,s=.9;c.setTransform(1,0,0,1
   const proj=(x,z)=>{const dx=x-P.x,dz=z-P.z;return [cx+s*(-cs*dx+sn*dz),cy-s*(sn*dx+cs*dz)];};
   const dot=(x,z,col,r,clampE)=>{let [px,py]=proj(x,z);const dd=Math.hypot(px-cx,py-cy);if(dd>112){if(!clampE)return;px=cx+(px-cx)/dd*112;py=cy+(py-cy)/dd*112;}c.fillStyle=col;c.beginPath();c.arc(px,py,r,0,TAU);c.fill();};
   for(const m of markers)if(m.on)dot(m.p.x,m.p.z,m.k==='main'?'#ffd84a':m.k==='sub'?'#3de0ff':'#8dff7a',m.k==='shop'?5:8,m.k!=='shop');
-  for(const a of actors){if(a===P||a.dead)continue;if(a.hostile)dot(a.x,a.z,a.type==='cop'?(Math.floor(S.t*6)%2?'#ff3030':'#3070ff'):'#ff4a4a',5);}
+  for(const a of actors){if(a===P||a.dead)continue;if(a.dealer&&!a.hostile&&dist(a,P)<90)dot(a.x,a.z,'#c06bff',5,true);if(a.hostile)dot(a.x,a.z,a.type==='cop'?(Math.floor(S.t*6)%2?'#ff3030':'#3070ff'):'#ff4a4a',5);}
   for(const cr of cars)if(cr.police&&!cr.dead)dot(cr.x,cr.z,Math.floor(S.t*6)%2?'#ff3030':'#3070ff',7);
   if(S.goal){const pul=7+Math.sin(S.t*6)*2;dot(S.goal.x,S.goal.z,'#ffd84a',pul,true);}
   c.save();c.translate(cx,cy);c.rotate(angDiff(camYaw,(P.car||P).a)*-1);c.fillStyle='#fff';c.beginPath();c.moveTo(0,-11);c.lineTo(8,8);c.lineTo(0,4);c.lineTo(-8,8);c.closePath();c.fill();c.restore();
@@ -1525,7 +1632,8 @@ function updPlayer(dt){P.fightT=hostiles().some(h=>dist(h,P)<9)?1:Math.max(0,(P.
 
 // ================= CAMERA =================
 const camPos=new THREE.Vector3(),camTgt=new THREE.Vector3();let camInit=false;
-function updCamera(dt){if(mode==='title'||mode==='loading'){const t=performance.now()/1000*.07;camPos.set(-20+Math.sin(t)*60,26+Math.sin(t*1.7)*4,-20+Math.cos(t)*60);cam.position.copy(camPos);cam.lookAt(-6,6,-20);return;}
+function updCamera(dt){if(window.__cam){cam.position.copy(window.__cam.p);cam.lookAt(window.__cam.t);return;}// テスト用（スクリーンショット）
+  if(mode==='title'||mode==='loading'){const t=performance.now()/1000*.07;camPos.set(-20+Math.sin(t)*60,26+Math.sin(t*1.7)*4,-20+Math.cos(t)*60);cam.position.copy(camPos);cam.lookAt(-6,6,-20);return;}
   if(keys.ArrowLeft){camYaw+=dt*2;camLookT=1.5;}if(keys.ArrowRight){camYaw-=dt*2;camLookT=1.5;}camLookT-=dt;
   const T=P.car||P;let D=S.room?3.6:P.car?9.5:4.4,h=S.room?2.2:P.car?3.6:2.15;
   if(P.car&&camLookT<=0&&Math.abs(P.car.v)>2)camYaw=lerpAng(camYaw,P.car.v>0?P.car.a:P.car.a+Math.PI,dt*2.4);
@@ -1545,7 +1653,8 @@ let areaT=0;function update(dt){S.t+=dt;
   if(S.callBoost&&S.room){S.callT=(S.callT||4)-dt;if(S.callT<=0){S.callT=7;P.heat=Math.min(100,P.heat+35);toast(pick(['TAIKI「シャンパンいただきましたー！」','おにょ「ゴーゴーレッツゴー！！」','TAIKI＆おにょ「YAHMAN！ YAHMAN！」','おにょ「不幸中の幸い極まりないです！！」']),1.8);SFX.coin();}}
   if(S.goal&&S.goal.track)goalPil.position.set(S.goal.x,20,S.goal.z);
   if(S.room===ROOMS.yahman&&ROOMS.yahman.disco)ROOMS.yahman.disco.forEach((l,i)=>{const a=S.t*1.3+i*2.1;l.position.set(ROOMS.yahman.cx+Math.cos(a)*5,3.4,ROOMS.yahman.cz+Math.sin(a*1.2)*3.5);l.intensity=1.1+Math.sin(S.t*8+i)*.5;});updPlayer(dt);updActors(dt);updCars(dt);updWanted(dt);
-  popAcc+=dt;if(popAcc>1){popAcc=0;managePop();updEncounter();if(!S.room&&Math.random()<.04)post(pick(['中洲の屋台、今日も最高','天神のイルミ綺麗かった','那珂川の夜景、何回見てもよか','明太子おにぎり最強説','中洲で飲みすぎた。帰れん','博多ラーメンはバリカタ一択']));}
+  S.clock+=dt;if(S.clock>=30*60){S.clock=20*60;S.dealTip=0;post('夜が明けた。……そして、また次の夜がくる','@博多っ子速報');}
+  popAcc+=dt;if(popAcc>1){popAcc=0;managePop();manageDealers();updEncounter();if(!S.room&&Math.random()<.04)post(pick(['中洲の屋台、今日も最高','天神のイルミ綺麗かった','那珂川の夜景、何回見てもよか','明太子おにぎり最強説','中洲で飲みすぎた。帰れん','博多ラーメンはバリカタ一択']));}
   checkWaiters();updCtx();
   if(S.targetT>0)S.targetT-=dt;
   for(const m of markers)if(m.on)m.sp.position.set(m.p.x,2.6+Math.sin(S.t*3)*.2,m.p.z);
@@ -1584,7 +1693,7 @@ polR=new THREE.MeshBasicMaterial({color:0xff2020});polB=new THREE.MeshBasicMater
   P.g.visible=true;mode='title';$('loading').style.display='none';$('bNew').disabled=false;if(load())$('bCont').style.display='block';Net.init();
   if(new URLSearchParams(location.search).has('autostart'))begin(null);})();
 requestAnimationFrame(frame);
-window.__G={PREM,Pay,premGrant,equip,callMyCar,openPrem,openShop,get Q(){return Q},PEDN,get mission(){return mission},dist,spawn:spawnActor,rm:removeActor,RIG,camYaw:()=>camYaw,setYaw:v=>camYaw=v,hostiles,knockOut,useMarker,markers,enterCar,POS,S,get P(){return P},actors,cars,BLD,MAINS,runMission,get mode(){return mode},advance};
+window.__G={manageDealers,isDealerTime,LAMPS,FACES_M,FACES_F,FACE_PLAYER,V3:(x,y,z)=>new THREE.Vector3(x,y,z),PREM,Pay,premGrant,equip,callMyCar,openPrem,openShop,get Q(){return Q},PEDN,get mission(){return mission},dist,spawn:spawnActor,rm:removeActor,RIG,camYaw:()=>camYaw,setYaw:v=>camYaw=v,hostiles,knockOut,useMarker,markers,enterCar,POS,S,get P(){return P},actors,cars,BLD,MAINS,runMission,get mode(){return mode},advance};
 }
 </script>
 </body></html>

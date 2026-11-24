@@ -60,4 +60,4 @@ npm run deploy           # = wrangler pages deploy（wrangler.toml の設定で 
 - [x] Higgsfield で作った画像・動画の商用利用の条件（契約しているプラン）
 - [x] 人物モデルの元データ（readyplayer.me のサンプル、Mixamo の Michelle）の利用条件
 - [x] BAR YAHMAN の店舗情報とSNSのリンクが正しいか（店と確認）
-- [x] セリフの「県警」：Web版はこのまま出す（App Store版では架空名に置き換える）
+- [x] セリフの「県警」：コンセプト変更（11月24日）でセリフから無くなった。警察は敵として描かない
