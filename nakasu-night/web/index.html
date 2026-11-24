@@ -341,7 +341,7 @@ function boxGeo(w,h,d,x,y,z,ry){const g=new THREE.BoxGeometry(w,h,d);if(ry)g.rot
 const XMIN=-250,XMAX=250,ZMIN=-250,ZMAX=250;
 const RIVERS=[{x0:-30,x1:-10,n:'那珂川'},{x0:70,x1:84,n:'博多川'}];
 const BRIDGES=[{x0:-33,x1:-7,z:-100,w:16,n:'西大橋'},{x0:-33,x1:-7,z:0,w:7,n:'福博であい橋',ped:1},{x0:-33,x1:-7,z:90,w:16,n:'春吉橋'},{x0:67,x1:87,z:-100,w:16},{x0:67,x1:87,z:90,w:16},{x0:67,x1:87,z:20,w:6,ped:1}];
-const ROADS=[{x0:XMIN,x1:XMAX,z0:-108,z1:-92,n:'明治通り'},{x0:XMIN,x1:XMAX,z0:82,z1:98,n:'国体道路'},{x0:-118,x1:-102,z0:ZMIN,z1:ZMAX,n:'渡辺通り'},{x0:-196,x1:-184,z0:ZMIN,z1:ZMAX},{x0:24,x1:36,z0:-100,z1:90,n:'中洲中央通り'},{x0:134,x1:146,z0:ZMIN,z1:ZMAX},{x0:214,x1:226,z0:ZMIN,z1:ZMAX,n:'大博通り'}];
+const ROADS=[{x0:XMIN,x1:XMAX,z0:-108,z1:-92,n:'明治通り'},{x0:XMIN,x1:XMAX,z0:82,z1:98,n:'国体道路'},{x0:-118,x1:-102,z0:ZMIN,z1:ZMAX,n:'渡辺通り'},{x0:-196,x1:-184,z0:ZMIN,z1:ZMAX},{x0:24,x1:36,z0:-100,z1:90,n:'中洲中央通り'},{x0:134,x1:146,z0:ZMIN,z1:ZMAX},{x0:214,x1:226,z0:ZMIN,z1:ZMAX,n:'大博通り'},{x0:XMIN,x1:-30,z0:176,z1:188,n:'城南線'}];
 const LANES=[{x0:-10,x1:70,z0:-5,z1:5},{x0:-10,x1:0,z0:ZMIN,z1:ZMAX},{x0:-44,x1:-30,z0:ZMIN,z1:ZMAX},{x0:62,x1:70,z0:ZMIN,z1:ZMAX},{x0:0,x1:70,z0:-53,z1:-47},{x0:0,x1:70,z0:42,z1:48},{x0:-172,x1:-128,z0:-40,z1:30},{x0:84,x1:92,z0:ZMIN,z1:ZMAX}];
 const RESERVE=[{x0:42,x1:61,z0:5,z1:19},{x0:44,x1:68,z0:58,z1:84},{x0:-64,x1:-44,z0:-92,z1:-76},{x0:-184,x1:-168,z0:-72,z1:-48},{x0:40,x1:68,z0:-74,z1:-56}];
 const POS={yahman:{x:51,z:4.2},start:{x:-150,z:20},hosp:{x:-123,z:41},snack:{x:38.6,z:-22},yatai:{x:-3.2,z:31},bar:{x:21.4,z:58},info:{x:-150,z:-22},bridge:{x:-20,z:0},
@@ -403,10 +403,12 @@ function signTex(text,col,vert){const k=text+col+vert;if(SIGNC[k])return SIGNC[k
 const NEON=['#ff3d8b','#3de0ff','#ffb238','#b26bff','#4dff88','#ff5a3d','#ffe14d'];
 const N_V=['スナック紫','居酒屋','ホルモン','焼鳥','カラオケ','ラウンジ華','もつ鍋','無料案内所','クラブ蝶','BAR','PUB','博多ラーメン','ふぐ料理','寿司','スナック凛','明太子','水炊き','ガールズバー','ダーツ','焼酎'];
 const N_H=['NAKASU','中洲','KARAOKE','もつ鍋','CLUB','LOUNGE','焼きラーメン','GAME','HOTEL','BAR'];
+const Y_N=['CAFE','BAKERY','BISTRO','古着','雑貨','珈琲','ワインバー','花屋','BOOKS','美容室','パン屋','スープカレー'];
+const G_N=['OFFICE','呉服町','BUSINESS','HOTEL','CLINIC','HAKATA'];
 const T_H=['天神','TENJIN','SALE','CAFE','BOOKS','HOTEL','FASHION','BEER','DRUG','SHOES','天神地下街','CINEMA'];
 
 // ================= AREAS =================
-const AREAS=[{n:'天神エリア',en:'TENJIN',test:x=>x<-30},{n:'中洲エリア',en:'NAKASU',test:x=>x>=-10&&x<70},{n:'博多エリア',en:'HAKATA',test:x=>x>=84}];
+const AREAS=[{n:'薬院エリア',en:'YAKUIN',test:(x,z)=>x<-30&&z>140},{n:'呉服町エリア',en:'GOFUKUMACHI',test:(x,z)=>x>=134&&z<-60},{n:'天神エリア',en:'TENJIN',test:x=>x<-30},{n:'中洲エリア',en:'NAKASU',test:x=>x>=-10&&x<70},{n:'博多エリア',en:'HAKATA',test:x=>x>=84}];
 function areaOf(x,z){if(S.room)return null;for(const a of AREAS)if(a.test(x,z))return a;for(const r of RIVERS)if(x>=r.x0-3&&x<=r.x1+3)return {n:r.n,en:r.n==='那珂川'?'NAKA RIVER':'HAKATA RIVER',river:1};return null;}
 function litOnly(t,thr){const src=t.image;const c=document.createElement('canvas');c.width=src.width;c.height=src.height;const g=c.getContext('2d');g.drawImage(src,0,0);const d=g.getImageData(0,0,c.width,c.height),p=d.data;
   for(let i=0;i<p.length;i+=4){const r=p[i],gg=p[i+1],b=p[i+2];const lit=r>=235&&gg>=140&&(r-b)>=40;if(!lit){p[i]=p[i+1]=p[i+2]=0;}}g.putImageData(d,0,0);
@@ -469,6 +471,38 @@ function buildHakata(){
   addGeo('stone',boxGeo(3.6,.06,80,228,.04,0));LSRC.push({x:226,y:4,z:-12,c:0xe8f0ff,i:1.6});LSRC.push({x:226,y:4,z:12,c:0xe8f0ff,i:1.6});
   for(const z of [-36,-28,28,36])treeAt(227.5,z,1.1);
 }
+// ---- 薬院（天神の南、渡辺通り沿い）：城南線、天神から南へのびる鉄道の高架と薬院駅、カフェや雑貨の多い低めの街並み ----
+let TRAIN=null;
+function buildYakuin(){RESERVE.push({x0:-157,x1:-143,z0:34,z1:ZMAX},{x0:-143,x1:-131,z0:194,z1:216});
+  const X=-150;addGeo('stone',boxGeo(8,1,ZMAX-34,X,7.5,(34+ZMAX)/2));for(const s of [-1,1])addGeo('stone',boxGeo(.3,.9,ZMAX-34,X+s*3.85,8.4,(34+ZMAX)/2));
+  for(const s of [-1.2,1.2])for(const o of [-.75,.75])addGeo('grail',boxGeo(.12,.15,ZMAX-34,X+s+o,8.08,(34+ZMAX)/2));
+  for(let z=40;z<ZMAX;z+=14){if(ROADS.some(r=>inR(X,z,r,1.5)))continue;addGeo('stone',boxGeo(1.4,7,1.4,X,3.5,z));BLD.push({x0:X-.7,x1:X+.7,z0:z-.7,z1:z+.7,h:7});}
+  // 薬院駅（高架の駅：ホームの屋根と、渡辺通り側の駅舎）
+  addGeo('roof',boxGeo(9,.3,24,X,12.4,205));for(const z of [195,205,215])for(const s of [-1,1])addGeo('upole',boxGeo(.2,3.8,.2,X+s*3.6,10.4,z));
+  addBldK(-143,-131,196,214,8,'glass');addSign('薬院駅','#ffffff',false,-130.93,6,205,Math.PI/2,7,1.6);addSign('YAKUIN STA.','#3de0ff',false,-130.93,4.3,205,Math.PI/2,6,.9);
+  LSRC.push({x:-129,y:3,z:205,c:0xe8f0ff,i:1.8});LSRC.push({x:X,y:11,z:205,c:0xe8f0ff,i:1.4});
+  // 電車（高架を行き来する）
+  const g=new THREE.Group();const body=std(0xd8dce2,.35,.6,1),win=bas(0xffe8b0),stripe=bas(0xd02a3a);
+  for(let i=0;i<3;i++){const z0=i*19;box(2.8,3,18,body,0,1.5,z0,g);box(2.82,.9,16,win,0,2.1,z0,g);box(2.84,.25,18,stripe,0,.9,z0,g);}
+  g.position.set(X,8.1,60);lin(g);scene.add(g);TRAIN={g,z:60,dir:1,wait:0};
+  // 城南線の街路樹
+  for(let x=-240;x<-36;x+=13){if(ROADS.some(r=>r!==ROADS[ROADS.length-1]&&inR(x,182,r,4))||Math.abs(x-X)<6)continue;treeAt(x,172.5,.9);treeAt(x+6,191.5,.9);}}
+function updTrain(dt){const t=TRAIN;if(!t)return;if(t.wait>0){t.wait-=dt;return;}t.z+=t.dir*14*dt;
+  if(t.dir>0&&t.z>=190&&t.z<191&&!t.st){t.st=1;t.wait=6;}if(t.z<185)t.st=0;// 薬院駅で停車
+  if(t.z>ZMAX+40){t.dir=-1;t.wait=4;}if(t.z<10){t.dir=1;t.wait=4;}t.g.position.z=t.z;}
+// ---- 呉服町（大博通りと明治通りの交差点。博多駅の北、櫛田神社の北東）：オフィス街、交差点の案内標識、聖福寺の山門 ----
+function buildGofuku(){RESERVE.push({x0:228,x1:XMAX,z0:-206,z1:-144});
+  // 交差点の案内標識（大博通りの上）
+  for(const x of [212.6,227.4])addGeo('upole',boxGeo(.35,7.4,.35,x,3.7,-116));addGeo('upole',boxGeo(15.2,.35,.35,220,7.2,-116));
+  addSign('呉服町','#3d8bff',false,220,8.4,-115.8,0,6,1.5);addSign('呉服町','#3d8bff',false,220,8.4,-116.2,Math.PI,6,1.5);addSign('GOFUKUMACHI','#ffffff',false,220,6.6,-115.8,0,6,.8);
+  // 交差点角のオフィスビル
+  addBldK(196,212,-140,-116,62,'glass');addSign('呉服町','#ffffff',false,212.07,52,-128,Math.PI/2,10,2.4);addBldK(228,246,-140,-112,48,'glass');
+  // 聖福寺（大博通りの東。山門・塀・本堂・松）
+  const sz=-175;for(const [x0,x1,z0,z1] of [[228,229,-206,-180],[228,229,-170,-144],[228,XMAX,-207,-206],[228,XMAX,-144,-143]]){addGeo('wood',boxGeo(x1-x0,2.2,z1-z0,(x0+x1)/2,1.1,(z0+z1)/2));BLD.push({x0,x1,z0,z1,h:2.2});}
+  for(const dz of [-3.6,3.6]){addGeo('wood',boxGeo(.7,5.6,.7,228.5,2.8,sz+dz));BLD.push({x0:228.1,x1:228.9,z0:sz+dz-.4,z1:sz+dz+.4,h:5.6});}
+  {const r=prismGeo(10,3.6,2);r.rotateY(Math.PI/2);r.translate(228.5,5.6,sz);addGeo('roofT',r);}addSign('聖福寺','#ffe0a0',true,227.9,4.4,sz,-Math.PI/2,.8,2.4);
+  addGeo('stone',boxGeo(12,.06,3,235,.04,sz));addBldK(238,247,sz-6,sz+6,6,'wood');{const r=prismGeo(14,11,3.4);r.rotateY(Math.PI/2);r.translate(242.5,6,sz);addGeo('roofT',r);}
+  for(const [x,z] of [[233,-196],[236,-156],[241,-198],[233,-152],[244,-154]])treeAt(x,z,1.3);for(const dz of [-2.4,2.4])LSRC.push({x:231,y:1.6,z:sz+dz,c:0xffc078,i:1.2});}
 function streetFurniture(){
   const H=ROADS.filter(r=>r.x1-r.x0>r.z1-r.z0),V=ROADS.filter(r=>!(r.x1-r.x0>r.z1-r.z0));
   for(const h of H)for(const v of V){if(v.z0>h.z1||v.z1<h.z0)continue;if(isWater((v.x0+v.x1)/2,(h.z0+h.z1)/2))continue;
@@ -487,7 +521,7 @@ function streetFurniture(){
     const ry=rand(0,TAU);for(const d of [-.55,.55]){const w=new THREE.TorusGeometry(.32,.035,5,12);w.rotateY(ry+Math.PI/2);w.translate(x+Math.sin(ry)*d,.34,z+Math.cos(ry)*d);addGeo('bike',w);}
     const f=boxGeo(.05,.05,1.1,0,0,0,ry);f.translate(x,.6,z);addGeo('bike',f);const s2=boxGeo(.05,.5,.05,x+Math.sin(ry)*-.3,.6,z+Math.cos(ry)*-.3);addGeo('bike',s2);const hb=boxGeo(.5,.05,.05,0,0,0,ry);hb.translate(x+Math.sin(ry)*.45,.95,z+Math.cos(ry)*.45);addGeo('bike',hb);n++;}
   // Tenjin subway entrances
-  for(const [x,z,ry] of [[-121.5,-86,Math.PI/2],[-98.5,-114,-Math.PI/2],[-121.5,104,Math.PI/2],[-180,-86,Math.PI/2]]){if(inBld(x,z,1))continue;const g=boxGeo(2.4,2.6,4.4,0,1.3,0,ry);g.translate(x,0,z);addGeo('glass',g);BLD.push({x0:x-1.3,x1:x+1.3,z0:z-2.3,z1:z+2.3,h:2.6});addSign('地下鉄 天神','#3d8bff',false,x+Math.sin(ry)*1.25,2.2,z+Math.cos(ry)*1.25,ry,2.2,.6);}
+  for(const [x,z,ry,nm] of [[-121.5,-86,Math.PI/2],[-98.5,-114,-Math.PI/2],[-121.5,104,Math.PI/2],[-180,-86,Math.PI/2],[-121.5,198,Math.PI/2,'地下鉄 薬院'],[230,-118,-Math.PI/2,'地下鉄 呉服町']]){if(inBld(x,z,1))continue;const g=boxGeo(2.4,2.6,4.4,0,1.3,0,ry);g.translate(x,0,z);addGeo('glass',g);BLD.push({x0:x-1.3,x1:x+1.3,z0:z-2.3,z1:z+2.3,h:2.6});addSign(nm||'地下鉄 天神','#3d8bff',false,x+Math.sin(ry)*1.25,2.2,z+Math.cos(ry)*1.25,ry,2.2,.6);}
 }
 // ================= BUILD WORLD =================
 const LSRC=[],LAMPS=[];const SIGNGEO={},REFL={};const addSign=(text,col,vert,x,y,z,ry,w,h)=>{const s=signTex(text,col,vert);if(y<12&&Math.random()<.5)LSRC.push({x:x+Math.sin(ry)*1.5,y,z:z+Math.cos(ry)*1.5,c:parseInt(col.slice(1),16),i:1.6});const g=new THREE.PlaneGeometry(w,h);g.rotateY(ry);g.translate(x,y,z);(SIGNGEO[s.key]||(SIGNGEO[s.key]={s,g:[]})).g.push(g);
@@ -505,6 +539,8 @@ function decorate(b,kind){const s=faceToOpen(b);const h=b.h;const along=(s==='+x
     addSign(txt,col,vert,x,y,z,ry,w,hh);};
   if(kind==='N'&&h>8){const u=rand(.12,.88),a=along[0]+u*len;const hh=Math.min(h-3,rand(6,12));const yy=2.8+hh/2;
     if(s==='+x')addTenant(b.x1+.9,yy,a,0,hh);else if(s==='-x')addTenant(b.x0-.9,yy,a,Math.PI,hh);else if(s==='+z')addTenant(a,yy,b.z1+.9,Math.PI/2,hh);else addTenant(a,yy,b.z0-.9,-Math.PI/2,hh);}
+  if(kind==='Y'){if(Math.random()<.7)place(rand(.2,.8),rand(2.6,3.4),Math.min(len-1,4.5),1,pick(Y_N),pick(['#ffe8b0','#ffb238','#9fe8c8','#ff9ec4','#ffffff']),false,false);if(Math.random()<.3)place(rand(.2,.8),rand(5,8),1.2,3.2,pick(['珈琲','古着','花屋','美容室','雑貨','パン']),pick(['#ffe8b0','#9fe8c8']),true,true);return;}
+  if(kind==='G'){if(Math.random()<.5)place(.5,h-2.4,Math.min(len-1,10),2.2,pick(G_N),pick(['#ffffff','#9fc8ff','#3de0ff','#ffe8b0']),false,false);if(Math.random()<.4)place(rand(.2,.8),3,Math.min(len-1,5),1.2,pick(['CAFE','銀行','郵便局','そば','定食','書店']),pick(['#ffe8b0','#ffffff']),false,false);return;}
   if(kind==='H'){if(Math.random()<.45)place(rand(.2,.8),rand(2.6,3.6),Math.min(len-1,4),1,pick(['居酒屋','博多ラーメン','明太子','喫茶','酒店','焼鳥','うどん','もつ鍋']),pick(['#ffe14d','#ff3d8b','#ffb238','#fff0d0']),false,false);return;}
   if(kind==='N'){const n=ri(1,3);for(let i=0;i<n;i++){const vh=Math.min(h-3,rand(5,9));place(rand(.15,.85),rand(3+vh/2,Math.max(3.2+vh/2,h-vh/2-.5)),1.5,vh,pick(N_V),pick(NEON),true,Math.random()<.55);}
     if(Math.random()<.6)place(.5,rand(2.6,3.4),Math.min(len-1,7),1.6,pick(N_H),pick(NEON),false,false);}
@@ -516,6 +552,8 @@ function genDistrict(x0,x1,z0,z1,step,kind){for(let cx=x0;cx<x1;cx+=step)for(let
     if(ok){let b;
       if(kind==='H'){if(Math.random()<.42&&w*d<300){const hh=rand(5,7.5);b=addBldK(rx0,rx1,rz0,rz1,hh,'wood');const ax=(rx1-rx0)>(rz1-rz0);const r=prismGeo(ax?rx1-rx0+.8:rz1-rz0+.8,ax?rz1-rz0+.8:rx1-rx0+.8,rand(1.8,2.6));if(!ax)r.rotateY(Math.PI/2);r.translate((rx0+rx1)/2,hh,(rz0+rz1)/2);addGeo('tile',r);}
         else b=addBldK(rx0,rx1,rz0,rz1,rand(10,24),pick(['apt','apt2']));}
+      else if(kind==='G'&&Math.random()<.55){b=addBldK(rx0,rx1,rz0,rz1,rand(28,62),'glass');}
+      else if(kind==='Y'){const hh=rand(7,17);b=Math.random()<.4?addBldK(rx0,rx1,rz0,rz1,hh,pick(['apt','apt2'])):addBld(rx0,rx1,rz0,rz1,hh,ri(0,BMATS.length-1));}
       else if(kind==='T'&&Math.random()<.45){const hh=rand(36,72);b=addBldK(rx0,rx1,rz0,rz1,hh,'glass');const iw=(rx1-rx0)*.7,id=(rz1-rz0)*.7;const cr=bldGeo(iw,rand(5,12),id);cr.translate((rx0+rx1)/2,hh,(rz0+rz1)/2);addGeo('glass',cr);}
       else{const hh=kind==='T'?rand(16,58):kind==='N'?rand(10,30):rand(12,40);b=addBld(rx0,rx1,rz0,rz1,hh,ri(0,BMATS.length-1));}
       decorate(b,kind);break;}w*=.7;d*=.7;}}}
@@ -573,7 +611,9 @@ function buildWorld(){
   addBld(44,58,6,17,16,3).noStore=1;addSign('BAR YAHMAN','#ff5a1a',false,51,4.3,5.92,Math.PI,9,1.9);addSign('ヤーマン 2F','#ffe14d',true,57.3,7.5,5.2,Math.PI/2,1.4,6);
   addSign('夜のディズニーランド','#3de0ff',false,51,11,5.92,Math.PI,11,1.7);box(1.6,2.4,.1,bas(0x3a0a06),51,1.2,5.95);LSRC.push({x:51,y:3,z:3,c:0xff6a2a,i:2});LSRC.push({x:51,y:3,z:3,c:0xff6a2a,i:0});
   // districts
-  genDistrict(-246,-44,-246,246,26,'T');genDistrict(0,64,-160,160,14,'N');genDistrict(0,64,-246,-160,22,'E');genDistrict(0,64,160,246,22,'E');buildHakata();genDistrict(90,212,-236,236,22,'H');genDistrict(228,246,-236,236,18,'H');
+  buildYakuin();buildGofuku();
+  genDistrict(-246,-44,-246,140,26,'T');genDistrict(-246,-44,140,246,18,'Y');genDistrict(0,64,-160,160,14,'N');genDistrict(0,64,-246,-160,22,'E');genDistrict(0,64,160,246,22,'E');buildHakata();
+  genDistrict(140,212,-236,-60,22,'G');genDistrict(90,140,-236,-60,22,'H');genDistrict(90,212,-60,236,22,'H');genDistrict(228,246,-236,-60,18,'G');genDistrict(228,246,-60,236,18,'H');
   streetFurniture();
   // utility poles & wires along Nakasu lanes
   const wpts=[];for(const zl of [-50,45,-5]){let prev=null;for(let x=3;x<64;x+=11){const z=zl+(zl===-5?-4.3:-2.6);if(inBld(x,z,.3)||inR(x,z,ROADS[4],1)){prev=null;continue;}addGeo('upole',boxGeo(.28,8.5,.28,x,4.25,z));addGeo('upole',boxGeo(1.6,.14,.14,x,7.6,z));
@@ -992,7 +1032,29 @@ function animHuman(e,dt){const u=e.g.userData;if(u.rig)return animRig(e,dt,u.rig
 // ================= CARS =================
 const cars=[];
 const beamM=new THREE.MeshBasicMaterial({color:0xfff0c0,map:glowTex,transparent:true,opacity:.22,blending:THREE.AdditiveBlending,depthWrite:false});const beamG=new THREE.PlaneGeometry(3.4,10);
-function makeCarMesh(kind){const g=new THREE.Group();
+// 課金の車（スポーツカー・VIPセダン以外の6種）は形を個別に作る
+function specialCar(kind){const g=new THREE.Group();const W=(x,z,r,w)=>box(w||.3,r*2,r*2,0x0e0e0e,x,r,z,g);const glass=std(0x0a1018,.04,.9,1.8),chrome=std(0xe8e8ec,.15,1,1.4);let L=2.2;
+  if(kind==='kei'){const p=std(0xf4a0c0,.3,.4,1.2);box(1.6,.75,3.2,p,0,.6,0,g);box(1.5,.72,1.9,glass,0,1.3,-.1,g);box(1.52,.07,1.8,p,0,1.68,-.1,g);for(const [x,z] of [[.78,1.05],[-.78,1.05],[.78,-1.05],[-.78,-1.05]])W(x,z,.26,.26);L=1.62;}
+  else if(kind==='suv'){const p=std(0x2a4a3a,.35,.4,1.1);box(2,.9,4.5,p,0,.85,0,g);box(1.82,.72,2.6,glass,0,1.65,-.3,g);box(1.86,.08,2.5,p,0,2.05,-.3,g);for(const x of [.8,-.8])box(.08,.08,2.3,chrome,x,2.14,-.3,g);
+    box(.7,.7,.25,0x111111,0,1.1,-2.35,g);for(const [x,z] of [[1,1.5],[-1,1.5],[1,-1.5],[-1,-1.5]])W(x,z,.42,.36);L=2.28;}
+  else if(kind==='classic'){const p=std(0xe8dcc0,.3,.3,1.1);box(1.8,.55,4.4,p,0,.62,0,g);box(1.82,.08,4.42,bas(0xc0202a),0,.78,0,g);box(1.5,.5,1.9,glass,0,1.15,-.3,g);box(1.52,.06,1.8,p,0,1.42,-.3,g);
+    for(const z of [2.25,-2.25])box(1.9,.15,.15,chrome,0,.45,z,g);for(const x of [.6,-.6]){const h=new THREE.Mesh(new THREE.CylinderGeometry(.13,.13,.06,12),bas(0xfff2c0));h.rotation.x=Math.PI/2;h.position.set(x,.72,2.22);g.add(h);}
+    for(const [x,z] of [[.9,1.4],[-.9,1.4],[.9,-1.4],[-.9,-1.4]])W(x,z,.3);L=2.3;}
+  else if(kind==='ev'){const p=std(0xe8eef4,.15,.7,1.6);box(1.95,.5,4.5,p,0,.5,0,g);box(1.6,.45,2.6,glass,0,.98,-.2,g);box(1.62,.04,2.5,p,0,1.22,-.2,g);box(1.8,.06,.06,bas(0x9ff0ff),0,.62,2.26,g);
+    const ug=new THREE.Mesh(new THREE.PlaneGeometry(2.4,4.8),new THREE.MeshBasicMaterial({color:0x3de0ff,map:glowTex,transparent:true,opacity:.7,blending:THREE.AdditiveBlending,depthWrite:false}));ug.rotation.x=-Math.PI/2;ug.position.y=.05;g.add(ug);
+    for(const [x,z] of [[.92,1.4],[-.92,1.4],[.92,-1.4],[-.92,-1.4]])W(x,z,.3);L=2.28;}
+  else if(kind==='limo'){const p=std(0xf2f2f4,.25,.5,1.3);box(1.95,.62,6.6,p,0,.62,0,g);box(1.7,.55,4.6,glass,0,1.18,-.3,g);box(1.72,.07,4.5,p,0,1.5,-.3,g);box(1.97,.05,6.62,chrome,0,.95,0,g);
+    for(const [x,z] of [[.92,2.4],[-.92,2.4],[.92,-2.4],[-.92,-2.4]])W(x,z,.31);L=3.32;}
+  else if(kind==='dekotora'){const cab=std(0x1a3a8a,.3,.5,1.2),cargo=std(0xc8ccd4,.2,.9,1.4);box(2.2,1.7,2,cab,0,1.3,2.5,g);box(2,.8,.08,glass,0,1.75,3.52,g);box(2.1,.6,.1,chrome,0,.8,3.55,g);
+    box(2.3,2.3,5.4,cargo,0,1.65,-1.3,g);for(const s of [-1,1])for(let i=0;i<6;i++)box(.04,1.6,.7,bas(pick([0xff3d8b,0x3de0ff,0xffd84a,0x4dff88])),s*1.17,1.65,-3.6+i*.92,g);
+    for(let i=0;i<9;i++)box(.18,.18,.18,bas(pick([0xffd84a,0xff5a3d,0x3de0ff])),-1+i*.25,2.9,-3.9,g);for(let i=0;i<8;i++)box(.16,.16,.16,bas(0xffd84a),-.9+i*.26,2.25,3.5,g);
+    for(const [x,z] of [[1.05,2.5],[-1.05,2.5],[1.05,-.6],[-1.05,-.6],[1.05,-2.8],[-1.05,-2.8]])W(x,z,.45,.4);L=3.6;}
+  for(const x of [.55,-.55]){box(.36,.15,.05,bas(0xfff2c0),x,.7,L,g);box(.36,.13,.05,bas(0xff2020),x,.72,-L+(kind==='dekotora'?-.4:0),g);}
+  const b=new THREE.Mesh(beamG,beamM);b.rotation.x=-Math.PI/2;b.position.set(0,.06,L+4.8);g.add(b);
+  const sh=new THREE.Mesh(new THREE.PlaneGeometry(2.6,L*2+.6),shadowM);sh.rotation.x=-Math.PI/2;sh.position.y=.03;g.add(sh);
+  g.traverse(o=>{if(o.isMesh&&o.geometry===BOX)o.castShadow=true;});lin(g);scene.add(g);return g;}
+const SPECIAL_CARS=['kei','suv','classic','ev','limo','dekotora'];
+function makeCarMesh(kind){if(SPECIAL_CARS.includes(kind))return specialCar(kind);const g=new THREE.Group();
   if(kind==='van')g.scale.set(1.12,1.3,1.18);const col=kind==='van'?0x0b0b0d:kind==='police'?0xf2f2f2:kind==='taxi'?pick([0xf0c020,0x2a6a3a,0xe8e8e8]):kind==='sports'?0xc4101c:kind==='vip'?0x050507:pick([0xd0d0d8,0x1a1a20,0x8a1020,0x203a6a,0xe8e8e8,0x5a5a60,0xc06020,0x2a2a2a]);
   const paint=std(col,.28,.55,1.4),glass=std(0x0a1018,.04,.9,1.8);
   if(kind==='sports'){box(1.96,.5,4.4,paint,0,.52,0,g);box(1.6,.42,1.7,glass,0,.98,-.35,g);box(1.58,.06,1.5,paint,0,1.2,-.35,g);box(1.9,.06,.32,std(0x111111,.3,.5),0,1.05,-2.05,g);for(const x of [.75,-.75])box(.08,.26,.08,0x111111,x,.9,-2.05,g);}
@@ -1286,9 +1348,10 @@ function drivePlayer(c,dt){const mv=getMove();let thr=0,steer=0;
   if(mv.keys){thr=(keys.KeyW?1:0)-(keys.KeyS?1:0);steer=(keys.KeyA?1:0)-(keys.KeyD?1:0);}
   else if(mv.m>.2){const da=Math.atan2(mv.x,mv.z);const diff=angDiff(c.a,da);if(Math.abs(diff)<2.1){thr=mv.m;steer=clamp(diff*2.2,-1,1);}else{thr=-mv.m*.7;steer=clamp(-Math.sign(diff),-1,1);}}
   c.steer=steer;const brake=brakeHeld||keys.Space;
-  if(thr>0)c.v+=thr*(c.v<0?26:15)*dt;else if(thr<0)c.v+=thr*(c.v>0?28:10)*dt;
+  if(thr>0)c.v+=thr*(c.v<0?26:15)*(c.acc||1)*dt;else if(thr<0)c.v+=thr*(c.v>0?28:10)*dt;
   c.v*=Math.exp(-(brake?3.2:.35)*dt);c.v=clamp(c.v,-9,c.vmax||30);
-  c.a+=steer*clamp(c.v/5,-1,1)*1.9*dt*(brake&&Math.abs(c.v)>8?1.5:1);
+  c.a+=steer*clamp(c.v/5,-1,1)*1.9*(c.hand||1)*dt*(brake&&Math.abs(c.v)>8?1.5:1);
+  if(c.fame&&Math.abs(c.v)>6){S.fameT=(S.fameT||0)+dt;if(S.fameT>30){S.fameT=0;gainFollowers(ri(4,10),'目立つ車で街を流した');}}
   P.x=c.x;P.z=c.z;$('spd').textContent=Math.round(Math.abs(c.v)*3.6)+' km/h';}
 function enterCar(c){if(c.dead)return;if(c.driver==='npc'){const x=c.x+Math.cos(c.a)*2.2,z=c.z-Math.sin(c.a)*2.2;const d=spawnActor('ped',walkable(x,z)?x:P.x,walkable(x,z)?z:P.z,{look:c.police?'cop':pick(PEDLOOKS)});d.flee=8;
   if(c.police){addWanted(2);}else{crimeSeen(1);post(pick(['車ジャックされた！ 天神で！','今、目の前で車取られた…','運転手引きずり出されとった']));}}
@@ -1301,7 +1364,7 @@ function exitCar(force){const c=P.car;if(!c)return;if(!force&&Math.abs(c.v)>6){t
 function randPoint(dmin,dmax,ok){for(let i=0;i<20;i++){const a=rand(0,TAU),d=rand(dmin,dmax);const x=P.x+Math.sin(a)*d,z=P.z+Math.cos(a)*d;if(ok(x,z))return {x,z};}return null;}
 function nakasu(x,z){return x>-10&&x<70;}
 const PEDN=[32,46,58];
-function pedLook(x,z){return nakasu(x,z)?pick(['host','hostess','salary','salary','ol','hostess','oldman','student']):x<-30?pick(['salary','ol','ol','student','salary','hostess']):pick(PEDLOOKS);}
+function pedLook(x,z){if(x<-30&&z>140)return pick(['student','ol','ol','salary','hostess','student','oldman']);if(x>=134&&z<-60)return pick(['salary','salary','ol','salary','oldman','ol']);return nakasu(x,z)?pick(['host','hostess','salary','salary','ol','hostess','oldman','student']):x<-30?pick(['salary','ol','ol','student','salary','hostess']):pick(PEDLOOKS);}
 function spawnPedGroup(pt){const nk=nakasu(pt.x,pt.z);const r=Math.random();const n=r<.55?1:r<.85?2:3;const stand=Math.random()<(nk?.3:.18);let lead=null,c=0;
   for(let j=0;j<n;j++){const x=pt.x+(j?rand(-1.3,1.3):0),z=pt.z+(j?rand(-1.3,1.3):0);if(j&&!walkable(x,z))continue;const lk=pedLook(x,z);
     const e=spawnActor('ped',x,z,{look:lk,hp:30});c++;e.tough=lk==='host'||Math.random()<.12;if(n===1&&Math.random()<.12)e.drunk=true;
@@ -1431,6 +1494,12 @@ const PREM={
   w_knuckle:{cat:'weapon',n:'金のメリケンサック',d:'攻撃力 +40%',yen:4800,atk:1.4,col:0xe8b840},
   c_sports:{cat:'car',n:'スポーツカー「博多レッド」',d:'最高速度が速い（約137km/h）。ポーズ画面からいつでも呼べる。',yen:4800,kind:'sports',vmax:38,hp:150},
   c_vip:{cat:'car',n:'黒塗りのVIPセダン',d:'頑丈（耐久2倍）。ポーズ画面からいつでも呼べる。',yen:4800,kind:'vip',vmax:31,hp:320},
+  c_kei:{cat:'car',n:'ピンクの軽自動車',d:'加速がよく小回りがきく。路地向き。',yen:2500,kind:'kei',vmax:29,hp:120,acc:1.45,hand:1.35},
+  c_suv:{cat:'car',n:'SUV「玄界灘」',d:'大きく頑丈（耐久2倍）。体当たりに強い。',yen:4800,kind:'suv',vmax:33,hp:300,acc:1.1},
+  c_classic:{cat:'car',n:'昭和の旧車',d:'クリーム色に赤のライン。ハンドルが軽く、最高速度も速め（約126km/h）。',yen:4800,kind:'classic',vmax:35,hp:170,hand:1.2},
+  c_ev:{cat:'car',n:'未来のEV',d:'いちばん速い（約144km/h）。加速もよく、床下が光る。',yen:6100,kind:'ev',vmax:40,hp:150,acc:1.35},
+  c_limo:{cat:'car',n:'白いリムジン',d:'乗って街を流すと目立ち、フォロワーが少しずつ増える。',yen:7300,kind:'limo',vmax:32,hp:260,hand:.85,fame:1},
+  c_dekotora:{cat:'car',n:'デコトラ「中洲一番星」',d:'いちばん頑丈（耐久3倍）。光るトラックで目立ち、フォロワーが少しずつ増える。',yen:7300,kind:'dekotora',vmax:28,hp:450,acc:.85,hand:.8,fame:1},
   a_sun:{cat:'acc',n:'サングラス',d:'夜でも外さない。',yen:1200},
   a_chain:{cat:'acc',n:'金のネックレス',d:'太めの喜平チェーン。',yen:1200},
   a_watch:{cat:'acc',n:'金の腕時計',d:'左手首に。',yen:1200},
@@ -1493,7 +1562,7 @@ function restylePlayer(){if(!P||!RIG.ok)return;const og=P.g;const ng=makeRigged(
 let myCar=null;
 function callMyCar(){const it=S.eq.car&&PREM[S.eq.car];if(!it)return false;if(P.car||S.room||mission){toast('今は呼べない',1.6);return false;}
   if(myCar)removeCar(myCar);let pt=null;for(const q of ring(P,8,4,7))if(walkable(q.x,q.z)){pt=q;break;}if(!pt)pt={x:P.x+3,z:P.z};
-  const c=spawnCar(pt.x,pt.z,P.a,it.kind,{parked:true});c.vmax=it.vmax;c.hp=it.hp;c.keep=true;c.mine=true;myCar=c;toast(it.n+' が来た（近づいて「乗る」）',2.4);return c;}
+  const c=spawnCar(pt.x,pt.z,P.a,it.kind,{parked:true});c.vmax=it.vmax;c.hp=it.hp;c.acc=it.acc||1;c.hand=it.hand||1;c.fame=!!it.fame;c.keep=true;c.mine=true;myCar=c;toast(it.n+' が来た（近づいて「乗る」）',2.4);return c;}
 function premRow(box,id,onBuy){const it=PREM[id];const b=document.createElement('button');b.className='item';const own=it.cat!=='drink'&&S.own[id];
   const isEq=own&&(it.cat==='acc'?S.eq.acc.includes(id):S.eq[it.cat]===id);if(isEq)b.classList.add('eq');
   const l=document.createElement('div');l.textContent=it.n;const sm=document.createElement('small');sm.textContent=it.d;l.append(sm);
@@ -1784,7 +1853,7 @@ function drawMap(){const c=mctx,Wm=248,cx=124,cy=124,s=.9;c.setTransform(1,0,0,1
   if(S.room){c.fillStyle='#ff3d8b';c.font='bold 28px sans-serif';c.textAlign='center';c.fillText('店内',cx,cy+10);return;}
   const sn=Math.sin(camYaw),cs=Math.cos(camYaw);const a=-s*cs,b=-s*sn,cc=s*sn,d=-s*cs;c.setTransform(a,b,cc,d,cx-(a*P.x+cc*P.z),cy-(b*P.x+d*P.z));
   c.fillStyle='#2a2838';for(const r of [...LANES])c.fillRect(r.x0,r.z0,r.x1-r.x0,r.z1-r.z0);
-  c.fillStyle='#55556a';for(const r of ROADS)c.fillRect(r.x0,r.z0,r.x1-r.x0,r.z1-r.z0);
+  c.fillStyle='#55556a';for(const r of ROADS)c.fillRect(r.x0,r.z0,r.x1-r.x0,r.z1-r.z0);c.fillStyle='#9a8a6a';c.fillRect(-151.5,34,3,ZMAX-34);
   c.fillStyle='#1f5aa8';for(const r of RIVERS)c.fillRect(r.x0,ZMIN,r.x1-r.x0,ZMAX-ZMIN);
   c.fillStyle='#7a7a8a';for(const b of BRIDGES)c.fillRect(b.x0,b.z-b.w/2,b.x1-b.x0,b.z+b.w/2-(b.z-b.w/2));
   if(S.route&&S.route.length>1){c.lineJoin='round';c.lineCap='round';c.beginPath();const T=P.car||P;c.moveTo(T.x,T.z);for(let i=1;i<S.route.length;i++)c.lineTo(S.route[i][0],S.route[i][1]);c.strokeStyle='rgba(0,0,0,.7)';c.lineWidth=9;c.stroke();c.strokeStyle='#ffd84a';c.lineWidth=5;c.stroke();}
@@ -1843,7 +1912,7 @@ let areaT=0;function update(dt){S.t+=dt;
   if(S.goal&&S.goal.track)goalPil.position.set(S.goal.x,20,S.goal.z);
   if(S.room&&S.room.disco)S.room.disco.forEach((l,i)=>{const a=S.t*1.3+i*2.1;l.position.set(S.room.cx+Math.cos(a)*5,3.4,S.room.cz+Math.sin(a*1.2)*3.5);l.intensity=1.1+Math.sin(S.t*8+i)*.5;});
   if(S.room&&S.room.tiles&&Math.floor(S.t*4)!==S.tileT){S.tileT=Math.floor(S.t*4);for(const m of S.room.tiles)m.material=pick(S.room.tileM);}updPlayer(dt);updActors(dt);updCars(dt);updWanted(dt);
-  S.clock+=dt;if(S.clock>=30*60){S.clock=20*60;S.dealTip=0;post('夜が明けた。……そして、また次の夜がくる','@博多っ子速報');}
+  updTrain(dt);S.clock+=dt;if(S.clock>=30*60){S.clock=20*60;S.dealTip=0;post('夜が明けた。……そして、また次の夜がくる','@博多っ子速報');}
   popAcc+=dt;if(popAcc>1){popAcc=0;managePop();manageDealers();updEncounter();if(!S.room&&Math.random()<.04)post(pick(['中洲の屋台、今日も最高','天神のイルミ綺麗かった','那珂川の夜景、何回見てもよか','明太子おにぎり最強説','中洲で飲みすぎた。帰れん','博多ラーメンはバリカタ一択']));}
   checkWaiters();updCtx();
   if(S.targetT>0)S.targetT-=dt;
@@ -1884,7 +1953,7 @@ polR=new THREE.MeshBasicMaterial({color:0xff2020});polB=new THREE.MeshBasicMater
   P.g.visible=true;mode='title';$('loading').style.display='none';$('bNew').disabled=false;if(load())$('bCont').style.display='block';Net.init();
   if(new URLSearchParams(location.search).has('autostart'))begin(null);})();
 requestAnimationFrame(frame);
-window.__G={VENUES,enterVenue,leaveVenue,openVenueMenu,openTreat,doTreat,treatAll,openPhone,closePhone,phoneApp,addMsg,gainFollowers,FOUT,manageDealers,isDealerTime,LAMPS,FACES_M,FACES_F,FACE_PLAYER,V3:(x,y,z)=>new THREE.Vector3(x,y,z),PREM,Pay,premGrant,equip,callMyCar,openPrem,openShop,get Q(){return Q},PEDN,get mission(){return mission},dist,spawn:spawnActor,rm:removeActor,RIG,camYaw:()=>camYaw,setYaw:v=>camYaw=v,hostiles,knockOut,useMarker,markers,enterCar,POS,S,get P(){return P},actors,cars,BLD,MAINS,runMission,get mode(){return mode},advance};
+window.__G={get TRAIN(){return TRAIN},spawnCar,VENUES,enterVenue,leaveVenue,openVenueMenu,openTreat,doTreat,treatAll,openPhone,closePhone,phoneApp,addMsg,gainFollowers,FOUT,manageDealers,isDealerTime,LAMPS,FACES_M,FACES_F,FACE_PLAYER,V3:(x,y,z)=>new THREE.Vector3(x,y,z),PREM,Pay,premGrant,equip,callMyCar,openPrem,openShop,get Q(){return Q},PEDN,get mission(){return mission},dist,spawn:spawnActor,rm:removeActor,RIG,camYaw:()=>camYaw,setYaw:v=>camYaw=v,hostiles,knockOut,useMarker,markers,enterCar,POS,S,get P(){return P},actors,cars,BLD,MAINS,runMission,get mode(){return mode},advance};
 }
 </script>
 </body></html>
