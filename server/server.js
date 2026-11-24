@@ -257,7 +257,7 @@ async function handle(req, res) {
     const f = path.join(LEGAL_DIR, path.basename(p));
     if (fs.existsSync(f)) return send(res, 200, legalHtml(fs.readFileSync(f, 'utf8')), 'text/html; charset=utf-8');
   }
-  if (M === 'GET' && p === '/api/health') return send(res, 200, { ok: true, mode: CFG.mode, salesOpen: !salesBlockers().length, waitingFor: salesBlockers() });
+  if (M === 'GET' && p === '/api/health') return send(res, 200, { ok: true, mode: CFG.mode, salesOpen: !salesBlockers().length, waitingFor: salesBlockers(), persistentDisk: DB_ON_DISK });
 
   if (M === 'POST' && p === '/api/session') {
     rateLimit('session:' + ipOf(req), 20, 60e3);
