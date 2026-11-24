@@ -220,7 +220,7 @@ body.ttl #hud,body.ttl #mapw,body.ttl #topbtns,body.ttl #btns,body.ttl #feed{dis
 <div class="ov" id="phone"><div id="ph"><div id="phbar"><span id="phclk">20:00</span><span>📶 🔋</span></div><div id="phscr"></div>
   <div id="phnav"><button id="phBack" aria-label="戻る">‹</button><button id="phHome" aria-label="ホーム">●</button><button id="phClose" aria-label="閉じる">×</button></div></div></div>
 <div class="ov" id="pause"><div class="panel" style="text-align:center"><h3 class="dg" style="color:var(--pink)">ポーズ</h3>
-  <p style="font-size:13px;line-height:1.75;text-align:left">黄色の<b style="color:#ffd84a">◆</b>とミニマップの<b style="color:#ffd84a">黄色い線</b>＝次の目的地<br>黄色の<b style="color:#ffd84a">！</b>＝メインストーリー<br>水色の<b style="color:#3de0ff">？</b>＝サブストーリー<br>緑の<b style="color:#8dff7a">¥</b>＝屋台・コンビニ・飲み屋（回復）<br>右上の<b>📱</b>（Pキー）＝スマホ（連絡・ヨルスナ・カメラ）<br>居酒屋・スナック・バー・クラブに入ると、客に近づいて「奢る」、カウンターで「みんなに奢る」。奢るとヨルスナのフォロワーが増え、特典がもらえる<br>ミニマップの<b style="color:#c06bff">紫の点</b>＝売人（22時〜4時に街灯の下に現れる。倒すと商店会から報奨金）<br>攻撃を当ててゲージ満タンで<b style="color:#3de0ff">極</b>＝ヒートアクション。川・屋台・車・壁の近くで技が変わる。<br>市民や警官を殴る・車を奪うと<b style="color:#ffd84a">手配度</b>が上がる。警察の視界から消えれば下がる。</p>
+  <p style="font-size:13px;line-height:1.75;text-align:left">黄色の<b style="color:#ffd84a">◆</b>とミニマップの<b style="color:#ffd84a">黄色い線</b>＝次の目的地<br>黄色の<b style="color:#ffd84a">！</b>＝メインストーリー<br>水色の<b style="color:#3de0ff">？</b>＝サブストーリー<br>緑の<b style="color:#8dff7a">¥</b>＝屋台・コンビニ・飲み屋（回復）<br>右上の<b>📱</b>（Pキー）＝スマホ（連絡・ヨルスナ・カメラ）<br>居酒屋・スナック・バー・クラブに入ると、客に近づいて「奢る」、カウンターで「みんなに奢る」。奢るとヨルスナのフォロワーが増え、特典がもらえる<br>街ではよく絡まれる。頭に赤い<b style="color:#ff4a4a">！</b>が出た人が近づいてきたら構えろ（先に殴っても手配度は上がらない）。絡まれている人を助けるとお礼とフォロワー<br>ミニマップの<b style="color:#c06bff">紫の点</b>＝売人（22時〜4時に街灯の下に現れる。倒すと商店会から報奨金）<br>攻撃を当ててゲージ満タンで<b style="color:#3de0ff">極</b>＝ヒートアクション。川・屋台・車・壁の近くで技が変わる。<br>市民や警官を殴る・車を奪うと<b style="color:#ffd84a">手配度</b>が上がる。警察の視界から消えれば下がる。</p>
   <p id="pobj" style="font-size:14px;line-height:1.6;text-align:left;background:rgba(255,216,74,.12);border-left:4px solid #ffd84a;padding:8px 10px;border-radius:0 8px 8px 0"></p><button class="mbtn pri" id="bResume">再開</button><button class="mbtn" id="bSave">セーブ</button><button class="mbtn" id="bPrem" style="border-color:#ffd84a;color:#ffe9a0">💎 プレミアムショップ</button><button class="mbtn" id="bMyCar" style="display:none">🚗 マイカーを呼ぶ</button><button class="mbtn" id="bMyBike" style="display:none">🏍 バイクを呼ぶ</button><button class="mbtn" id="bQ">画質</button><button class="mbtn" id="bSpon">協力店舗：BAR YAHMAN</button><button class="mbtn" id="bTitle">タイトルへ</button></div></div>
 <div class="ov" id="ending"><h2 class="dg">第一部 完</h2><p id="endtx"></p><button class="mbtn pri" id="bEndOk">自由行動を続ける</button><button class="mbtn" id="bSpon2">協力店舗：BAR YAHMAN</button></div>
 <div class="ov" id="spon" style="background:rgba(0,0,0,.7);z-index:36"><div class="panel" style="text-align:left">
@@ -1031,7 +1031,7 @@ function animRig(e,dt,rig){const g=e.g;let y=e.y,rx=0;if(e.down){rx=-Math.PI/2;y
 const PEDLOOKS=['salary','salary','ol','hostess','host','student','oldman','salary','ol'];
 const actors=[];let P=null;
 function spawnActor(type,x,z,o={}){const lk=o.look||type;const g=RIG.ok?makeRigged(LOOK[lk]?lk:'salary',undefined,o.face,o.outfit):lin(makeHuman((LOOK[lk]||LOOK.salary)()));scene.add(g);
-  const e={type,x,z,a:o.a??rand(0,TAU),g,hp:o.hp||40,maxhp:o.hp||40,r:.42,kx:0,kz:0,speed:o.speed||3.8,dmg:o.dmg||9,reach:o.reach||1.7,windT:o.windT||.45,
+  const e={type,look:lk,x,z,a:o.a??rand(0,TAU),g,hp:o.hp||40,maxhp:o.hp||40,r:.42,kx:0,kz:0,speed:o.speed||3.8,dmg:o.dmg||9,reach:o.reach||1.7,windT:o.windT||.45,
     phase:rand(0,6),mv:0,t:0,cd:rand(.6,1.6),wind:0,hitT:0,atkT:0,down:false,dead:false,hostile:!!o.hostile,name:o.name||'',boss:!!o.boss,guard:o.guard||0,m:!!o.m,
     money:o.money||ri(600,1800),flee:0,strafe:Math.random()<.5?1:-1,rushCd:rand(3,6),rush:0,tough:!!o.tough,getUp:0,sink:0,y:0,npc:!!o.npc,talkCd:0};
   actors.push(e);return e;}
@@ -1167,7 +1167,7 @@ function updFX(dt){for(const p of fx){if(p.life<=0)continue;p.life-=dt;if(p.life
 // markers
 const markers=[];
 function iconTex(ch,col){return canvasTex(128,128,(g)=>{g.beginPath();g.arc(64,64,54,0,TAU);g.fillStyle='rgba(0,0,0,.75)';g.fill();g.lineWidth=8;g.strokeStyle=col;g.shadowColor=col;g.shadowBlur=14;g.stroke();g.shadowBlur=0;g.fillStyle=col;g.font='76px '+FONT;g.textAlign='center';g.textBaseline='middle';g.fillText(ch,64,68);});}
-const ICON={main:iconTex('！','#ffd84a'),sub:iconTex('？','#3de0ff'),shop:iconTex('¥','#8dff7a'),exit:iconTex('出','#ffffff')};
+const ICON={warn:iconTex('！','#ff4a4a'),main:iconTex('！','#ffd84a'),sub:iconTex('？','#3de0ff'),shop:iconTex('¥','#8dff7a'),exit:iconTex('出','#ffffff')};
 const pillarG=new THREE.CylinderGeometry(.9,.9,40,16,1,true);
 function makeMarker(k,p,id,label){const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:ICON[k],depthTest:true}));sp.scale.set(1.5,1.5,1);scene.add(sp);
   const col=k==='main'?0xffd84a:k==='sub'?0x3de0ff:k==='exit'?0xffffff:0x8dff7a;const pil=new THREE.Mesh(pillarG,new THREE.MeshBasicMaterial({color:col,transparent:true,opacity:.18,blending:THREE.AdditiveBlending,depthWrite:false,side:THREE.DoubleSide}));pil.position.set(p.x,20,p.z);scene.add(pil);
@@ -1324,6 +1324,7 @@ function doHit(act){const range=act.k==='k'?2.3:1.95,cone=act.k==='k'?1.0:.9;let
     hurtActor(e,dmg,ang,kb,act.k==='k');any=true;}
   if(any){P.heat=Math.min(100,P.heat+(act.k==='k'?11:7)*heatNow());hitstop=.055;shake=Math.max(shake,.18);(act.k==='k'?SFX.kick:SFX.hit)();}}
 function hurtActor(e,dmg,ang,kb,isKick){
+  if(e.karami&&!e.hostile&&!e.npc)engage(e);
   if(e.dealer&&!e.hostile){e.hostile=true;e.ai=null;e.flee=0;toast(pick(['売人「やる気か、コラ！」','売人「なんしよっとか！」']),1.4);}
   if(e.guard&&!isKick&&e.hitT<=0&&!e.down&&Math.abs(angDiff(e.a,Math.atan2(P.x-e.x,P.z-e.z)))<.9&&Math.random()<e.guard){dmg*=.15;kb*=.3;burst(e.x,1.4,e.z,6,0x6ab8ff,4,.5,6,.25);SFX.block();if(Math.random()<.3)toast('ガードされた！ 蹴りで崩せ',1.4);}
   else burst(e.x,1.4,e.z,9,0xfff0a0,5,.55,8,.3);
@@ -1902,9 +1903,48 @@ const SUBS={
   await talk([['仕切り屋','三連勝！ あんた、ほんなこつ強かね。また来んしゃい。']]);removeActor(mc);reward(25000+S.ch*5000,'中洲の駐車場でストリートファイトやっとった…','@nakasu_watcher');}}};
 
 // random street encounters
-function updEncounter(){if(mission||S.room||P.car||S.ch<1||S.wanted>0||S.t<S.nextEnc)return;S.nextEnc=S.t+rand(55,95);
-  const f=ring(P,ri(2,3),9,13).map(q=>spawnActor('thug',q.x,q.z,{look:'thug',hostile:true,hp:55,name:pick(NAMES),money:ri(1000,2600)}));
-  toast(pick(['チンピラ「おいオッサン、なんガン飛ばしとーとや！」','チンピラ「肩ぶつかったろうが。治療費払えや」','半グレ「福博連合に逆らう男ってお前か？」','トクリュウの実行役「指示役の命令や。お前、ちょっと痛い目見てもらうぞ」']),2.6);}
+// ================= 街で絡まれる =================
+// 通行人やチンピラが「！」を出して近づき、一言言ってから殴りかかってくる。絡まれている女性を助ける場面もある。
+// 絡んできた相手を先に殴っても手配度は上がらない。中洲・天神では25〜45秒ごと、ほかは35〜60秒ごと
+const KLINE={bump:['「おい、今ぶつかったろうが！」','「肩当たったっちゃけど。謝らんと？」','「なんか文句あるとか？ あぁ？」','「さっきからジロジロ見よったろ」'],
+  drunk:['酔っぱらい「おい兄ちゃん…ワシの酒が飲めんとか〜！」','酔っぱらい「ひっく…なんば見よっとか！」','酔っぱらい「もう一軒付き合えって言いよろうが！」'],
+  shake:['「兄ちゃん、ちょっと金貸してくれんね？」','「財布置いていけや。痛い目見たくなかろ？」','「ここ通るなら通行料ばい」'],
+  tout:['客引き「無視せんでよ！ こっち来いって！」','客引き「おい、話くらい聞けや！」'],
+  gang:['チンピラ「おいオッサン、なんガン飛ばしとーとや！」','半グレ「福博連合に逆らう男ってお前か？」','トクリュウの実行役「指示役の命令や。お前、ちょっと痛い目見てもらうぞ」']};
+function warnMark(e,on){if(on&&!e.warn){const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:ICON.warn,depthTest:false}));sp.scale.set(1.05,1.05,1);sp.position.y=2.55;e.g.add(sp);e.warn=sp;}if(!on&&e.warn){e.g.remove(e.warn);e.warn=null;}}
+function engage(e){if(e.hostile)return;const grp=e.kgroup||[e];for(const a of grp){if(a.dead||a.npc||!actors.includes(a))continue;a.hostile=true;a.ai=null;a.flee=0;a.speed=a.drunk?3:3.9;warnMark(a,false);}
+  if(e.kline)toast(e.kline,2.6);SFX.ui();}
+function aiApproach(e,dt){const d=dist(e,P);e.mv=0;if(d>95){dropKarami(e);return;}if(P.car)return;
+  e.a=lerpAng(e.a,Math.atan2(P.x-e.x,P.z-e.z)+(e.drunk?Math.sin(S.t*2.5+e.phase)*.5:0),dt*4);
+  if(d>2.3)go(e,e.drunk?1.5:2.7,dt);else engage(e);}
+function aiHarass(e,dt){e.mv=0;const v=e.victim;if(v&&actors.includes(v))e.a=lerpAng(e.a,Math.atan2(v.x-e.x,v.z-e.z),dt*3);
+  if(dist(e,P)>95){dropKarami(e);return;}if(!P.car&&dist(e,P)<7)engage(e);}
+function dropKarami(e){for(const a of (e.kgroup||[e]))if(actors.includes(a)&&!a.hostile)removeActor(a);if(S.rescue&&S.rescue.th.includes(e)){if(actors.includes(S.rescue.v))removeActor(S.rescue.v);S.rescue=null;}}
+function karamiPed(minD,maxD,pred){let best=null;for(const a of actors){if(a.type!=='ped'||a.hostile||a.npc||a.m||a.dead||a.karami||a.lead||a.kego)continue;const d=dist(a,P);if(d<minD||d>maxD||(pred&&!pred(a)))continue;if(!best||Math.random()<.4)best=a;}return best;}
+function startKarami(e,kind,line,name){e.karami=true;e.kline=line;if(name)e.name=name;e.ai=aiApproach;e.stand=false;e.flee=0;e.money=ri(1200,3200);if(kind==='drunk'){e.drunk=true;e.hp=e.maxhp=40;e.dmg=6;}else{e.hp=e.maxhp=ri(55,80);e.dmg=9;}warnMark(e,true);}
+const KEV={
+  bump:()=>{let e=karamiPed(10,30,a=>a.tough||['host','salary','student'].includes(a.look));if(!e){const pt=randPoint(14,24,walkable);if(!pt)return false;e=spawnActor('ped',pt.x,pt.z,{look:pick(['host','salary','student']),hp:60});}
+    startKarami(e,'bump',pick(KLINE.bump),'ガラの悪い男');return true;},
+  drunk:()=>{const pt=randPoint(12,22,walkable);if(!pt)return false;const e=spawnActor('ped',pt.x,pt.z,{look:pick(['salary','salary','oldman']),hp:40});startKarami(e,'drunk',pick(KLINE.drunk),'酔っぱらい');return true;},
+  shake:()=>{const pt=randPoint(14,22,walkable);if(!pt)return false;const g=ring(pt,2,1,2).map(q=>spawnActor('ped',q.x,q.z,{look:pick(['thug','host']),hp:65}));g.forEach(e=>{startKarami(e,'shake',null,'カツアゲ');e.kgroup=g;});g[0].kline=pick(KLINE.shake);g.forEach(e=>e.money=ri(2500,4500));return true;},
+  tout:()=>{if(!nakasu(P.x,P.z))return false;let e=karamiPed(6,22,a=>a.tout);if(!e){const pt=randPoint(10,18,walkable);if(!pt)return false;e=spawnActor('ped',pt.x,pt.z,{look:'host',hp:55});}e.tout=false;startKarami(e,'tout',pick(KLINE.tout),'しつこい客引き');return true;},
+  gang:()=>{ring(P,ri(2,3),9,13).forEach(q=>spawnActor('thug',q.x,q.z,{look:'thug',hostile:true,hp:55,name:pick(NAMES),money:ri(1000,2600)}));toast(pick(KLINE.gang),2.6);return true;},
+  rescue:()=>{if(S.rescue)return false;const pt=randPoint(14,26,walkable);if(!pt)return false;const v=spawnActor('npc',pt.x,pt.z,{look:pick(['ol','hostess']),name:'女性'});v.npc=true;v.faceP=false;
+    const th=ring(pt,2,1.3,2).map(q=>{const e=spawnActor('ped',q.x,q.z,{look:pick(['thug','host']),hp:60,name:pick(['しつこい男','ナンパ男','福博連合の下っ端'])});e.karami=true;e.m=true;e.ai=aiHarass;e.victim=v;e.money=ri(1500,3000);e.kline='「なんや、お前。関係なかろうが！」';warnMark(e,true);return e;});
+    th.forEach(e=>e.kgroup=th);v.a=Math.atan2(th[0].x-v.x,th[0].z-v.z);S.rescue={v,th};toast('女性「やめてください！ 誰か…！」（近くで女性が絡まれている）',3.2);return true;}};
+function updEncounter(){
+  if(S.rescue){const R=S.rescue;if(R.th.some(e=>!e.dead&&!actors.includes(e))){dropKarami(R.th[0]);S.rescue=null;}else if(R.th.every(e=>e.dead)){S.rescue=null;if(actors.includes(R.v)){const v=R.v;v.faceP=true;setTimeout(()=>{toast('女性「ありがとうございました…！ これ、少しですけど」',3);S.money+=5000;SFX.coin();gainFollowers(ri(20,40),'人助け');
+      post(pick(['中洲で絡まれとった女の人を助けた人がおった。かっこよすぎ','天神で男2人を一瞬で追い払った人がいた。何者？','困っとる人を助ける強面のお兄さん、博多の夜のヒーロー']),pick(HANDLES));setTimeout(()=>{if(actors.includes(v))removeActor(v);},4500);},700);}}}
+  for(const a of actors.slice())if(a.karami&&!a.hostile&&!a.npc&&dist(a,P)>95)dropKarami(a);
+  // 人混みを走ってぶつかると、相手が怒ることがある
+  if(!mission&&!S.room&&!P.car&&(P.mv||0)>5&&S.t>(S.bumpCd||0)){for(const a of actors){if(a.type!=='ped'||a.hostile||a.npc||a.m||a.karami||a.dead||dist(a,P)>1.1)continue;S.bumpCd=S.t+12;if(Math.random()<.35){startKarami(a,'bump','「痛っ…おい待てコラ！ ぶつかっといて謝りもせんとか！」','ぶつかった男');}break;}}
+  if(mission||S.room||P.car||S.ch<1||S.wanted>0||S.t<S.nextEnc)return;
+  if(actors.some(a=>(a.hostile&&!a.dead&&dist(a,P)<40)||(a.karami&&!a.hostile&&!a.npc))){S.nextEnc=S.t+8;return;}
+  const busy=nakasu(P.x,P.z)||P.x<-30;S.nextEnc=S.t+(busy?rand(25,45):rand(35,60));
+  const night=typeof isDealerTime==='function'&&isDealerTime();
+  const bag=[['bump',30],['rescue',20],['drunk',night?20:12],['shake',15],['gang',12],['tout',nakasu(P.x,P.z)?12:0]];
+  let r=Math.random()*bag.reduce((t,b)=>t+b[1],0),kind='gang';for(const [k,w] of bag){if((r-=w)<0){kind=k;break;}}
+  if(!KEV[kind]())KEV.gang();}
 
 // ================= DEATH / SAVE =================
 function die(){mode='dead';$('dead').style.display='flex';}
@@ -1927,7 +1967,7 @@ function begin(data){initAudio();document.body.classList.remove('ttl');$('title'
   if(data){S.money=data.money||0;S.ch=data.v===2?(data.ch||0):({0:0,1:1,2:2,3:4,4:6,5:7}[data.ch||0]??0);S.subs=data.subs||{};S.maxhp=data.maxhp||100;S.atk=data.atk||1;S.own=data.own||{};S.followers=data.fol||0;S.posts=data.posts||[];S.ms=data.ms||[];S.msgs=data.msgs||null;if(!S.msgs){S.msgs={};addMsg('mama',INTRO_MSG,true);for(let c=1;c<=S.ch;c++)chMsgs(c,true);}updBadge();S.gotGrants=data.gotGrants||[];S.eq=Object.assign({outfit:null,weapon:null,car:null,bike:null,acc:[]},data.eq||{});P.hp=S.maxhp;restylePlayer();}
   P.x=POS.start.x;P.z=POS.start.z;P.a=Math.PI/2;
   if(data){try{const r=JSON.parse(sessionStorage.getItem('nakasu_ret')||'null');sessionStorage.removeItem('nakasu_ret');if(r&&walkable(r.x,r.z)){P.x=r.x;P.z=r.z;}}catch(e){}}
-  camYaw=P.a;refreshMarkers();S.nextEnc=S.t+50;setTimeout(()=>Net.pullGrants(),1500);
+  camYaw=P.a;refreshMarkers();S.nextEnc=S.t+25;setTimeout(()=>Net.pullGrants(),1500);
   if(!data){playVideo('v0').then(()=>still('c0',[['','五年。博多を離れ、遠い街で用心棒をしてきた。'],['','久しぶりの天神は、記憶よりずっと眩しかった。'],['鉄二','……変わったな、博多も。'],['','だがネオンの陰で、何かがこの街を汚し始めていた。']])).then(()=>{card('序章 帰ってきた男','—— 天神・中洲 ——');S.ch=0;addMsg('mama',INTRO_MSG);save();setTimeout(()=>toast('画面の黄色い◆と、ミニマップの黄色い線をたどれば目的地に着く',4.5),3200);});}
   else{card('おかえり',S.ch>=7?'自由行動':'第'+(S.ch+1)+'章から');}}
 $('bNew').onclick=()=>begin(null);$('bCont').onclick=()=>begin(load());
@@ -1951,7 +1991,8 @@ function drawMap(){const c=mctx,Wm=248,cx=124,cy=124,s=.9;c.setTransform(1,0,0,1
   const proj=(x,z)=>{const dx=x-P.x,dz=z-P.z;return [cx+s*(-cs*dx+sn*dz),cy-s*(sn*dx+cs*dz)];};
   const dot=(x,z,col,r,clampE)=>{let [px,py]=proj(x,z);const dd=Math.hypot(px-cx,py-cy);if(dd>112){if(!clampE)return;px=cx+(px-cx)/dd*112;py=cy+(py-cy)/dd*112;}c.fillStyle=col;c.beginPath();c.arc(px,py,r,0,TAU);c.fill();};
   for(const m of markers)if(m.on)dot(m.p.x,m.p.z,m.k==='main'?'#ffd84a':m.k==='sub'?'#3de0ff':'#8dff7a',m.k==='shop'?5:8,m.k!=='shop');
-  for(const a of actors){if(a===P||a.dead)continue;if(a.dealer&&!a.hostile&&dist(a,P)<90)dot(a.x,a.z,'#c06bff',5,true);if(a.hostile)dot(a.x,a.z,a.type==='cop'?(Math.floor(S.t*6)%2?'#ff3030':'#3070ff'):'#ff4a4a',5);}
+  if(S.rescue&&actors.includes(S.rescue.v))dot(S.rescue.v.x,S.rescue.v.z,'#ff7ac8',6,true);
+  for(const a of actors){if(a===P||a.dead)continue;if(a.karami&&!a.hostile&&!a.npc)dot(a.x,a.z,'#ffa23a',5,false);if(a.dealer&&!a.hostile&&dist(a,P)<90)dot(a.x,a.z,'#c06bff',5,true);if(a.hostile)dot(a.x,a.z,a.type==='cop'?(Math.floor(S.t*6)%2?'#ff3030':'#3070ff'):'#ff4a4a',5);}
   for(const cr of cars)if(cr.police&&!cr.dead)dot(cr.x,cr.z,Math.floor(S.t*6)%2?'#ff3030':'#3070ff',7);
   if(S.goal){const pul=7+Math.sin(S.t*6)*2;dot(S.goal.x,S.goal.z,'#ffd84a',pul,true);}
   c.save();c.translate(cx,cy);c.rotate(angDiff(camYaw,(P.car||P).a)*-1);c.fillStyle='#fff';c.beginPath();c.moveTo(0,-11);c.lineTo(8,8);c.lineTo(0,4);c.lineTo(-8,8);c.closePath();c.fill();c.restore();
@@ -2045,7 +2086,7 @@ polR=new THREE.MeshBasicMaterial({color:0xff2020});polB=new THREE.MeshBasicMater
   P.g.visible=true;mode='title';$('loading').style.display='none';$('bNew').disabled=false;if(load())$('bCont').style.display='block';Net.init();
   if(new URLSearchParams(location.search).has('autostart'))begin(null);})();
 requestAnimationFrame(frame);
-window.__G={removeCar,exitCar,kegoPop,get TRAIN(){return TRAIN},spawnCar,VENUES,enterVenue,leaveVenue,openVenueMenu,openTreat,doTreat,treatAll,openPhone,closePhone,phoneApp,addMsg,gainFollowers,FOUT,manageDealers,isDealerTime,LAMPS,FACES_M,FACES_F,FACE_PLAYER,V3:(x,y,z)=>new THREE.Vector3(x,y,z),PREM,Pay,premGrant,equip,callMyCar,openPrem,openShop,get Q(){return Q},PEDN,get mission(){return mission},dist,spawn:spawnActor,rm:removeActor,RIG,camYaw:()=>camYaw,setYaw:v=>camYaw=v,hostiles,knockOut,useMarker,markers,enterCar,POS,S,get P(){return P},actors,cars,BLD,MAINS,runMission,get mode(){return mode},advance};
+window.__G={KEV,updEncounter,removeCar,exitCar,kegoPop,get TRAIN(){return TRAIN},spawnCar,VENUES,enterVenue,leaveVenue,openVenueMenu,openTreat,doTreat,treatAll,openPhone,closePhone,phoneApp,addMsg,gainFollowers,FOUT,manageDealers,isDealerTime,LAMPS,FACES_M,FACES_F,FACE_PLAYER,V3:(x,y,z)=>new THREE.Vector3(x,y,z),PREM,Pay,premGrant,equip,callMyCar,openPrem,openShop,get Q(){return Q},PEDN,get mission(){return mission},dist,spawn:spawnActor,rm:removeActor,RIG,camYaw:()=>camYaw,setYaw:v=>camYaw=v,hostiles,knockOut,useMarker,markers,enterCar,POS,S,get P(){return P},actors,cars,BLD,MAINS,runMission,get mode(){return mode},advance};
 }
 </script>
 </body></html>
