@@ -1,4 +1,5 @@
-# 全7章＋サブ3本の自動通しテスト。リポジトリ直下で `npm run serve` を起動してから実行する。
+# 全7章＋サブ3本の自動通しテスト。nakasu-night/ で `npm run serve` を起動してから実行する。
+# three.js は web/lib/three/ に同梱しているので、web/index.html をそのまま開く（ネット接続不要）。
 import asyncio, os
 from playwright.async_api import async_playwright
 JS='''(()=>{const G=__G;if(G.mode==='talk'){G.advance();G.advance();return 'talk';}
@@ -14,7 +15,7 @@ async def main():
     pg=await b.new_page(viewport={'width':420,'height':820})
     errs=[]
     pg.on('pageerror',lambda e:errs.append(str(e)))
-    await pg.goto('http://localhost:8123/web/test.html'); await pg.wait_for_function("!document.getElementById('bNew').disabled",timeout=180000)
+    await pg.goto('http://localhost:8123/web/index.html'); await pg.wait_for_function("!document.getElementById('bNew').disabled",timeout=180000)
     await pg.click('#bNew'); await pg.wait_for_timeout(500)
     shots=0
     for ch in range(7):

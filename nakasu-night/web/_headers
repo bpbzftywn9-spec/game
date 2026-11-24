@@ -1,0 +1,19 @@
+# Cloudflare Pages の応答ヘッダー（https://developers.cloudflare.com/pages/configuration/headers/）
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=()
+
+# ゲーム本体は毎回新しいものを確認する（更新がすぐ届くように）
+/
+  Cache-Control: no-cache
+/index.html
+  Cache-Control: no-cache
+
+# 素材は1日キャッシュ（ファイル名を変えずに差し替えても、遅くとも翌日には届く）
+/lib/*
+  Cache-Control: public, max-age=86400
+/models/*
+  Cache-Control: public, max-age=86400
+/cut/*
+  Cache-Control: public, max-age=86400

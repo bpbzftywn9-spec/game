@@ -3,10 +3,10 @@
 ## 3Dモデル（assets-source/）
 - man_q.glb: three.js公式サンプルの readyplayer.me.glb を圧縮（テクスチャ512px・量子化）。服・靴・帽子・ひげが別パーツ。
 - woman_q.glb: three.js公式サンプルの Michelle.glb（Mixamo）を圧縮。
-- prototype/models/anims.json: three.js公式サンプルの Xbot.glb（Mixamo）の idle/walk/run を、上記2体の骨格向けにワールド空間で変換した回転データ。
-- prototype/models/*_q.json: 上記GLBをbase64で包んだもの（プロトタイプの公開サーバーが.glbを配信できなかったため）。本番では.glbのまま使うこと。
+- web/models/anims.json: three.js公式サンプルの Xbot.glb（Mixamo）の idle/walk/run を、上記2体の骨格向けにワールド空間で変換した回転データ。
+- web/models/*_q.glb: 上記GLBと同じもの（以前はbase64でJSONに包んでいたが、.glbに戻した）。
 
-## 実写風の画像・動画（prototype/cut/）
+## 実写風の画像・動画（web/cut/）
 Higgsfieldで生成（画像: gpt_image_2_6 / 動画: seedance_2_5）。元の高解像度版（2688x1520 PNG・720p MP4）はHiggsfieldのライブラリに残っている。
 | ファイル | 場面 | Higgsfield job id |
 |---|---|---|

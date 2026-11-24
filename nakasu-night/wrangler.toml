@@ -1,0 +1,4 @@
+# Cloudflare Pages の設定。公開するのは web/ フォルダだけ。
+name = "nakasu-night"
+pages_build_output_dir = "web"
+compatibility_date = "2026-11-01"

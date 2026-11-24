@@ -14,25 +14,25 @@
 ```
 web/
   index.html        ゲーム本体（HTML・CSS・JSが1ファイルに入っている。約1,400行）
-  models/           人物モデルとアニメーション（GLBをbase64にしてJSONに包んだもの）
-    man_q.json / woman_q.json / anims.json
+  models/           人物モデル（man_q.glb / woman_q.glb）とアニメーション（anims.json）
+  lib/three/        three.js r128 と使っている examples/js（CDNを使わず同梱。MITライセンス）
+  _headers          Cloudflare Pages の応答ヘッダー（キャッシュなど）
   cut/              カットシーン（画像 c0〜c6, s0〜s2, y1〜y3 / 動画 v0〜v3）
 tests/
-  make_local_test.sh   CDNのthree.jsを node_modules に差し替えた web/test.html を作る
   full_playthrough.py  全章の自動通しテスト（Playwright）
 assets-source/      人物モデルの元GLBと、素材の出どころ（Higgsfieldのジョブ番号）
 docs/
   unity-appstore-plan.md  Unity版・App Store公開までの指示書（ストーリー全文、仕様、フェーズ、審査の注意）
+  cloudflare-pages.md     Web版を Cloudflare Pages で公開する手順
+wrangler.toml       Cloudflare Pages の設定（公開するのは web/ だけ）
 ```
 
-`models/*.json` がGLBをJSONに包んでいるのは、以前の公開先が `.glb` を配信できなかったため。自前でホスティングするなら `.glb` に戻してよい（`assets-source/` に元ファイルがある）。
+人物モデルは以前、公開先の都合でGLBをbase64にしてJSONに包んでいたが、Cloudflare Pages での公開に向けて `.glb` に戻した（`assets-source/` の元ファイルと同じもの）。
 
 ## 3. 動かし方とテスト
 
 ```bash
-npm install                      # three@0.128.0（テスト用）
-npm run serve                    # リポジトリ直下で http://localhost:8123/web/index.html
-npm run make-test                # web/test.html を作る（CDNを使わない版）
+npm run serve                    # nakasu-night/ で実行 → http://localhost:8123/web/index.html
 pip install playwright && python -m playwright install chromium
 python tests/full_playthrough.py # 別ターミナルで serve を起動した状態で実行
 ```
@@ -97,6 +97,6 @@ python tests/full_playthrough.py # 別ターミナルで serve を起動した�
 
 ## 7. 次にやること（オーナーの指示を待つ）
 
-- Web版の公開先を決める（例：Cloudflare Pages、Vercel、GitHub Pages。静的ファイルだけで動く）。公開の操作はオーナーの承認後。
+- Web版は Cloudflare Pages で公開する方針。準備は済んでいる（`docs/cloudflare-pages.md`）。アカウント作成と公開の操作はオーナーが行う。
 - 必要に応じて：博多エリアのサブストーリー、警察の架空名への置き換え、スマホでの動作の重さの確認。
 - App Store版：`docs/unity-appstore-plan.md` のフェーズ U0 から。

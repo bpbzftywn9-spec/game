@@ -178,15 +178,15 @@ body.ttl #hud,body.ttl #mapw,body.ttl #topbtns,body.ttl #btns,body.ttl #feed{dis
   <button class="mbtn" id="bSponClose">閉じる</button></div></div>
 <div id="fade"></div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/utils/SkeletonUtils.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/CopyShader.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/ShaderPass.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
+<script src="lib/three/three.min.js"></script>
+<script src="lib/three/loaders/GLTFLoader.js"></script>
+<script src="lib/three/utils/SkeletonUtils.js"></script>
+<script src="lib/three/shaders/CopyShader.js"></script>
+<script src="lib/three/shaders/LuminosityHighPassShader.js"></script>
+<script src="lib/three/postprocessing/EffectComposer.js"></script>
+<script src="lib/three/postprocessing/RenderPass.js"></script>
+<script src="lib/three/postprocessing/ShaderPass.js"></script>
+<script src="lib/three/postprocessing/UnrealBloomPass.js"></script>
 
 <script>
 {
@@ -677,8 +677,7 @@ function lumTex(which,hex,ref){const key=which+hex;if(RIG.tex[key])return RIG.te
 function pantsW(hex){const key='wp'+hex;if(RIG.tex[key])return RIG.tex[key];return RIG.tex[key]=recolor(RIG.img.woman,512,(r,g,b,h,sat,l)=>(h>35&&h<70&&sat>.45)?shade(hex,Math.min(1.25,l/.55)):null);}
 function matFor(orig,key,map,col){const k=key;if(RIG.tex['m'+k])return RIG.tex['m'+k];const m=orig.clone();if(map)m.map=map;if(col!==undefined)m.color.setHex(col).convertSRGBToLinear();m.userData.lin=1;return RIG.tex['m'+k]=m;}
 async function loadRig(){if(!THREE.GLTFLoader||!THREE.SkeletonUtils)return;const L=new THREE.GLTFLoader();const ld=u=>new Promise((r,j)=>L.load(u,r,null,j));
-  const ldj=u=>fetch(u).then(r=>{if(!r.ok)throw new Error(u);return r.json();}).then(j=>{const bin=atob(j.glb);const buf=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)buf[i]=bin.charCodeAt(i);return new Promise((res,rej)=>L.parse(buf.buffer,'',res,rej));});
-  const [man,woman,an]=await Promise.all([ldj('models/man_q.json'),ldj('models/woman_q.json'),fetch('models/anims.json').then(r=>r.json())]);
+  const [man,woman,an]=await Promise.all([ld('models/man_q.glb'),ld('models/woman_q.glb'),fetch('models/anims.json').then(r=>r.json())]);
   for(const [nm,gl,pre] of [['man',man,''],['woman',woman,'mixamorig']]){RIG[nm]=gl.scene;RIG.clips[nm]={};
     gl.scene.updateMatrixWorld(true);const hp=gl.scene.getObjectByName(pre+'Hips');const iq=new THREE.Quaternion();if(hp&&hp.parent)hp.parent.getWorldQuaternion(iq);iq.invert();const tq=new THREE.Quaternion();
     for(const c in an)RIG.clips[nm][c]=new THREE.AnimationClip(c,an[c].d,an[c].t.map(([bn,t,v])=>{if(bn==='Hips'){v=v.slice();for(let i=0;i<v.length;i+=4){tq.fromArray(v,i).premultiply(iq);tq.toArray(v,i);}}return new THREE.QuaternionKeyframeTrack(pre+bn+'.quaternion',t,v);}));

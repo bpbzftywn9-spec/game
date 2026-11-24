@@ -3,10 +3,9 @@
   "private": true,
   "scripts": {
     "serve": "python3 -m http.server 8123",
-    "make-test": "bash tests/make_local_test.sh"
+    "deploy": "npx wrangler@4 pages deploy"
   },
   "devDependencies": {
-    "three": "0.128.0",
     "@gltf-transform/cli": "^4.5.1"
   }
 }
