@@ -24,7 +24,7 @@ assets-source/      人物モデルの元GLBと、素材の出どころ（Higgsf
 docs/
   unity-appstore-plan.md  Unity版・App Store公開までの指示書（ストーリー全文、仕様、フェーズ、審査の注意）
   cloudflare-pages.md     Web版を Cloudflare Pages で公開する手順
-  premium.md              課金アイテムの仕様（商品・価格（仮）・決済の状態）
+  premium.md              課金アイテムの仕様（商品・価格・決済の状態）
 wrangler.toml       Cloudflare Pages の設定（公開するのは web/ だけ）
 ```
 
