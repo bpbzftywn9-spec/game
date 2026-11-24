@@ -81,6 +81,16 @@
 Render → サービス → Settings → Custom Domains でドメインを追加し、表示される DNS 設定をドメイン会社で行う。
 ドメインを変えたら、Stripe の Webhook URL も新しいドメインに変える。
 
+## 7. 仁義 中洲ナイトの販売もこのサーバーで行う
+中洲ナイトは Cloudflare Pages で公開し（手順は `nakasu-night/docs/cloudflare-pages.md`）、決済・セーブ・引き継ぎはこのサーバーを共用します。
+1. Render → サービス → Environment に次を追加して保存する（再デプロイされる）
+   - `NAKASU_URL`：中洲ナイトのURL（例 `https://nakasu-night.pages.dev/`。最後の `/` まで）
+   - `NAKASU_MONTHLY_LIMIT_JPY`：中洲ナイトの月間購入上限（初期値 50000）
+2. `nakasu-night/web/index.html` の `const NAKASU_API_URL=''` に、このサーバーのURL（例 `https://jingi-sunshine-xxxx.onrender.com`、最後の `/` なし）を入れてプッシュする
+3. `https://（このサーバーのURL）/api/health` で `"nakasuSalesOpen":true` を確認する
+- Stripe の Webhook は共通（追加の設定は不要）。Stripe の取引には、メタデータ `game: nakasu` が付きます
+- `/about`（事業内容のページ）に、中洲ナイトの商品と価格も自動で表示されます
+
 ---
 
 ## 運用メモ

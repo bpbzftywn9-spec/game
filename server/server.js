@@ -2,12 +2,15 @@
 // 仁義サンシャイン game server: serves the game, keeps saves and purchases,
 // and takes card payments through Stripe Checkout. No npm dependencies
 // (Node 22.13+ for node:sqlite).
+// The same server also handles saves and payments for 仁義 中洲ナイト, which is
+// hosted elsewhere (Cloudflare Pages) and calls this API across origins (CORS).
 const http = require('node:http');
 const fs = require('node:fs');
 const path = require('node:path');
 const crypto = require('node:crypto');
 const { DatabaseSync } = require('node:sqlite');
-const PRODUCTS = require('./products');
+const PRODUCTS_JINGI = require('./products');
+const PRODUCTS_NAKASU = require('./products-nakasu');
 
 // ---------- config ----------
 function loadEnvFile(file) {
@@ -37,6 +40,18 @@ const CFG = {
   trustProxy: process.env.TRUST_PROXY === '1',
   gameFile: process.env.GAME_FILE || path.join(__dirname, '..', 'index.html'),
 };
+const originOf = u => { try { return new URL(u).origin; } catch { return ''; } };
+// Games served by this API. Each user (device token) belongs to one game.
+const GAMES = {
+  jingi: { name: '仁義サンシャイン', products: PRODUCTS_JINGI, url: CFG.publicUrl + '/', monthlyLimit: CFG.monthlyLimit },
+  nakasu: { name: '仁義 中洲ナイト', products: PRODUCTS_NAKASU, url: process.env.NAKASU_URL || '',
+    monthlyLimit: Number(process.env.NAKASU_MONTHLY_LIMIT_JPY || 50000) },
+};
+const PRODUCTS = Object.values(GAMES).flatMap(g => g.products);
+if (new Set(PRODUCTS.map(p => p.id)).size !== PRODUCTS.length) throw new Error('product ids must be unique across games');
+const gameOf = u => GAMES[u.game] || GAMES.jingi;
+// Browsers allowed to call the API from another origin (the 中洲ナイト site, plus CORS_ORIGINS for previews).
+const CORS_ORIGINS = new Set([originOf(GAMES.nakasu.url), ...(process.env.CORS_ORIGINS || '').split(',').map(s => originOf(s.trim()))].filter(Boolean));
 // Seller details for the legal pages (特定商取引法). Kept in env vars, not in the repo.
 const SELLER = {
   SELLER_NAME: process.env.SELLER_NAME || '',
@@ -63,9 +78,10 @@ function isOnPersistentMount(dir, mountsText) {
 }
 const DB_ON_DISK = isOnPersistentMount(path.dirname(path.resolve(CFG.dbPath)));
 // Real sales only open once everything a buyer and the law need is in place.
-function salesBlockers() {
+function salesBlockers(game) {
   if (CFG.mode !== 'stripe') return [];
   const missing = [];
+  if (game === GAMES.nakasu && !GAMES.nakasu.url) missing.push('NAKASU_URL');
   if (!CFG.stripeKey) missing.push('STRIPE_SECRET_KEY');
   if (!CFG.webhookSecret) missing.push('STRIPE_WEBHOOK_SECRET');
   if (!SELLER.SELLER_NAME) missing.push('SELLER_NAME');
@@ -96,8 +112,9 @@ CREATE TABLE IF NOT EXISTS grants(id INTEGER PRIMARY KEY AUTOINCREMENT, user_id 
 CREATE INDEX IF NOT EXISTS orders_user ON orders(user_id, status, paid_at);
 CREATE INDEX IF NOT EXISTS grants_user ON grants(user_id, acked_at);
 `);
+if (!db.prepare('PRAGMA table_info(users)').all().some(c => c.name === 'game')) db.exec("ALTER TABLE users ADD COLUMN game TEXT NOT NULL DEFAULT 'jingi'");
 const q = {
-  insUser: db.prepare('INSERT INTO users(id,token_hash,transfer_code,created_at) VALUES(?,?,?,?)'),
+  insUser: db.prepare('INSERT INTO users(id,token_hash,transfer_code,created_at,game) VALUES(?,?,?,?,?)'),
   userByToken: db.prepare('SELECT * FROM users WHERE token_hash=?'),
   userByCode: db.prepare('SELECT * FROM users WHERE transfer_code=?'),
   rotate: db.prepare('UPDATE users SET token_hash=?, transfer_code=? WHERE id=?'),
@@ -195,7 +212,7 @@ function readBody(req) {
 }
 const SEC_HEADERS = { 'X-Content-Type-Options': 'nosniff', 'Referrer-Policy': 'same-origin', 'X-Frame-Options': 'SAMEORIGIN' };
 function send(res, status, body, type = 'application/json; charset=utf-8') {
-  res.writeHead(status, { 'Content-Type': type, 'Cache-Control': 'no-store', ...SEC_HEADERS });
+  res.writeHead(status, { 'Content-Type': type, 'Cache-Control': 'no-store', ...SEC_HEADERS, ...(res.cors || {}) });
   res.end(typeof body === 'string' ? body : JSON.stringify(body));
 }
 const err = (status, message, en) => Object.assign(new Error(message), { status, en });
@@ -235,7 +252,7 @@ const mockPage = order => `<!doctype html><html lang="ja"><meta charset="utf-8">
 <h2>テスト決済</h2><p>PAYMENT_MODE=mock のため、本物の請求は発生しません。</p>
 <p><b>${order.product}</b><br>¥${order.amount.toLocaleString()}</p>
 <button id="pay" style="font-size:18px;padding:12px 28px;border-radius:24px;border:0;background:#ff4fd8;color:#fff">支払う（テスト）</button>
-<p><a href="/?purchase=cancel" style="color:#ccc">キャンセル</a></p></div>
+<p><a href="${esc(order.back)}?purchase=cancel" style="color:#ccc">キャンセル</a></p></div>
 <script>document.getElementById('pay').onclick=async()=>{const r=await fetch('/api/mock/pay',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({order:${JSON.stringify(order.id)}})});const j=await r.json();location.href=j.redirect;};</script></body></html>`;
 
 // ---------- routes ----------
@@ -243,33 +260,45 @@ async function handle(req, res) {
   const url = new URL(req.url, 'http://x');
   const p = url.pathname;
   const M = req.method;
+  const origin = req.headers.origin;
+  if (p.startsWith('/api/') && origin && CORS_ORIGINS.has(origin)) {
+    res.cors = { 'Access-Control-Allow-Origin': origin, Vary: 'Origin', 'Access-Control-Allow-Headers': 'Authorization, Content-Type, X-Lang',
+      'Access-Control-Allow-Methods': 'GET, POST, PUT, OPTIONS', 'Access-Control-Max-Age': '600' };
+    if (M === 'OPTIONS') { res.writeHead(204, res.cors); return res.end(); }
+  }
   if (p.startsWith('/api/')) rateLimit('api:' + ipOf(req), 240, 60e3);
 
   if (M === 'GET' && (p === '/' || p === '/index.html')) return send(res, 200, gameHtml(), 'text/html; charset=utf-8');
   if (M === 'GET' && (p === '/about' || p === '/about.html')) {
     const row = (n, d, price) => `<tr><td>${esc(n)}</td><td>${esc(d)}</td><td class="price">¥${price.toLocaleString()}</td></tr>`;
     const html = fs.readFileSync(path.join(__dirname, 'public', 'about.html'), 'utf8')
-      .replace('{{PRODUCT_ROWS}}', PRODUCTS.map(x => row(x.name, x.desc, x.price)).join(''))
-      .replace('{{PRODUCT_ROWS_EN}}', PRODUCTS.map(x => row(x.name_en || x.name, x.desc_en || x.desc, x.price)).join(''));
+      .replace('{{PRODUCT_ROWS}}', PRODUCTS_JINGI.map(x => row(x.name, x.desc, x.price)).join(''))
+      .replace('{{PRODUCT_ROWS_EN}}', PRODUCTS_JINGI.map(x => row(x.name_en || x.name, x.desc_en || x.desc, x.price)).join(''))
+      .replace('{{NAKASU_ROWS}}', PRODUCTS_NAKASU.map(x => row(x.name, x.desc, x.price)).join(''))
+      .replace('{{NAKASU_URL}}', esc(GAMES.nakasu.url || '#'));
     return send(res, 200, legalHtml(html), 'text/html; charset=utf-8');
   }
   if (M === 'GET' && /^\/legal\/[a-z]+\.html$/.test(p)) {
     const f = path.join(LEGAL_DIR, path.basename(p));
     if (fs.existsSync(f)) return send(res, 200, legalHtml(fs.readFileSync(f, 'utf8')), 'text/html; charset=utf-8');
   }
-  if (M === 'GET' && p === '/api/health') return send(res, 200, { ok: true, mode: CFG.mode, salesOpen: !salesBlockers().length, waitingFor: salesBlockers(), persistentDisk: DB_ON_DISK });
+  if (M === 'GET' && p === '/api/health') return send(res, 200, { ok: true, mode: CFG.mode, salesOpen: !salesBlockers().length, waitingFor: salesBlockers(), nakasuSalesOpen: !salesBlockers(GAMES.nakasu).length, nakasuWaitingFor: salesBlockers(GAMES.nakasu), persistentDisk: DB_ON_DISK });
 
   if (M === 'POST' && p === '/api/session') {
     rateLimit('session:' + ipOf(req), 20, 60e3);
+    const b = await json(req);
+    const game = b.game === undefined ? 'jingi' : String(b.game);
+    if (!GAMES[game]) throw err(400, 'ゲームが不正です');
     const token = rid(32), id = 'u_' + rid(10), code = newCode();
-    q.insUser.run(id, sha(token), code, now());
+    q.insUser.run(id, sha(token), code, now(), game);
     return send(res, 200, { userId: id, token, transferCode: code });
   }
   if (M === 'GET' && p === '/api/me') {
     const u = auth(req);
-    return send(res, 200, { userId: u.id, transferCode: u.transfer_code, spentThisMonth: spentThisMonth(u.id), monthlyLimit: CFG.monthlyLimit, paymentMode: CFG.mode, salesOpen: !salesBlockers().length });
+    const g = gameOf(u);
+    return send(res, 200, { userId: u.id, game: u.game, transferCode: u.transfer_code, spentThisMonth: spentThisMonth(u.id), monthlyLimit: g.monthlyLimit, paymentMode: CFG.mode, salesOpen: !salesBlockers(g).length });
   }
-  if (M === 'GET' && p === '/api/products') return send(res, 200, { products: PRODUCTS.map(publicProduct) });
+  if (M === 'GET' && p === '/api/products') return send(res, 200, { products: (GAMES[url.searchParams.get('game')] || GAMES.jingi).products.map(publicProduct) });
 
   if (p === '/api/save') {
     const u = auth(req);
@@ -288,7 +317,7 @@ async function handle(req, res) {
     const code = String(b.code || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
     const fmt = code.length === 12 ? code.slice(0, 4) + '-' + code.slice(4, 8) + '-' + code.slice(8) : '';
     const u = fmt && q.userByCode.get(fmt);
-    if (!u) throw err(404, '引き継ぎコードが見つかりません');
+    if (!u || u.game !== (b.game === undefined ? 'jingi' : String(b.game))) throw err(404, '引き継ぎコードが見つかりません');
     const token = rid(32), next = newCode();
     q.rotate.run(sha(token), next, u.id); // old device is signed out, code is single-use
     return send(res, 200, { userId: u.id, token, transferCode: next });
@@ -298,21 +327,22 @@ async function handle(req, res) {
     const u = auth(req);
     rateLimit('checkout:' + u.id, 10, 60e3);
     const b = await json(req);
-    const prod = PRODUCTS.find(x => x.id === b.product);
+    const g = gameOf(u);
+    const prod = g.products.find(x => x.id === b.product);
     if (!prod) throw err(400, '商品が見つかりません');
-    if (salesBlockers().length) throw err(503, '現在、販売の準備中です', 'The shop is not open yet');
+    if (salesBlockers(g).length) throw err(503, '現在、販売の準備中です', 'The shop is not open yet');
     if (b.consent !== true) throw err(400, '購入前の確認にチェックしてください');
-    if (spentThisMonth(u.id) + prod.price > CFG.monthlyLimit) throw err(403, `今月の購入上限（¥${CFG.monthlyLimit.toLocaleString()}）を超えるため購入できません`, `This purchase would go over the monthly limit (¥${CFG.monthlyLimit.toLocaleString()})`);
+    if (spentThisMonth(u.id) + prod.price > g.monthlyLimit) throw err(403, `今月の購入上限（¥${g.monthlyLimit.toLocaleString()}）を超えるため購入できません`, `This purchase would go over the monthly limit (¥${g.monthlyLimit.toLocaleString()})`);
     const orderId = 'o_' + rid(12);
     q.insOrder.run(orderId, u.id, prod.id, prod.price, 'pending', now());
-    if (CFG.mode === 'mock') return send(res, 200, { url: `/mock-checkout?order=${orderId}` });
+    if (CFG.mode === 'mock') return send(res, 200, { url: `${u.game === 'jingi' ? '' : CFG.publicUrl}/mock-checkout?order=${orderId}` });
     const s = await stripe('POST', '/checkout/sessions', {
       mode: 'payment', locale: b.lang === 'en' ? 'en' : 'ja', client_reference_id: u.id,
       line_items: { 0: { quantity: 1, price_data: { currency: 'jpy', unit_amount: prod.price, product_data: Object.assign(b.lang === 'en' ? { name: prod.name_en || prod.name, description: prod.desc_en || prod.desc } : { name: prod.name, description: prod.desc }, CFG.taxCode ? { tax_code: CFG.taxCode } : {}) } } },
-      metadata: { order_id: orderId, user_id: u.id, product: prod.id },
+      metadata: { order_id: orderId, user_id: u.id, product: prod.id, game: u.game },
       ...(CFG.managedPayments === 'off' ? { managed_payments: { enabled: false } } : {}),
-      success_url: `${CFG.publicUrl}/?purchase=success&session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${CFG.publicUrl}/?purchase=cancel`,
+      success_url: `${g.url}?purchase=success&session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${g.url}?purchase=cancel`,
     }, orderId);
     q.setSession.run(s.id, orderId);
     return send(res, 200, { url: s.url });
@@ -354,12 +384,15 @@ async function handle(req, res) {
     if (M === 'GET' && p === '/mock-checkout') {
       const o = q.order.get(url.searchParams.get('order') || '');
       if (!o || o.status !== 'pending') return send(res, 404, '注文が見つかりません', 'text/plain; charset=utf-8');
-      return send(res, 200, mockPage(o), 'text/html; charset=utf-8');
+      const owner = db.prepare('SELECT game FROM users WHERE id=?').get(o.user_id);
+      return send(res, 200, mockPage({ ...o, back: (GAMES[owner && owner.game] || GAMES.jingi).url }), 'text/html; charset=utf-8');
     }
     if (M === 'POST' && p === '/api/mock/pay') {
       const b = await json(req);
-      if (!fulfill(String(b.order || ''))) throw err(404, '注文が見つかりません');
-      return send(res, 200, { redirect: '/?purchase=success&session_id=mock' });
+      const o = q.order.get(String(b.order || ''));
+      if (!o || !fulfill(o.id)) throw err(404, '注文が見つかりません');
+      const owner = db.prepare('SELECT game FROM users WHERE id=?').get(o.user_id);
+      return send(res, 200, { redirect: (GAMES[owner && owner.game] || GAMES.jingi).url + '?purchase=success&session_id=mock' });
     }
   }
   send(res, 404, { error: 'not found' });
@@ -375,4 +408,4 @@ const server = http.createServer((req, res) => {
 if (require.main === module) {
   server.listen(CFG.port, () => console.log(`仁義サンシャイン server: ${CFG.publicUrl} (payment: ${CFG.mode})`));
 }
-module.exports = { server, verifyStripeSignature, monthStartJST, isOnPersistentMount, CFG };
+module.exports = { server, verifyStripeSignature, monthStartJST, isOnPersistentMount, CFG, GAMES };

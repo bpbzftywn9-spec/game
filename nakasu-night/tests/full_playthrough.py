@@ -17,6 +17,10 @@ async def main():
     pg.on('pageerror',lambda e:errs.append(str(e)))
     await pg.goto('http://localhost:8123/web/index.html'); await pg.wait_for_function("!document.getElementById('bNew').disabled",timeout=180000)
     await pg.click('#bNew'); await pg.wait_for_timeout(500)
+    # 序章（動画→会話）が終わってセーブされるまで待つ。途中で第一章を始めると、序章の最後で章番号が0に戻ってしまう
+    for i in range(240):
+      if await pg.evaluate("!!localStorage.getItem('nakasu_night_v1')"): break
+      await pg.evaluate("(()=>{const G=__G;if(G.mode==='talk'){G.advance();}const k=document.getElementById('cutskip');if(G.mode==='cut'&&k)k.click();})()"); await pg.wait_for_timeout(250)
     shots=0
     for ch in range(7):
       for i in range(12):

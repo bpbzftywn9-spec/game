@@ -15,6 +15,8 @@ process.env.MONTHLY_LIMIT_JPY = '700';
 process.env.PORT = '0';
 process.env.SELLER_NAME = 'テスト<商店>';
 process.env.SELLER_EMAIL = 'shop@example.com';
+process.env.NAKASU_URL = 'https://nakasu.example/';
+process.env.NAKASU_MONTHLY_LIMIT_JPY = '5000';
 const { server, isOnPersistentMount } = require('../server');
 
 let base;
@@ -142,4 +144,49 @@ test('persistent disk detection', () => {
   assert.equal(isOnPersistentMount('/datax', mounts), false, 'prefix must be a path boundary');
   assert.equal(isOnPersistentMount('/app/server/data', mounts), false, 'container root is not persistent');
   assert.equal(isOnPersistentMount('/tmp/x', mounts), false, 'tmpfs is not persistent');
+});
+
+test('仁義 中洲ナイト: own products, own limit, CORS, redirect back to its site', async () => {
+  const pre = await fetch(base + '/api/checkout', { method: 'OPTIONS', headers: { Origin: 'https://nakasu.example', 'Access-Control-Request-Method': 'POST' } });
+  assert.equal(pre.status, 204);
+  assert.equal(pre.headers.get('access-control-allow-origin'), 'https://nakasu.example');
+  assert.match(pre.headers.get('access-control-allow-headers'), /Authorization/);
+  const evil = await fetch(base + '/api/products?game=nakasu', { headers: { Origin: 'https://evil.example' } });
+  assert.equal(evil.headers.get('access-control-allow-origin'), null, 'other sites get no CORS header');
+
+  assert.equal((await call('POST', '/api/session', { game: 'nope' })).status, 400);
+  const s = await call('POST', '/api/session', { game: 'nakasu' }, null, { Origin: 'https://nakasu.example' });
+  assert.equal(s.status, 200);
+  const tok = s.body.token;
+  const me = (await call('GET', '/api/me', undefined, tok)).body;
+  assert.equal(me.game, 'nakasu');
+  assert.equal(me.monthlyLimit, 5000);
+  const prods = (await call('GET', '/api/products?game=nakasu')).body.products;
+  assert.equal(prods.find(p => p.id === 'd_ytower').price, 12200);
+  assert.ok(!prods.some(p => p.id === 'fan'));
+
+  assert.equal((await call('POST', '/api/checkout', { product: 'fan', consent: true }, tok)).status, 400, 'jingi items are not sold to nakasu players');
+  assert.equal((await call('POST', '/api/checkout', { product: 'd_ytower', consent: true }, tok)).status, 403, 'over the monthly limit');
+  const c = await call('POST', '/api/checkout', { product: 'o_white', consent: true }, tok);
+  assert.equal(c.status, 200);
+  assert.match(c.body.url, /^http.*\/mock-checkout\?order=/, 'absolute URL, the game is on another site');
+  const order = new URL(c.body.url).searchParams.get('order');
+  const page = await (await fetch(base + '/mock-checkout?order=' + order)).text();
+  assert.match(page, /https:\/\/nakasu\.example\/\?purchase=cancel/);
+  const pay = await call('POST', '/api/mock/pay', { order });
+  assert.equal(pay.body.redirect, 'https://nakasu.example/?purchase=success&session_id=mock');
+  const g = (await call('GET', '/api/grants', undefined, tok)).body.grants;
+  assert.deepEqual(g[0].items, { own: 'o_white' });
+
+  // a 中洲ナイト transfer code does not work in 仁義サンシャイン, and vice versa
+  assert.equal((await call('POST', '/api/transfer', { code: s.body.transferCode })).status, 404);
+  const t = await call('POST', '/api/transfer', { code: s.body.transferCode, game: 'nakasu' });
+  assert.equal(t.status, 200);
+});
+
+test('about page lists 中洲ナイト products too', async () => {
+  const html = await (await fetch(base + '/about')).text();
+  assert.match(html, /シャンパンタワー/);
+  assert.match(html, /¥12,200/);
+  assert.match(html, /https:\/\/nakasu\.example\//);
 });

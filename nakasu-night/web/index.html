@@ -104,6 +104,7 @@ body.incar #bA,body.incar #bD,body.incar #bH{display:none}
 .ptab{display:inline-block;margin:0 4px 8px 0;padding:6px 12px;border-radius:16px;border:1px solid rgba(255,255,255,.5);background:rgba(255,255,255,.06);color:#fff;font-size:14px;font-weight:800}
 .ptab.on{background:#ffd84a;color:#1a0a1a;border-color:#ffd84a}
 .item>div{flex:1}.item .yen{color:#ffd84a;white-space:nowrap}.item .own{color:#8dff7a;white-space:nowrap;font-size:13px}.item.eq{border-color:#8dff7a;background:rgba(141,255,122,.12)}
+.plinks a{color:#9fdcff;margin-right:6px}
 .pnote{font-size:11px;line-height:1.6;opacity:.75;margin:8px 0 4px;text-align:left}
 .ptest{display:none;font-size:12px;font-weight:800;color:#1a0a1a;background:#8dff7a;border-radius:8px;padding:4px 8px;margin:4px 0 8px}
 .pchk{display:flex;gap:8px;align-items:flex-start;font-size:13px;line-height:1.5;margin:6px 0 4px}.pchk input{width:20px;height:20px;flex:none;margin-top:1px}
@@ -162,6 +163,7 @@ body.ttl #hud,body.ttl #mapw,body.ttl #topbtns,body.ttl #btns,body.ttl #feed{dis
   <p>五年の刑期を終え、黒田鉄二は博多に帰ってきた。<br>天神のビル風、那珂川に揺れる中洲のネオン。<br>だが街は、半グレ集団〈玄海連合〉に食い荒らされようとしていた――。</p>
   <button class="mbtn pri" id="bNew" disabled>はじめから</button>
   <button class="mbtn" id="bCont" style="display:none">つづきから</button>
+  <button class="mbtn" id="bXfer2" style="display:none;font-size:14px;padding:9px">機種変更（引き継ぎ）</button>
   <div id="loading">街を組み立て中…</div>
   <div class="hint">スマホ：左半分ドラッグで移動／右半分ドラッグで視点／右下ボタンで攻撃<br>PC：WASD移動・マウスドラッグか←→で視点・J殴る・K蹴る・L回避・H極・E乗る/話す・Space急ブレーキ</div>
 </div>
@@ -170,12 +172,21 @@ body.ttl #hud,body.ttl #mapw,body.ttl #topbtns,body.ttl #btns,body.ttl #feed{dis
 <div class="ov" id="prem" style="z-index:34;background:rgba(0,0,0,.6)"><div class="panel"><h3 class="dg" style="color:#ffd84a">💎 プレミアムショップ</h3><div class="sub" id="premsub"></div>
   <div id="premtabs"></div><div id="premitems"></div>
   <p class="pnote">価格は税込です。服装・武器・車・アクセサリーは一度買えばずっと使え、何度でも着替えられます。購入したアイテムはこの端末のセーブデータに保存されます。</p>
+  <div id="premnet" style="display:none"><div class="pnote plinks"><a data-legal="tokushoho" target="_blank" rel="noopener">特定商取引法に基づく表記</a>　<a data-legal="terms" target="_blank" rel="noopener">利用規約</a>　<a data-legal="privacy" target="_blank" rel="noopener">プライバシー</a></div>
+  <button class="mbtn" id="bXfer">機種変更（引き継ぎ）</button></div>
   <button class="mbtn" id="bPremClose">閉じる</button></div></div>
+<div class="ov" id="xfer" style="z-index:36;background:rgba(0,0,0,.72)"><div class="panel" style="text-align:center"><h3 class="dg" style="color:#3de0ff">機種変更（引き継ぎ）</h3>
+  <p class="pnote" style="text-align:center">新しい端末でこのコードを入力すると、セーブデータと購入したアイテムを引き継げます。コードは他人に教えないでください。使うと、この端末では遊べなくなります。</p>
+  <div id="xcode" style="font-size:26px;font-weight:900;letter-spacing:.08em;margin:8px 0 14px;user-select:all"></div>
+  <input id="xin" placeholder="引き継ぎコードを入力" autocomplete="off" style="width:100%;font-size:18px;padding:10px;border-radius:10px;border:1px solid #fff;background:#0008;color:#fff;text-align:center">
+  <button class="mbtn pri" id="bXRedeem">この端末に引き継ぐ</button><button class="mbtn" id="bXClose">閉じる</button></div></div>
 <div class="ov" id="pconf" style="z-index:38;background:rgba(0,0,0,.72)"><div class="panel" style="text-align:left">
   <h3 class="dg" id="pch" style="color:#ffd84a;margin:0 0 4px"></h3><div class="sub" id="pcd"></div>
   <div id="pcp" style="font-size:26px;font-weight:900;margin:8px 0">0円</div>
   <div id="pctest" class="ptest">テスト購入：実際には請求されません</div>
   <label class="pchk"><input type="checkbox" id="pcok"> <span id="pcokt"></span></label>
+  <div class="pnote" id="pcnext"></div>
+  <div class="pnote plinks" id="pclegal"><a data-legal="tokushoho" target="_blank" rel="noopener">特定商取引法に基づく表記</a>　<a data-legal="terms" target="_blank" rel="noopener">利用規約</a>　<a data-legal="privacy" target="_blank" rel="noopener">プライバシー</a></div>
   <button class="mbtn pri" id="bPcBuy">購入する</button><button class="mbtn" id="bPcNo">やめる</button></div></div>
 <div class="ov" id="pause"><div class="panel" style="text-align:center"><h3 class="dg" style="color:var(--pink)">ポーズ</h3>
   <p style="font-size:13px;line-height:1.75;text-align:left">黄色の<b style="color:#ffd84a">◆</b>とミニマップの<b style="color:#ffd84a">黄色い線</b>＝次の目的地<br>黄色の<b style="color:#ffd84a">！</b>＝メインストーリー<br>水色の<b style="color:#3de0ff">？</b>＝サブストーリー<br>緑の<b style="color:#8dff7a">¥</b>＝屋台・コンビニ・飲み屋（回復）<br>攻撃を当ててゲージ満タンで<b style="color:#3de0ff">極</b>＝ヒートアクション。川・屋台・車・壁の近くで技が変わる。<br>市民や警官を殴る・車を奪うと<b style="color:#ffd84a">手配度</b>が上がる。警察の視界から消えれば下がる。</p>
@@ -844,7 +855,7 @@ const goalPil=new THREE.Mesh(pillarG,linMat(new THREE.MeshBasicMaterial({color:0
 
 // ================= STATE =================
 let mode='loading',tScale=1,hitstop=0,shake=0,camYaw=0,camLookT=0,mission=null,runToken=0;
-const S={own:{},eq:{outfit:null,weapon:null,car:null,acc:[]},t:0,money:0,ch:0,subs:{},maxhp:100,atk:1,wanted:0,lostT:0,seen:false,crimeCd:0,room:null,goal:null,goalLabel:'',boss:null,cine:null,nextEnc:60,target:null,targetT:0,news:'天神ビジョン　今夜の博多は晴れ。中洲の屋台は通常営業中。夜のディズニーランド・BAR YAHMANは中洲2丁目で深夜営業中！',flicker:0};
+const S={gotGrants:[],own:{},eq:{outfit:null,weapon:null,car:null,acc:[]},t:0,money:0,ch:0,subs:{},maxhp:100,atk:1,wanted:0,lostT:0,seen:false,crimeCd:0,room:null,goal:null,goalLabel:'',boss:null,cine:null,nextEnc:60,target:null,targetT:0,news:'天神ビジョン　今夜の博多は晴れ。中洲の屋台は通常営業中。夜のディズニーランド・BAR YAHMANは中洲2丁目で深夜営業中！',flicker:0};
 function makePlayer(){P=spawnActor('player',POS.start.x,POS.start.z,{look:'player',hp:100});P.a=Math.PI/2;P.heat=0;P.act=null;P.queue=null;P.combo=0;P.comboT=0;P.dodge=0;P.inv=0;P.downT=0;P.car=null;P.dcd=0;P.regenT=0;}
 
 // ================= UI =================
@@ -1162,40 +1173,96 @@ function openShop(k){const s=SHOPS[k];mode='shop';$('shoph').textContent=s.h;$('
     b.onclick=()=>{if(S.money<p){toast('金が足りない',1.4);return;}if(fn()===false){toast('今は必要ない',1.4);return;}S.money-=p;SFX.coin();toast(n+' を買った',1.4);updHUD();};box.append(b);}
   $('shop').style.display='flex';}
 $('bShopClose').onclick=()=>{$('shop').style.display='none';mode='play';};
+// ================= ONLINE（決済サーバー：仁義サンシャインと共用） =================
+// 決済サーバー（Render）のURL。末尾の / は付けない。空のままだと課金は「準備中」になる。
+const NAKASU_API_URL='';
+const IS_LOCAL=/^(localhost|127\.0\.0\.1)$/.test(location.hostname);
+const lsGet=k=>{try{return localStorage.getItem(k);}catch(e){return null;}},lsSet=(k,v)=>{try{localStorage.setItem(k,v);}catch(e){}};
+// 手元（localhost）での確認用：?api=http://localhost:8787 で決済サーバーを指定できる（この端末に記憶）。
+const DEV_API=IS_LOCAL?(()=>{const q=new URLSearchParams(location.search).get('api');if(q!==null){if(q)lsSet('nakasu_dev_api',q);else{try{localStorage.removeItem('nakasu_dev_api');}catch(e){}}}return lsGet('nakasu_dev_api')||'';})():'';
+const Net={api:(DEV_API||NAKASU_API_URL).replace(/\/$/,''),ready:false,token:null,me:null,prices:{},
+  async req(m,p,body){const h={'Content-Type':'application/json'};if(this.token)h.Authorization='Bearer '+this.token;
+    const r=await fetch(this.api+p,{method:m,headers:h,body:body===undefined?undefined:JSON.stringify(body)});const j=await r.json().catch(()=>({}));
+    if(!r.ok)throw new Error(j.error||'通信エラー（'+r.status+'）');return j;},
+  async init(){if(!this.api)return;try{
+      this.token=lsGet('nakasu_token');
+      if(this.token){try{this.me=await this.req('GET','/api/me');}catch(e){this.token=null;}}
+      if(!this.token){const s=await this.req('POST','/api/session',{game:'nakasu'});this.token=s.token;lsSet('nakasu_token',s.token);this.me=await this.req('GET','/api/me');}
+      for(const p of (await this.req('GET','/api/products?game=nakasu')).products)this.prices[p.id]=p.price;
+      const sv=await this.req('GET','/api/save'),local=load();
+      if(sv.data&&(!local||(sv.data.savedAt||0)>(local.savedAt||0)))lsSet('nakasu_night_v1',JSON.stringify(sv.data));
+      else if(local&&(!sv.data||(local.savedAt||0)>(sv.data.savedAt||0)))this.req('PUT','/api/save',{data:local}).catch(()=>{});
+      if(load())$('bCont').style.display='block';
+      this.ready=true;$('bXfer2').style.display='block';this.handleReturn();
+      setInterval(()=>{if(mode==='play')this.pullGrants();},30000);
+    }catch(e){console.warn('online features disabled:',e);}},
+  handleReturn(){const u=new URLSearchParams(location.search),st=u.get('purchase');if(!st)return;
+    history.replaceState(null,'',location.pathname);
+    if(st==='success'){const sid=u.get('session_id')||'';if(sid.startsWith('cs_'))this.req('POST','/api/checkout/confirm',{sessionId:sid}).catch(()=>{});
+      toast('購入ありがとうございます！「つづきから」で受け取れます',6);}
+    else{toast('購入をキャンセルしました',3);}},
+  pushSave(d){if(!this.ready)return;clearTimeout(this.pt);this.pt=setTimeout(()=>this.req('PUT','/api/save',{data:d}).catch(()=>{}),1000);},
+  async saveNow(){if(!this.ready)return;clearTimeout(this.pt);const d=load();if(d)await this.req('PUT','/api/save',{data:d});},
+  async pullGrants(){if(!this.ready||this.pulling||mode!=='play')return;this.pulling=true;try{
+      const{grants}=await this.req('GET','/api/grants');if(!grants.length)return;const names=[],fx=[];
+      for(const g of grants){if(S.gotGrants.includes(g.id))continue;S.gotGrants.push(g.id);const it=g.items||{};
+        if(it.own&&PREM[it.own]){S.own[it.own]=1;equip(it.own,true);names.push(PREM[it.own].n);}
+        if(it.drink&&PREM[it.drink]){names.push(PREM[it.drink].n);fx.push(PREM[it.drink].fx);}}
+      S.gotGrants=S.gotGrants.slice(-300);save();await this.saveNow();await this.req('POST','/api/grants/ack',{ids:grants.map(g=>g.id)});
+      if(names.length){card('購入アイテム受け取り',names.join('・'));SFX.coin();}
+      for(const f of fx)await f();updHUD();save();
+    }catch(e){console.warn(e);}finally{this.pulling=false;}}};
+document.querySelectorAll('[data-legal]').forEach(a=>{a.href=(Net.api||'')+'/legal/'+a.dataset.legal+'.html';});
+$('bXfer2').onclick=()=>$('bXfer').onclick();
+$('bXfer').onclick=()=>{$('xcode').textContent=Net.me?Net.me.transferCode:'';$('xin').value='';$('xfer').style.display='flex';};
+$('bXClose').onclick=()=>{$('xfer').style.display='none';};
+$('bXRedeem').onclick=async()=>{const code=$('xin').value.trim();if(!code){toast('コードを入力してください',2);return;}
+  try{const r=await Net.req('POST','/api/transfer',{code,game:'nakasu'});lsSet('nakasu_token',r.token);try{localStorage.removeItem('nakasu_night_v1');}catch(e){}location.reload();}catch(e){toast(e.message,3);}};
+
 // ================= PREMIUM（課金アイテム） =================
-// 価格は日本円・税込（仮）。ゲーム内通貨は売らず、アイテムを直接売る（資金決済法の前払式支払手段にしないため）。
+// 価格は日本円・税込。決済サーバーの server/products-nakasu.js と同じ値にする（表示はサーバーの価格を優先）。ゲーム内通貨は売らず、アイテムを直接売る（資金決済法の前払式支払手段にしないため）。
 // cat: outfit 服装 / weapon 武器（拳の装備。素手の喧嘩のまま） / car 車 / acc アクセサリー … 一度買えばずっと使える
 //      drink 酒代 … 店で飲むたびに買う（消費型）
 const PREM={
-  o_white:{cat:'outfit',n:'白スーツ「中洲の帝王」',d:'白のスリーピースに黒シャツ、金のネクタイ。',yen:250,pal:{j:0xf0f0ee,v:0xe2e2de,s:0x111111,t:0xd8b048,p:0xf0f0ee,f:0xf4f4f4}},
-  o_wine:{cat:'outfit',n:'ワインレッドのスーツ',d:'中洲のネオンに映える深い赤。',yen:250,pal:{j:0x6a0a1e,v:0x4a0614,s:0x111111,t:0x111111,p:0x6a0a1e,f:0x0a0a0a}},
-  o_leather:{cat:'outfit',n:'黒の革ジャン',d:'白Tシャツにデニム。夜の屋台通りに。',yen:250,pal:{j:0x0c0c0e,v:0x0c0c0e,s:0xe8e8e8,t:0xe8e8e8,p:0x1e2e50,f:0x0a0a0a}},
-  o_gold:{cat:'outfit',n:'成金ゴールドのセットアップ',d:'目立ちすぎて、もう隠れられない。',yen:480,pal:{j:0xc89818,v:0xa87810,s:0x111111,t:0x111111,p:0xc89818,f:0xf0f0f0}},
-  w_bandage:{cat:'weapon',n:'龍のバンテージ',d:'拳に巻くさらし。攻撃力 +15%',yen:120,atk:1.15,col:0xf2f0e8},
-  w_glove:{cat:'weapon',n:'鉄甲グローブ',d:'攻撃力 +25%、ヒートゲージが1.5倍たまる',yen:370,atk:1.25,heat:1.5,col:0x1a1a1e},
-  w_knuckle:{cat:'weapon',n:'金のメリケンサック',d:'攻撃力 +40%',yen:480,atk:1.4,col:0xe8b840},
-  c_sports:{cat:'car',n:'スポーツカー「博多レッド」',d:'最高速度が速い（約137km/h）。ポーズ画面からいつでも呼べる。',yen:480,kind:'sports',vmax:38,hp:150},
-  c_vip:{cat:'car',n:'黒塗りのVIPセダン',d:'頑丈（耐久2倍）。ポーズ画面からいつでも呼べる。',yen:480,kind:'vip',vmax:31,hp:320},
+  o_white:{cat:'outfit',n:'白スーツ「中洲の帝王」',d:'白のスリーピースに黒シャツ、金のネクタイ。',yen:2500,pal:{j:0xf0f0ee,v:0xe2e2de,s:0x111111,t:0xd8b048,p:0xf0f0ee,f:0xf4f4f4}},
+  o_wine:{cat:'outfit',n:'ワインレッドのスーツ',d:'中洲のネオンに映える深い赤。',yen:2500,pal:{j:0x6a0a1e,v:0x4a0614,s:0x111111,t:0x111111,p:0x6a0a1e,f:0x0a0a0a}},
+  o_leather:{cat:'outfit',n:'黒の革ジャン',d:'白Tシャツにデニム。夜の屋台通りに。',yen:2500,pal:{j:0x0c0c0e,v:0x0c0c0e,s:0xe8e8e8,t:0xe8e8e8,p:0x1e2e50,f:0x0a0a0a}},
+  o_gold:{cat:'outfit',n:'成金ゴールドのセットアップ',d:'目立ちすぎて、もう隠れられない。',yen:4800,pal:{j:0xc89818,v:0xa87810,s:0x111111,t:0x111111,p:0xc89818,f:0xf0f0f0}},
+  w_bandage:{cat:'weapon',n:'龍のバンテージ',d:'拳に巻くさらし。攻撃力 +15%',yen:1200,atk:1.15,col:0xf2f0e8},
+  w_glove:{cat:'weapon',n:'鉄甲グローブ',d:'攻撃力 +25%、ヒートゲージが1.5倍たまる',yen:3700,atk:1.25,heat:1.5,col:0x1a1a1e},
+  w_knuckle:{cat:'weapon',n:'金のメリケンサック',d:'攻撃力 +40%',yen:4800,atk:1.4,col:0xe8b840},
+  c_sports:{cat:'car',n:'スポーツカー「博多レッド」',d:'最高速度が速い（約137km/h）。ポーズ画面からいつでも呼べる。',yen:4800,kind:'sports',vmax:38,hp:150},
+  c_vip:{cat:'car',n:'黒塗りのVIPセダン',d:'頑丈（耐久2倍）。ポーズ画面からいつでも呼べる。',yen:4800,kind:'vip',vmax:31,hp:320},
   a_sun:{cat:'acc',n:'サングラス',d:'夜でも外さない。',yen:120},
   a_chain:{cat:'acc',n:'金のネックレス',d:'太めの喜平チェーン。',yen:120},
   a_watch:{cat:'acc',n:'金の腕時計',d:'左手首に。',yen:120},
-  d_yset:{cat:'drink',n:'セット（60分）',d:'体力・ヒートゲージ 全回復',yen:120,fx:()=>{P.hp=S.maxhp;P.heat=100;}},
-  d_ychamp:{cat:'drink',n:'シャンパン',d:'TAIKI＆おにょのシャンパンコール！ 全回復＋最大体力 +10（上限200）',yen:370,fx:()=>{S.maxhp=Math.min(200,S.maxhp+10);P.hp=S.maxhp;P.heat=100;setTimeout(()=>toast('TAIKI＆おにょ「シャンパンいただきましたー！ ゴーゴーレッツゴー！」',3),300);}},
-  d_ytower:{cat:'drink',n:'シャンパンタワー',d:'店じゅうでコール！（動画）全回復＋最大体力 +30（上限200）',yen:1220,fx:async()=>{S.maxhp=Math.min(200,S.maxhp+30);P.hp=S.maxhp;P.heat=100;$('shop').style.display='none';await playVideo('v3');mode='play';toast('YAHMAN「シャンパンタワー、いただきましたー！！」',3);}},
-  d_mizu:{cat:'drink',n:'水割り',d:'体力 +50・ヒートゲージ +30',yen:120,fx:()=>{P.hp=Math.min(S.maxhp,P.hp+50);P.heat=Math.min(100,P.heat+30);}},
-  d_shochu:{cat:'drink',n:'焼酎ボトル',d:'体力・ヒートゲージ 全回復',yen:250,fx:()=>{P.hp=S.maxhp;P.heat=100;}},
-  d_mama:{cat:'drink',n:'ママにも一杯',d:'千鶴ママと乾杯。全回復＋最大体力 +5（上限200）',yen:250,fx:()=>{S.maxhp=Math.min(200,S.maxhp+5);P.hp=S.maxhp;P.heat=100;setTimeout(()=>toast(pick(['千鶴ママ「あら、ありがと。テツも無理せんとよ」','千鶴ママ「乾杯！ 中洲の夜はこれからたい」','千鶴ママ「ほんと、変わらんね。あんたは」']),3),300);}},
+  d_yset:{cat:'drink',n:'セット（60分）',d:'体力・ヒートゲージ 全回復',yen:1200,fx:()=>{P.hp=S.maxhp;P.heat=100;}},
+  d_ychamp:{cat:'drink',n:'シャンパン',d:'TAIKI＆おにょのシャンパンコール！ 全回復＋最大体力 +10（上限200）',yen:3700,fx:()=>{S.maxhp=Math.min(200,S.maxhp+10);P.hp=S.maxhp;P.heat=100;setTimeout(()=>toast('TAIKI＆おにょ「シャンパンいただきましたー！ ゴーゴーレッツゴー！」',3),300);}},
+  d_ytower:{cat:'drink',n:'シャンパンタワー',d:'店じゅうでコール！（動画）全回復＋最大体力 +30（上限200）',yen:12200,fx:async()=>{S.maxhp=Math.min(200,S.maxhp+30);P.hp=S.maxhp;P.heat=100;$('shop').style.display='none';await playVideo('v3');mode='play';toast('YAHMAN「シャンパンタワー、いただきましたー！！」',3);}},
+  d_mizu:{cat:'drink',n:'水割り',d:'体力 +50・ヒートゲージ +30',yen:1200,fx:()=>{P.hp=Math.min(S.maxhp,P.hp+50);P.heat=Math.min(100,P.heat+30);}},
+  d_shochu:{cat:'drink',n:'焼酎ボトル',d:'体力・ヒートゲージ 全回復',yen:2500,fx:()=>{P.hp=S.maxhp;P.heat=100;}},
+  d_mama:{cat:'drink',n:'ママにも一杯',d:'千鶴ママと乾杯。全回復＋最大体力 +5（上限200）',yen:2500,fx:()=>{S.maxhp=Math.min(200,S.maxhp+5);P.hp=S.maxhp;P.heat=100;setTimeout(()=>toast(pick(['千鶴ママ「あら、ありがと。テツも無理せんとよ」','千鶴ママ「乾杯！ 中洲の夜はこれからたい」','千鶴ママ「ほんと、変わらんね。あんたは」']),3),300);}},
 };
 const PCAT=[['outfit','服装'],['weapon','武器'],['car','車'],['acc','アクセサリー']];
 const yenTx=n=>n.toLocaleString('ja-JP')+'円';
-// 決済：本番の決済（Stripeなど）は未接続。?pay=test か localhost のときだけテスト購入で動く。それ以外は「準備中」。
-const Pay={mode:(/[?&]pay=test(&|$)/.test(location.search)||/^(localhost|127\.0\.0\.1)$/.test(location.hostname))?'test':'off',
-  async buy(id){const it=PREM[id];if(this.mode==='off'){toast('プレミアムアイテムは準備中です',2);return false;}
-    const ok=await premConfirm(it);if(!ok)return false;
-    if(this.mode==='test')return true;return false;}};
+// 決済：仁義サンシャインの決済サーバー（Render・Stripe）を共用する。
+//   live …… サーバーで販売中 → Stripe の決済画面へ移動
+//   srvtest … サーバーがテスト決済（PAYMENT_MODE=mock）→ テスト決済画面へ移動（請求なし）
+//   test …… サーバーなしで手元（localhost）で開いたとき → その場でテスト購入（請求なし）
+//   off ……… サーバー未接続・販売準備中 → 「準備中」で買えない
+const Pay={get mode(){if(Net.ready)return Net.me&&Net.me.paymentMode==='mock'?'srvtest':Net.me&&Net.me.salesOpen?'live':'off';return IS_LOCAL&&!Net.api?'test':'off';},
+  price(id){return Net.prices[id]||PREM[id].yen;},
+  async buy(id){const it=PREM[id],m=this.mode;if(m==='off'){toast('プレミアムアイテムは準備中です',2);return false;}
+    const ok=await premConfirm(it,id);if(!ok)return false;
+    if(m==='test')return true;
+    try{save();await Net.saveNow();try{sessionStorage.setItem('nakasu_ret',JSON.stringify({x:P.x,z:P.z}));}catch(e){}
+      const{url}=await Net.req('POST','/api/checkout',{product:id,consent:true,lang:'ja'});toast('決済画面へ移動します…',3);location.href=url;}
+    catch(e){toast(e.message,4);}
+    return false;}};
 let pcRes=null;
-function premConfirm(it){return new Promise(res=>{pcRes=res;$('pch').textContent=it.n;$('pcd').textContent=it.d;$('pcp').textContent=yenTx(it.yen)+'（税込）';
-  $('pctest').style.display=Pay.mode==='test'?'block':'none';
+function premConfirm(it,id){return new Promise(res=>{pcRes=res;$('pch').textContent=it.n;$('pcd').textContent=it.d;$('pcp').textContent=yenTx(Pay.price(id))+'（税込）';
+  const m=Pay.mode;$('pctest').style.display=m==='test'||m==='srvtest'?'block':'none';$('pcnext').textContent=m==='live'||m==='srvtest'?'「購入する」を押すと決済画面に移動します。支払いが終わると、ゲームに戻ってアイテムを受け取れます。':'';
+  $('pclegal').style.display=Net.api?'block':'none';
   $('pcokt').textContent=it.cat==='drink'?'20歳以上です（お酒のアイテムは20歳以上の方のみ購入できます）':'18歳以上です。または、保護者の同意を得ています';
   $('pcok').checked=false;$('bPcBuy').disabled=true;$('pconf').style.display='flex';});}
 $('pcok').onchange=()=>{$('bPcBuy').disabled=!$('pcok').checked;};
@@ -1228,12 +1295,14 @@ function callMyCar(){const it=S.eq.car&&PREM[S.eq.car];if(!it)return false;if(P.
 function premRow(box,id,onBuy){const it=PREM[id];const b=document.createElement('button');b.className='item';const own=it.cat!=='drink'&&S.own[id];
   const isEq=own&&(it.cat==='acc'?S.eq.acc.includes(id):S.eq[it.cat]===id);if(isEq)b.classList.add('eq');
   const l=document.createElement('div');l.textContent=it.n;const sm=document.createElement('small');sm.textContent=it.d;l.append(sm);
-  const r=document.createElement('span');r.className=own?'own':'yen';r.textContent=own?(isEq?'✓ 装備中':'装備する'):(Pay.mode==='off'?'準備中':yenTx(it.yen));b.append(l,r);
+  const r=document.createElement('span');r.className=own?'own':'yen';r.textContent=own?(isEq?'✓ 装備中':'装備する'):(Pay.mode==='off'?'準備中':yenTx(Pay.price(id)));b.append(l,r);
   b.onclick=async()=>{if(own){equip(id);onBuy();return;}if(await Pay.buy(id)){await premGrant(id);onBuy();}};box.append(b);}
-function premList(box,ids){box.innerHTML='';const s=document.createElement('div');s.className='pnote';s.textContent=Pay.mode==='test'?'💎 テスト購入モード（実際には請求されません）':'💎 店の飲食は1杯ごとのお支払いです（税込）';box.append(s);
+function premList(box,ids){box.innerHTML='';const s=document.createElement('div');s.className='pnote';s.textContent=(Pay.mode==='test'||Pay.mode==='srvtest'?'💎 テスト購入モード（実際には請求されません）':Pay.mode==='off'?'💎 準備中です':'💎 店の飲食は1杯ごとのお支払いです（税込）')+'。お酒のアイテムは20歳以上の方のみ購入できます。';box.append(s);
   for(const id of ids)premRow(box,id,()=>{if($('shop').style.display!=='none')premList(box,ids);});}
 let premCat='outfit';
-function openPrem(cat){if(cat)premCat=cat;$('premsub').textContent=Pay.mode==='test'?'テスト購入モード：実際には請求されません':Pay.mode==='off'?'準備中です。近日公開予定。':'';
+function openPrem(cat){if(cat)premCat=cat;const m=Pay.mode,me=Net.me;
+  $('premsub').textContent=(m==='test'||m==='srvtest'?'テスト購入モード：実際には請求されません':m==='off'?'準備中です。近日公開予定。':'')+(Net.ready&&me?`　今月の購入額 ${yenTx(me.spentThisMonth)}／上限 ${yenTx(me.monthlyLimit)}`:'');
+  $('premnet').style.display=Net.ready?'block':'none';if(Net.ready)Net.req('GET','/api/me').then(r=>{Net.me=r;}).catch(()=>{});
   const tb=$('premtabs');tb.innerHTML='';for(const [k,n] of PCAT){const t=document.createElement('button');t.className='ptab'+(k===premCat?' on':'');t.textContent=n;t.onclick=()=>openPrem(k);tb.append(t);}
   const box=$('premitems');box.innerHTML='';for(const id in PREM)if(PREM[id].cat===premCat)premRow(box,id,()=>openPrem());
   if(premCat==='car'&&S.eq.car){const b=document.createElement('button');b.className='mbtn';b.textContent='🚗 マイカーを呼ぶ';b.onclick=()=>{if(callMyCar()){$('prem').style.display='none';closePause();}};box.append(b);}
@@ -1389,7 +1458,7 @@ function cleanupMission(){runToken++;mission=null;waiters.length=0;for(const a o
 $('bRevive').onclick=()=>{$('dead').style.display='none';cleanupMission();if(P.car)exitCar(true);S.room=null;scene.fog.near=40;scene.fog.far=200;S.wanted=0;
   for(const c of cars.slice())if(c.police)removeCar(c);S.money=Math.floor(S.money*.9);P.hp=S.maxhp;P.down=false;P.downT=0;P.x=POS.hosp.x;P.z=POS.hosp.z;P.a=Math.PI/2;camYaw=P.a;mode='play';refreshMarkers();save();
   post('博多中央病院から、ガラの悪い人が退院していった','@天神OL日記');};
-function save(){try{localStorage.setItem('nakasu_night_v1',JSON.stringify({v:2,money:S.money,ch:S.ch,subs:S.subs,maxhp:S.maxhp,atk:S.atk,own:S.own,eq:S.eq}));}catch(e){}}
+function save(){const d={v:2,money:S.money,ch:S.ch,subs:S.subs,maxhp:S.maxhp,atk:S.atk,own:S.own,eq:S.eq,gotGrants:S.gotGrants,savedAt:Date.now()};try{localStorage.setItem('nakasu_night_v1',JSON.stringify(d));}catch(e){}Net.pushSave(d);}
 function load(){try{return JSON.parse(localStorage.getItem('nakasu_night_v1')||'null');}catch(e){return null;}}
 
 // ================= MENUS =================
@@ -1401,8 +1470,10 @@ const openSpon=()=>{$('spon').style.display='flex';};$('bSpon').onclick=openSpon
 $('bTitle').onclick=()=>{save();location.reload();};
 $('bEndOk').onclick=()=>{$('ending').style.display='none';cutHide();(window._yk||[]).forEach(removeActor);window._yk=null;mode='play';refreshMarkers();toast('自由行動：ストリートファイトや街のチンピラで腕を磨け',3);;if(S.room)exitRoom();};
 function begin(data){initAudio();document.body.classList.remove('ttl');$('title').style.display='none';mode='play';
-  if(data){S.money=data.money||0;S.ch=data.v===2?(data.ch||0):({0:0,1:1,2:2,3:4,4:6,5:7}[data.ch||0]??0);S.subs=data.subs||{};S.maxhp=data.maxhp||100;S.atk=data.atk||1;S.own=data.own||{};S.eq=Object.assign({outfit:null,weapon:null,car:null,acc:[]},data.eq||{});P.hp=S.maxhp;restylePlayer();}
-  P.x=POS.start.x;P.z=POS.start.z;P.a=Math.PI/2;camYaw=P.a;refreshMarkers();S.nextEnc=S.t+50;
+  if(data){S.money=data.money||0;S.ch=data.v===2?(data.ch||0):({0:0,1:1,2:2,3:4,4:6,5:7}[data.ch||0]??0);S.subs=data.subs||{};S.maxhp=data.maxhp||100;S.atk=data.atk||1;S.own=data.own||{};S.gotGrants=data.gotGrants||[];S.eq=Object.assign({outfit:null,weapon:null,car:null,acc:[]},data.eq||{});P.hp=S.maxhp;restylePlayer();}
+  P.x=POS.start.x;P.z=POS.start.z;P.a=Math.PI/2;
+  if(data){try{const r=JSON.parse(sessionStorage.getItem('nakasu_ret')||'null');sessionStorage.removeItem('nakasu_ret');if(r&&walkable(r.x,r.z)){P.x=r.x;P.z=r.z;}}catch(e){}}
+  camYaw=P.a;refreshMarkers();S.nextEnc=S.t+50;setTimeout(()=>Net.pullGrants(),1500);
   if(!data){playVideo('v0').then(()=>still('c0',[['','五年。塀の中で数えた年月だ。'],['','天神の街は、記憶よりずっと眩しかった。'],['鉄二','……変わったな、博多も。'],['','那珂川の向こうで、中洲のネオンが呼んでいる。']])).then(()=>{card('序章 帰ってきた男','—— 天神・中洲 ——');S.ch=0;save();setTimeout(()=>toast('画面の黄色い◆と、ミニマップの黄色い線をたどれば目的地に着く',4.5),3200);});}
   else{card('おかえり',S.ch>=7?'自由行動':'第'+(S.ch+1)+'章から');}}
 $('bNew').onclick=()=>begin(null);$('bCont').onclick=()=>begin(load());
@@ -1510,7 +1581,7 @@ polR=new THREE.MeshBasicMaterial({color:0xff2020});polB=new THREE.MeshBasicMater
   for(let i=0;i<3;i++)spawnCar(-58+i*0,-80-i*0,Math.PI/2,'taxi',{parked:true}).x=-60+i*5.5;
   for(let i=0,k=0;i<PEDN[Q]&&k<120;k++){const pt=randPoint(5,72,walkable);if(!pt)continue;i+=spawnPedGroup(pt);}
   for(let i=0;i<14;i++){const pi=i%3;const p=PATHS[pi];const si=ri(0,p.length-1);const A=p[si],B=p[(si+1)%p.length];const t=Math.random();let fx=B[0]-A[0],fz=B[1]-A[1];const L=Math.hypot(fx,fz);fx/=L;fz/=L;const x=A[0]+(B[0]-A[0])*t+fz*3.4,z=A[1]+(B[1]-A[1])*t-fx*3.4;if(isWater(x,z))continue;spawnCar(x,z,Math.atan2(fx,fz),Math.random()<.3?'taxi':'car',{path:p,idx:(si+1)%p.length,lane:3.4,v:9});}
-  P.g.visible=true;mode='title';$('loading').style.display='none';$('bNew').disabled=false;if(load())$('bCont').style.display='block';
+  P.g.visible=true;mode='title';$('loading').style.display='none';$('bNew').disabled=false;if(load())$('bCont').style.display='block';Net.init();
   if(new URLSearchParams(location.search).has('autostart'))begin(null);})();
 requestAnimationFrame(frame);
 window.__G={PREM,Pay,premGrant,equip,callMyCar,openPrem,openShop,get Q(){return Q},PEDN,get mission(){return mission},dist,spawn:spawnActor,rm:removeActor,RIG,camYaw:()=>camYaw,setYaw:v=>camYaw=v,hostiles,knockOut,useMarker,markers,enterCar,POS,S,get P(){return P},actors,cars,BLD,MAINS,runMission,get mode(){return mode},advance};

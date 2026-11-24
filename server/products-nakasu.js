@@ -1,0 +1,25 @@
+'use strict';
+// 仁義 中洲ナイト の有料アイテム（日本円・税込）。ゲーム内通貨は売らず、アイテムを直接売る。
+// id は nakasu-night/web/index.html の PREM と同じ。items.own＝買い切り（服装・武器・車・アクセサリー）、items.drink＝1杯ごとの酒代。
+const own = (id, name, desc, price) => ({ id, name, desc, price, items: { own: id } });
+const drink = (id, name, desc, price) => ({ id, name, desc, price, items: { drink: id } });
+module.exports = [
+  own('o_white', '白スーツ「中洲の帝王」', '服装（買い切り）', 2500),
+  own('o_wine', 'ワインレッドのスーツ', '服装（買い切り）', 2500),
+  own('o_leather', '黒の革ジャン', '服装（買い切り）', 2500),
+  own('o_gold', '成金ゴールドのセットアップ', '服装（買い切り）', 4800),
+  own('w_bandage', '龍のバンテージ', '武器（買い切り）攻撃力+15%', 1200),
+  own('w_glove', '鉄甲グローブ', '武器（買い切り）攻撃力+25%・ヒート1.5倍', 3700),
+  own('w_knuckle', '金のメリケンサック', '武器（買い切り）攻撃力+40%', 4800),
+  own('c_sports', 'スポーツカー「博多レッド」', '車（買い切り）', 4800),
+  own('c_vip', '黒塗りのVIPセダン', '車（買い切り）', 4800),
+  own('a_sun', 'サングラス', 'アクセサリー（買い切り）', 1200),
+  own('a_chain', '金のネックレス', 'アクセサリー（買い切り）', 1200),
+  own('a_watch', '金の腕時計', 'アクセサリー（買い切り）', 1200),
+  drink('d_yset', 'BAR YAHMAN セット（60分）', 'ゲーム内の飲食（1回分）', 1200),
+  drink('d_ychamp', 'BAR YAHMAN シャンパン', 'ゲーム内の飲食（1回分）', 3700),
+  drink('d_ytower', 'BAR YAHMAN シャンパンタワー', 'ゲーム内の飲食（1回分）', 12200),
+  drink('d_mizu', 'スナック月光 水割り', 'ゲーム内の飲食（1回分）', 1200),
+  drink('d_shochu', 'スナック月光 焼酎ボトル', 'ゲーム内の飲食（1回分）', 2500),
+  drink('d_mama', 'スナック月光 ママにも一杯', 'ゲーム内の飲食（1回分）', 2500),
+];

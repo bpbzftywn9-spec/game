@@ -1,4 +1,5 @@
 # Render Blueprint: 仁義サンシャイン (game + payment server)
+# 同じサーバーで「仁義 中洲ナイト」の決済とセーブも扱う（NAKASU_URL を設定する）。
 # Render ダッシュボード → New → Blueprint → このリポジトリを選ぶと、この設定でサービスが作られる。
 # 値が sync: false の項目は、作成時に Render の画面で入力する（リポジトリには書かない）。
 services:
@@ -24,6 +25,10 @@ services:
         value: "1"
       - key: MONTHLY_LIMIT_JPY
         value: "10000"
+      - key: NAKASU_URL               # 仁義 中洲ナイトのURL（Cloudflare Pages。例: https://nakasu-night.pages.dev/）
+        sync: false
+      - key: NAKASU_MONTHLY_LIMIT_JPY # 中洲ナイトの月間購入上限（円）
+        value: "50000"
       - key: STRIPE_SECRET_KEY        # 最初は sk_test_ で始まるテストキー
         sync: false
       - key: STRIPE_WEBHOOK_SECRET    # デプロイ後に Stripe で Webhook を作ってから入れる
