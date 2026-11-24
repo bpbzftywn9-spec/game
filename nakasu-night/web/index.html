@@ -105,6 +105,35 @@ body.incar #bA,body.incar #bD,body.incar #bH{display:none}
 .ptab.on{background:#ffd84a;color:#1a0a1a;border-color:#ffd84a}
 .item>div{flex:1}.item .yen{color:#ffd84a;white-space:nowrap}.item .own{color:#8dff7a;white-space:nowrap;font-size:13px}.item.eq{border-color:#8dff7a;background:rgba(141,255,122,.12)}
 .plinks a{color:#9fdcff;margin-right:6px}
+#fol{color:#ff9ae8;display:none}
+#bPhone{position:relative}#bPhone .bd{position:absolute;right:-4px;top:-4px;min-width:16px;height:16px;border-radius:8px;background:#ff3d5a;color:#fff;font-size:10px;line-height:16px;font-weight:900;display:none;padding:0 3px}
+#phone{background:rgba(0,0,0,.55);z-index:33}
+#ph{width:min(92vw,360px);height:min(86vh,700px);background:#0b0b12;border:3px solid #3a3a46;border-radius:34px;padding:8px;display:flex;flex-direction:column;box-shadow:0 0 30px rgba(0,0,0,.8);text-align:left}
+#phbar{display:flex;justify-content:space-between;font-size:12px;font-weight:800;color:#ddd;padding:4px 14px 6px}
+#phscr{flex:1;overflow-y:auto;touch-action:pan-y;border-radius:22px;background:#12121c;color:#fff;min-height:0}
+#phnav{display:flex;justify-content:space-around;padding:8px 0 2px}#phnav button{width:64px;height:30px;border-radius:15px;border:1px solid #555;background:#1c1c28;color:#ddd;font-size:15px;font-weight:900}
+.phhome{min-height:100%;padding:28px 18px;background:radial-gradient(circle at 30% 20%,#3a1a5a,#120a24 60%,#07081a)}
+.phbig{font-size:52px;font-weight:900;text-align:center;letter-spacing:.04em}.phdate{text-align:center;font-size:13px;opacity:.8;margin-bottom:26px}
+.apps{display:grid;grid-template-columns:repeat(3,1fr);gap:18px 10px}
+.app{display:flex;flex-direction:column;align-items:center;gap:6px;background:none;border:0;color:#fff;font-size:12px;font-weight:800;position:relative}
+.app i{width:60px;height:60px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-style:normal;font-size:26px;font-weight:900;box-shadow:0 4px 12px rgba(0,0,0,.4)}
+.app .bd{position:absolute;right:8px;top:-4px;min-width:18px;height:18px;border-radius:9px;background:#ff3d5a;font-size:11px;line-height:18px;padding:0 4px}
+.aphd{position:sticky;top:0;background:#12121c;padding:12px 14px;font-weight:900;font-size:17px;border-bottom:1px solid #2a2a3a;z-index:1}
+.crow{display:flex;gap:10px;align-items:center;padding:10px 14px;border-bottom:1px solid #22222e;width:100%;background:none;border-left:0;border-right:0;border-top:0;color:#fff;text-align:left}
+.av{width:42px;height:42px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:17px}
+.crow .nm{font-weight:800;font-size:14px}.crow .pv{font-size:12px;opacity:.65;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.crow .dot{width:9px;height:9px;border-radius:50%;background:#3de08a;flex:none}
+.msgs{padding:12px;display:flex;flex-direction:column;gap:8px}.bub{max-width:80%;padding:8px 11px;border-radius:14px;font-size:14px;line-height:1.5;background:#26263a}.bub small{display:block;font-size:10px;opacity:.55;margin-top:2px}
+.prof{padding:14px;display:flex;gap:14px;align-items:center}.prof .av{width:64px;height:64px;font-size:26px;background:linear-gradient(135deg,#ff3d8b,#7a4aff)}
+.pst{display:flex;gap:14px;text-align:center;font-size:11px;opacity:.9}.pst b{display:block;font-size:16px}
+.msb{margin:0 14px 8px;font-size:11px;opacity:.85}.msb .bar{height:8px;border:0;background:#2a2a3a;margin:4px 0}.msb .bar>div{background:linear-gradient(90deg,#ff3d8b,#ffb238)}
+.perk{font-size:12px;padding:3px 14px;opacity:.55}.perk.on{opacity:1;color:#ffd84a}
+.tabs{display:flex;border-bottom:1px solid #2a2a3a;margin-top:6px}.tabs button{flex:1;padding:9px;background:none;border:0;color:#aaa;font-weight:800}.tabs button.on{color:#fff;border-bottom:2px solid #ff3d8b}
+.pcard{border-bottom:1px solid #22222e;padding:10px 0}.pcard .who{display:flex;gap:8px;align-items:center;padding:0 12px 8px;font-weight:800;font-size:13px}.pcard .who .av{width:28px;height:28px;font-size:12px}
+.pimg{width:100%;aspect-ratio:1/1;object-fit:cover;display:block;background:linear-gradient(135deg,#2a0a3a,#0a2a3a);color:#fff;font-weight:900;font-size:20px;align-items:center;justify-content:center}
+.pcard .cap{padding:8px 12px 0;font-size:13px;line-height:1.5}.pcard .lk{padding:6px 12px 0;font-size:13px;font-weight:800}
+.ptxt{padding:0 12px;font-size:14px;line-height:1.55}
+.trt{font-weight:800}
+
 .pnote{font-size:11px;line-height:1.6;opacity:.75;margin:8px 0 4px;text-align:left}
 .ptest{display:none;font-size:12px;font-weight:800;color:#1a0a1a;background:#8dff7a;border-radius:8px;padding:4px 8px;margin:4px 0 8px}
 .pchk{display:flex;gap:8px;align-items:flex-start;font-size:13px;line-height:1.5;margin:6px 0 4px}.pchk input{width:20px;height:20px;flex:none;margin-top:1px}
@@ -136,11 +165,11 @@ body.ttl #hud,body.ttl #mapw,body.ttl #topbtns,body.ttl #btns,body.ttl #feed{dis
   <div id="pname" class="dg">黒田 鉄二</div>
   <div class="bar" id="hpw"><div id="hpb"></div></div>
   <div class="bar" id="htw"><div id="htb"></div></div>
-  <div id="stats"><span id="money">¥0</span><span id="clock">20:00</span><span id="spd">0 km/h</span></div>
+  <div id="stats"><span id="money">¥0</span><span id="clock">20:00</span><span id="fol">👥 0</span><span id="spd">0 km/h</span></div>
   <div id="obj"><div class="ot" id="objt"></div><div class="ox" id="objx"></div><div class="od" id="objd"></div></div>
 </div>
 <div id="mapw"><canvas id="map" width="248" height="248"></canvas><div id="arealb"></div><div id="wanted"><span id="wlb">手配度</span><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div></div>
-<div id="topbtns"><button id="bMute" aria-label="サウンド">♪</button><button id="bPause" aria-label="メニュー">Ⅱ</button></div>
+<div id="topbtns"><button id="bPhone" aria-label="スマホ">📱<span class="bd" id="phBd"></span></button><button id="bMute" aria-label="サウンド">♪</button><button id="bPause" aria-label="メニュー">Ⅱ</button></div>
 <div id="wp"><div class="wa" id="wpa"></div><div class="wd"></div><div class="wl" id="wpl"></div></div><div id="feed"></div><div id="areaname"><div class="a dg"></div><div class="e"></div></div>
 <div id="card"></div>
 <div id="heatname" class="dg"></div>
@@ -188,8 +217,10 @@ body.ttl #hud,body.ttl #mapw,body.ttl #topbtns,body.ttl #btns,body.ttl #feed{dis
   <div class="pnote" id="pcnext"></div>
   <div class="pnote plinks" id="pclegal"><a data-legal="tokushoho" target="_blank" rel="noopener">特定商取引法に基づく表記</a>　<a data-legal="terms" target="_blank" rel="noopener">利用規約</a>　<a data-legal="privacy" target="_blank" rel="noopener">プライバシー</a></div>
   <button class="mbtn pri" id="bPcBuy">購入する</button><button class="mbtn" id="bPcNo">やめる</button></div></div>
+<div class="ov" id="phone"><div id="ph"><div id="phbar"><span id="phclk">20:00</span><span>📶 🔋</span></div><div id="phscr"></div>
+  <div id="phnav"><button id="phBack" aria-label="戻る">‹</button><button id="phHome" aria-label="ホーム">●</button><button id="phClose" aria-label="閉じる">×</button></div></div></div>
 <div class="ov" id="pause"><div class="panel" style="text-align:center"><h3 class="dg" style="color:var(--pink)">ポーズ</h3>
-  <p style="font-size:13px;line-height:1.75;text-align:left">黄色の<b style="color:#ffd84a">◆</b>とミニマップの<b style="color:#ffd84a">黄色い線</b>＝次の目的地<br>黄色の<b style="color:#ffd84a">！</b>＝メインストーリー<br>水色の<b style="color:#3de0ff">？</b>＝サブストーリー<br>緑の<b style="color:#8dff7a">¥</b>＝屋台・コンビニ・飲み屋（回復）<br>ミニマップの<b style="color:#c06bff">紫の点</b>＝売人（22時〜4時に街灯の下に現れる。倒すと商店会から報奨金）<br>攻撃を当ててゲージ満タンで<b style="color:#3de0ff">極</b>＝ヒートアクション。川・屋台・車・壁の近くで技が変わる。<br>市民や警官を殴る・車を奪うと<b style="color:#ffd84a">手配度</b>が上がる。警察の視界から消えれば下がる。</p>
+  <p style="font-size:13px;line-height:1.75;text-align:left">黄色の<b style="color:#ffd84a">◆</b>とミニマップの<b style="color:#ffd84a">黄色い線</b>＝次の目的地<br>黄色の<b style="color:#ffd84a">！</b>＝メインストーリー<br>水色の<b style="color:#3de0ff">？</b>＝サブストーリー<br>緑の<b style="color:#8dff7a">¥</b>＝屋台・コンビニ・飲み屋（回復）<br>右上の<b>📱</b>（Pキー）＝スマホ（連絡・ヨルスナ・カメラ）<br>居酒屋・スナック・バー・クラブに入ると、客に近づいて「奢る」、カウンターで「みんなに奢る」。奢るとヨルスナのフォロワーが増え、特典がもらえる<br>ミニマップの<b style="color:#c06bff">紫の点</b>＝売人（22時〜4時に街灯の下に現れる。倒すと商店会から報奨金）<br>攻撃を当ててゲージ満タンで<b style="color:#3de0ff">極</b>＝ヒートアクション。川・屋台・車・壁の近くで技が変わる。<br>市民や警官を殴る・車を奪うと<b style="color:#ffd84a">手配度</b>が上がる。警察の視界から消えれば下がる。</p>
   <p id="pobj" style="font-size:14px;line-height:1.6;text-align:left;background:rgba(255,216,74,.12);border-left:4px solid #ffd84a;padding:8px 10px;border-radius:0 8px 8px 0"></p><button class="mbtn pri" id="bResume">再開</button><button class="mbtn" id="bSave">セーブ</button><button class="mbtn" id="bPrem" style="border-color:#ffd84a;color:#ffe9a0">💎 プレミアムショップ</button><button class="mbtn" id="bMyCar" style="display:none">🚗 マイカーを呼ぶ</button><button class="mbtn" id="bQ">画質</button><button class="mbtn" id="bSpon">協力店舗：BAR YAHMAN</button><button class="mbtn" id="bTitle">タイトルへ</button></div></div>
 <div class="ov" id="ending"><h2 class="dg">第一部 完</h2><p id="endtx"></p><button class="mbtn pri" id="bEndOk">自由行動を続ける</button><button class="mbtn" id="bSpon2">協力店舗：BAR YAHMAN</button></div>
 <div class="ov" id="spon" style="background:rgba(0,0,0,.7);z-index:36"><div class="panel" style="text-align:left">
@@ -534,6 +565,10 @@ function buildWorld(){
   addGeo('pole',boxGeo(.5,10,.5,-1,5,-140));addSign('屋台通り','#ffe14d',false,-1.3,10,-140,-Math.PI/2,12,3);
   // Nakasu gate on the pedestrian bridge end
   addGeo('pole',boxGeo(.4,6,.4,-8,3,-3.6));addGeo('pole',boxGeo(.4,6,.4,-8,3,3.6));addSign('ようこそ中洲へ','#ff3d8b',false,-8,6,0,-Math.PI/2,7.6,1.6);
+  // 居酒屋 ほたる（中洲・西側の通り）とCLUB LUMINAS（天神・渡辺通り沿い）
+  addBld(4,16,-40,-28,10,2).noStore=1;addSign('居酒屋 ほたる','#ffb238',false,3.93,3.5,-34,-Math.PI/2,6,1.4);addSign('焼鳥・もつ鍋','#ffe14d',true,3.9,6.6,-38.6,-Math.PI/2,1.2,3.6);box(.1,2.3,1.6,bas(0x2a1a10),3.95,1.15,-34);LSRC.push({x:2,y:2.5,z:-34,c:0xffa040,i:2});
+  for(const dz of [-1.4,1.4]){const m=new THREE.Mesh(new THREE.SphereGeometry(.3,12,10),bas(0xff4a22));m.scale.y=1.3;m.position.set(3.6,2.5,-34+dz);scene.add(m);}
+  addBld(-98,-84,-60,-44,18,6).noStore=1;addSign('CLUB LUMINAS','#b26bff',false,-98.07,4.2,-52,-Math.PI/2,9,1.8);addSign('NIGHT CLUB','#3de0ff',false,-98.07,8,-52,-Math.PI/2,8,1.4);box(.1,2.6,2,bas(0x1a0a2a),-98.05,1.3,-52);LSRC.push({x:-100,y:3,z:-52,c:0xb26bff,i:2.2});
   // BAR YAHMAN (Nakasu 2-chome)
   addBld(44,58,6,17,16,3).noStore=1;addSign('BAR YAHMAN','#ff5a1a',false,51,4.3,5.92,Math.PI,9,1.9);addSign('ヤーマン 2F','#ffe14d',true,57.3,7.5,5.2,Math.PI/2,1.4,6);
   addSign('夜のディズニーランド','#3de0ff',false,51,11,5.92,Math.PI,11,1.7);box(1.6,2.4,.1,bas(0x3a0a06),51,1.2,5.95);LSRC.push({x:51,y:3,z:3,c:0xff6a2a,i:2});LSRC.push({x:51,y:3,z:3,c:0xff6a2a,i:0});
@@ -599,7 +634,7 @@ function buildWorld(){
   const sk=Object.keys(SIGNGEO);for(const k of sk){const e=SIGNGEO[k];scene.add(new THREE.Mesh(mergeGeos(e.g),e.s.m));}
   flickerMats=sk.slice(0,6).map(k=>SIGNGEO[k].s.m);
   // rooms
-  buildRoom(ROOMS.snack);buildRoom(ROOMS.bar);buildRoom(ROOMS.yahman);
+  buildRoom(ROOMS.snack);buildRoom(ROOMS.bar);buildRoom(ROOMS.yahman);buildRoom(ROOMS.izakaya);buildRoom(ROOMS.club);
   lin(scene);makeRain();
 }
 function addLeaf(g){const ng=g.index?g:g;if(!ng.index){const n=ng.attributes.position.count;const idx=[];for(let i=0;i<n;i++)idx.push(i);ng.setIndex(idx);}if(!ng.attributes.uv){ng.setAttribute('uv',new THREE.BufferAttribute(new Float32Array(ng.attributes.position.count*2),2));}addGeo('leaf',ng);}
@@ -612,7 +647,7 @@ function makeYatai(x,z,name,col){const g=new THREE.Group();g.position.set(x,0,z)
   for(const zz of [-.8,0,.8])box(.35,.55,.35,0x8a2a1a,1.6,.28,zz,g);
   BLD.push({x0:x-.85,x1:x+1.1,z0:z-1.45,z1:z+1.45,h:2.4});return {x,z,g};}
 // interiors (far outside the city)
-const ROOMS={snack:{n:'スナック 月光',cx:420,cz:0,w:14,d:10,col:0x4a1a34,light:0xff6aa8,out:{x:37,z:-22,a:-Math.PI/2}},bar:{n:'BAR 玄',cx:420,cz:60,w:16,d:11,col:0x1a1418,light:0xff4a2a,out:{x:23,z:58,a:Math.PI/2}},yahman:{n:'BAR YAHMAN',cx:420,cz:130,w:18,d:13,col:0x140a12,light:0xff4a1a,out:{x:51,z:3.4,a:Math.PI}}};
+const ROOMS={izakaya:{n:'居酒屋 ほたる',cx:420,cz:200,w:16,d:12,col:0x3a2616,light:0xffb060,out:{x:2.4,z:-34,a:-Math.PI/2}},club:{n:'CLUB LUMINAS',cx:420,cz:270,w:20,d:14,col:0x0c0a1a,light:0x7a4aff,out:{x:-99.8,z:-52,a:-Math.PI/2}},snack:{n:'スナック 月光',cx:420,cz:0,w:14,d:10,col:0x4a1a34,light:0xff6aa8,out:{x:37,z:-22,a:-Math.PI/2}},bar:{n:'BAR 玄',cx:420,cz:60,w:16,d:11,col:0x1a1418,light:0xff4a2a,out:{x:23,z:58,a:Math.PI/2}},yahman:{n:'BAR YAHMAN',cx:420,cz:130,w:18,d:13,col:0x140a12,light:0xff4a1a,out:{x:51,z:3.4,a:Math.PI}}};
 function buildRoom(r){const {cx,cz,w,d}=r;box(w,.2,d,r.col===0x4a1a34?0x3a2030:0x24201c,cx,-.1,cz);
   const wc=r.col;const walls=[[w,cx,cz-d/2,1],[w,cx,cz+d/2,1],[d,cx-w/2,cz,0],[d,cx+w/2,cz,0]];
   for(const [L,x,z,hz] of walls){box(hz?L:.3,4.5,hz?.3:L,wc,x,2.25,z);BLD.push(hz?{x0:x-L/2,x1:x+L/2,z0:z-.15,z1:z+.15,h:9}:{x0:x-.15,x1:x+.15,z0:z-L/2,z1:z+L/2,h:9});}
@@ -628,6 +663,15 @@ function buildRoom(r){const {cx,cz,w,d}=r;box(w,.2,d,r.col===0x4a1a34?0x3a2030:0
     box(1.7,.9,1.7,0x2a1a10,cx+3.2,.45,cz-1);BLD.push({x0:cx+2.3,x1:cx+4.1,z0:cz-1.9,z1:cz-.1,h:2});
     for(const sx of [-1,1]){box(1.1,.6,4,0x3a0a12,cx+sx*(w/2-.9),.3,cz-3.4);box(.3,1.1,4,0x3a0a12,cx+sx*(w/2-.3),.65,cz-3.4);}
     r.disco=[0xff2a2a,0x2a8aff,0xffc02a].map((c,i)=>{const l=new THREE.PointLight(c,1.4,14,1.6);l.position.set(cx,3.5,cz);scene.add(l);return l;});}
+  else if(r===ROOMS.izakaya){// 座敷のテーブル・赤ちょうちん
+    for(const [dx,dz] of [[-4.5,-1.5],[0,-1.5],[4.5,-1.5],[-4.5,-4],[4.5,-4]]){box(2.2,.5,1.3,0x6a4422,cx+dx,.25,cz+dz);BLD.push({x0:cx+dx-1.1,x1:cx+dx+1.1,z0:cz+dz-.65,z1:cz+dz+.65,h:1});for(const s of [-1,1])box(.6,.12,.6,0x8a2a22,cx+dx+s*.6,.06,cz+dz+s*.95);}
+    for(let i=0;i<6;i++){const m=new THREE.Mesh(new THREE.SphereGeometry(.28,12,10),bas(0xff4a22));m.scale.y=1.3;m.position.set(cx-6+i*2.4,3.3,cz-d/2+.8);scene.add(m);}
+    box(w*.5,.9,.06,bas(0x1a2a5a),cx,3.6,cz-d/2+.2);}
+  else if(r===ROOMS.club){// ダンスフロア・DJブース・ミラーボールの光
+    r.tileM=[0x3a1a6a,0xff3d8b,0x3de0ff,0x1a1030,0xffd84a,0x7a4aff].map(c=>bas(c));r.tiles=[];for(let i=0;i<6;i++)for(let j=0;j<4;j++){const m=box(1.5,.06,1.5,bas(0x3a1a6a),cx-4.5+i*1.6,.03,cz-3+j*1.6);r.tiles.push(m);}
+    box(4,1.2,1.4,0x16161e,cx,.6,cz-d/2+1.6);box(3.6,.1,1.1,bas(0x3de0ff),cx,1.23,cz-d/2+1.6);BLD.push({x0:cx-2,x1:cx+2,z0:cz-d/2+.9,z1:cz-d/2+2.3,h:2});
+    for(const sx of [-1,1]){box(1.1,.6,5,0x2a0a3a,cx+sx*(w/2-.9),.3,cz+1);box(.3,1.1,5,0x2a0a3a,cx+sx*(w/2-.3),.65,cz+1);}
+    r.disco=[0xff2a8a,0x2a8aff,0x8aff2a,0xffc02a].map(c=>{const l=new THREE.PointLight(c,1.4,16,1.6);l.position.set(cx,3.6,cz);scene.add(l);return l;});}
   else if(r===ROOMS.snack){box(2.6,1.6,.1,bas(0x2a4aa8),cx-w/2+.3,2.2,cz,null).rotation.y=Math.PI/2;box(3,.7,1.2,0x6a1a3a,cx-w/2+1.2,.35,cz-2.5);box(3,.7,1.2,0x6a1a3a,cx+w/2-1.2,.35,cz-2.5);}
   else{for(const xx of [-4,0,4]){box(1.4,.8,1.4,0x2a2a2a,cx+xx,.4,cz-1.5);}}
   const l=new THREE.PointLight(r.light,1.5,26,1.4);l.position.set(cx,3.8,cz);scene.add(l);}
@@ -975,23 +1019,23 @@ function updFX(dt){for(const p of fx){if(p.life<=0)continue;p.life-=dt;if(p.life
 // markers
 const markers=[];
 function iconTex(ch,col){return canvasTex(128,128,(g)=>{g.beginPath();g.arc(64,64,54,0,TAU);g.fillStyle='rgba(0,0,0,.75)';g.fill();g.lineWidth=8;g.strokeStyle=col;g.shadowColor=col;g.shadowBlur=14;g.stroke();g.shadowBlur=0;g.fillStyle=col;g.font='76px '+FONT;g.textAlign='center';g.textBaseline='middle';g.fillText(ch,64,68);});}
-const ICON={main:iconTex('！','#ffd84a'),sub:iconTex('？','#3de0ff'),shop:iconTex('¥','#8dff7a')};
+const ICON={main:iconTex('！','#ffd84a'),sub:iconTex('？','#3de0ff'),shop:iconTex('¥','#8dff7a'),exit:iconTex('出','#ffffff')};
 const pillarG=new THREE.CylinderGeometry(.9,.9,40,16,1,true);
 function makeMarker(k,p,id,label){const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:ICON[k],depthTest:true}));sp.scale.set(1.5,1.5,1);scene.add(sp);
-  const col=k==='main'?0xffd84a:k==='sub'?0x3de0ff:0x8dff7a;const pil=new THREE.Mesh(pillarG,new THREE.MeshBasicMaterial({color:col,transparent:true,opacity:.18,blending:THREE.AdditiveBlending,depthWrite:false,side:THREE.DoubleSide}));pil.position.set(p.x,20,p.z);scene.add(pil);
+  const col=k==='main'?0xffd84a:k==='sub'?0x3de0ff:k==='exit'?0xffffff:0x8dff7a;const pil=new THREE.Mesh(pillarG,new THREE.MeshBasicMaterial({color:col,transparent:true,opacity:.18,blending:THREE.AdditiveBlending,depthWrite:false,side:THREE.DoubleSide}));pil.position.set(p.x,20,p.z);scene.add(pil);
   lin(pil);const m={k,p,id,label,sp,pil,on:false};markers.push(m);return m;}
 const goalPil=new THREE.Mesh(pillarG,linMat(new THREE.MeshBasicMaterial({color:0xffd84a,transparent:true,opacity:.28,blending:THREE.AdditiveBlending,depthWrite:false,side:THREE.DoubleSide})));goalPil.visible=false;scene.add(goalPil);
 
 // ================= STATE =================
 let mode='loading',tScale=1,hitstop=0,shake=0,camYaw=0,camLookT=0,mission=null,runToken=0;
-const S={clock:20*60,gotGrants:[],own:{},eq:{outfit:null,weapon:null,car:null,acc:[]},t:0,money:0,ch:0,subs:{},maxhp:100,atk:1,wanted:0,lostT:0,seen:false,crimeCd:0,room:null,goal:null,goalLabel:'',boss:null,cine:null,nextEnc:60,target:null,targetT:0,news:'天神ビジョン　今夜の博多は晴れ。中洲の屋台は通常営業中。夜のディズニーランド・BAR YAHMANは中洲2丁目で深夜営業中！',flicker:0};
+const S={followers:0,posts:[],msgs:{},ms:[],venue:null,clock:20*60,gotGrants:[],own:{},eq:{outfit:null,weapon:null,car:null,acc:[]},t:0,money:0,ch:0,subs:{},maxhp:100,atk:1,wanted:0,lostT:0,seen:false,crimeCd:0,room:null,goal:null,goalLabel:'',boss:null,cine:null,nextEnc:60,target:null,targetT:0,news:'天神ビジョン　今夜の博多は晴れ。中洲の屋台は通常営業中。夜のディズニーランド・BAR YAHMANは中洲2丁目で深夜営業中！',flicker:0};
 function makePlayer(){P=spawnActor('player',POS.start.x,POS.start.z,{look:'player',hp:100});P.a=Math.PI/2;P.heat=0;P.act=null;P.queue=null;P.combo=0;P.comboT=0;P.dodge=0;P.inv=0;P.downT=0;P.car=null;P.dcd=0;P.regenT=0;}
 
 // ================= UI =================
 let toastT=0;function toast(s,t=2.6){const e=$('toast');e.textContent=s;e.style.display='block';toastT=t;}
 let cardT=0;function card(t,s){$('card').innerHTML='<div class="t dg"></div><div class="s"></div>';$('card').querySelector('.t').textContent=t;$('card').querySelector('.s').textContent=s||'';$('card').style.display='block';cardT=3;}
 const HANDLES=['@nakasu_watcher','@天神OL日記','@hakata_ramen_bot','@那珂川ウォーク','@yatai_lover','@博多っ子速報','@tenjin_cam','@中洲の夜回り','@mentai_man','@福岡グルメ部'];
-function post(text,h){const d=document.createElement('div');d.className='post';const b=document.createElement('b');b.textContent=h||pick(HANDLES);d.append(b,document.createElement('br'),text);$('feed').prepend(d);while($('feed').children.length>4)$('feed').lastChild.remove();setTimeout(()=>{d.style.opacity='0';setTimeout(()=>d.remove(),700);},7000);}
+function post(text,h){TL.unshift({h:h||null,txt:text,t:clockTx()});if(TL.length>40)TL.pop();h=h||pick(HANDLES);TL[0].h=h;const d=document.createElement('div');d.className='post';const b=document.createElement('b');b.textContent=h||pick(HANDLES);d.append(b,document.createElement('br'),text);$('feed').prepend(d);while($('feed').children.length>4)$('feed').lastChild.remove();setTimeout(()=>{d.style.opacity='0';setTimeout(()=>d.remove(),700);},7000);}
 const CHT=['第一章 中洲、帰還','第二章 ぼったくりBAR','第三章 夜のディズニーランド','第四章 天神逃走線','第五章 ゴーゴーレッツゴー','第六章 屋台の灯を守れ','最終章 那珂川の決闘'];
 const LOCN=['中洲のスナック「月光」','中洲のスナック「月光」','中洲のスナック「月光」','中洲のスナック「月光」','中洲2丁目「BAR YAHMAN」前','那珂川沿いの屋台通り','福博であい橋'];
 const SUBN={snatch:'サブストーリー　ひったくりを追え',drunk:'サブストーリー　酔っぱらい部長',fight:'サブストーリー　ストリートファイト'};
@@ -1096,7 +1140,8 @@ function moveEnt(e,dx,dz,r){const ox=e.x,oz=e.z;let nx=ox+dx,nz=oz+dz;let hit=fa
 // ================= INPUT =================
 const keys={};const stick={id:null,ox:0,oy:0,x:0,y:0};const lookP={id:null,lx:0};
 addEventListener('keydown',e=>{keys[e.code]=true;if(mode==='talk'&&(e.code==='Enter'||e.code==='Space'||e.code==='KeyE')){advance();return;}
-  if(e.code==='Escape'){if(mode==='play')openPause();else if(mode==='pause')closePause();}
+  if(e.code==='Escape'){if(mode==='play')openPause();else if(mode==='pause')closePause();else if(mode==='phone')closePhone();}
+  if(e.code==='KeyP'){if(mode==='play')openPhone();else if(mode==='phone')closePhone();}
   if(mode!=='play'||e.repeat)return;if(e.code==='KeyJ')btnA();else if(e.code==='KeyK')btnB();else if(e.code==='KeyL'||e.code==='ShiftLeft')btnD();else if(e.code==='KeyH')btnH();else if(e.code==='KeyE')btnX();});
 addEventListener('keyup',e=>{keys[e.code]=false;});
 const gl=R.domElement;
@@ -1292,7 +1337,7 @@ function updWanted(dt){S.crimeCd-=dt;if(S.wanted<=0){S.seen=false;return;}let se
 const DEALN=[2,3,4];
 const isDealerTime=()=>S.clock>=22*60&&S.clock<28*60;
 function clockTx(){const m=Math.floor(S.clock)%(24*60);return String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0');}
-function dealerBounty(e){if(e.paid)return;e.paid=true;const m=e.money;S.money+=m;S.dealers=(S.dealers||0)+1;toast(`売人を成敗！ 商店会から報奨金 ${fmt(m)}`,2.4);SFX.coin();
+function dealerBounty(e){if(e.paid)return;e.paid=true;const m=Math.round(e.money*(S.followers>=1000?1.2:1));S.money+=m;S.dealers=(S.dealers||0)+1;toast(`売人を成敗！ 商店会から報奨金 ${fmt(m)}`,2.4);SFX.coin();
   post(pick(['中洲の街灯の下におった怪しい売人、誰かに成敗されとった','最近、天神の裏通りが静かになった気がする','売人が倒れとって、すぐ警察が来とった。誰がやったんやろ']),'@中洲の夜回り');}
 function manageDealers(){const on=isDealerTime()&&!mission&&!S.room&&S.ch>=1;
   for(const d of actors.filter(a=>a.dealer&&!a.dead))if((!on&&!d.hostile)||dist(d,P)>160)removeActor(d);
@@ -1311,8 +1356,9 @@ function aiDealer(e,dt){e.mv=0;const d=dist(e,P);
 // ================= MARKERS / SHOPS =================
 const MAINLOC=[POS.snack,POS.snack,POS.snack,POS.snack,POS.yahman,POS.yatai,POS.bridge];
 function refreshMarkers(){if(!markers.length){makeMarker('main',POS.snack,'main');makeMarker('sub',POS.sSnatch,'snatch','話す');makeMarker('sub',POS.sDrunk,'drunk','話す');makeMarker('sub',POS.sFight,'fight','話す');
-    makeMarker('shop',{x:-3.4,z:12+2*9.2+1.6},'yatai','屋台');makeMarker('shop',{x:-3.4,z:12+4*9.2+1.6},'yatai','屋台');makeMarker('shop',POS.shopN,'conv','買う');makeMarker('shop',{x:POS.yahman.x+2.2,z:POS.yahman.z},'yahman','飲む');makeMarker('shop',POS.shopT,'conv','買う');makeMarker('shop',{x:POS.snack.x,z:POS.snack.z+3},'snack','飲む');}
-  for(const m of markers){let on=!mission&&!S.room;if(m.id==='main'){on=on&&S.ch<7;if(S.ch<7){m.p=MAINLOC[S.ch];m.label=S.ch===6?'向かう':'話す';}}else if(m.id==='yahman')on=on&&S.ch>=3&&S.ch!==4;else if(m.id==='snack')on=on&&S.ch>=1;else if(m.k==='sub')on=on&&S.ch>=1&&(m.id==='fight'||!S.subs[m.id]);
+    makeMarker('shop',{x:-3.4,z:12+2*9.2+1.6},'yatai','屋台');makeMarker('shop',{x:-3.4,z:12+4*9.2+1.6},'yatai','屋台');makeMarker('shop',POS.shopN,'conv','買う');makeMarker('shop',{x:POS.yahman.x+2.2,z:POS.yahman.z},'yahman','入る');makeMarker('shop',{x:2.4,z:-34},'izakaya','入る');makeMarker('shop',{x:-99.8,z:-52},'club','入る');
+    for(const v in VENUES){const r=ROOMS[VENUES[v].room];const c=makeMarker('shop',{x:r.cx,z:r.cz+r.d/2-4.3},'cnt_'+v,'注文');c.venue=v;const x=makeMarker('exit',{x:r.cx-r.w/2+1.3,z:r.cz-r.d/2+1.2},'exit_'+v,'出る');x.venue=v;}makeMarker('shop',POS.shopT,'conv','買う');makeMarker('shop',{x:POS.snack.x,z:POS.snack.z+3},'snack','入る');}
+  for(const m of markers){let on=!mission&&!S.room;if(m.venue)on=!mission&&S.venue===m.venue;else if(m.id==='izakaya'||m.id==='club')on=on&&S.ch>=1;if(m.id==='main'){on=on&&S.ch<7;if(S.ch<7){m.p=MAINLOC[S.ch];m.label=S.ch===6?'向かう':'話す';}}else if(m.id==='yahman')on=on&&S.ch>=3&&S.ch!==4;else if(m.id==='snack')on=on&&S.ch>=1;else if(m.k==='sub')on=on&&S.ch>=1&&(m.id==='fight'||!S.subs[m.id]);
     m.on=on;m.sp.visible=on;m.pil.visible=on;m.pil.position.set(m.p.x,20,m.p.z);}}
 const SHOPS={yahman:{h:'BAR YAHMAN',sub:'中洲の「夜のディズニーランド」。お酒は20歳になってから。ゲーム内の飲食はフィクションです。',prem:['d_yset','d_ychamp','d_ytower']},
   snack:{h:'スナック 月光',sub:'千鶴ママの店。お酒は20歳になってから。ゲーム内の飲食はフィクションです。',prem:['d_mizu','d_shochu','d_mama']},
@@ -1321,7 +1367,7 @@ const SHOPS={yahman:{h:'BAR YAHMAN',sub:'中洲の「夜のディズニーラン
 function heal(n){if(P.hp>=S.maxhp)return false;P.hp=Math.min(S.maxhp,P.hp+n);}
 function openShop(k){const s=SHOPS[k];mode='shop';$('shoph').textContent=s.h;$('shopsub').textContent=s.sub;const box=$('shopitems');box.innerHTML='';
   if(s.prem){premList(box,s.prem);$('shop').style.display='flex';return;}
-  for(const [n,p,d,fn] of s.items){const b=document.createElement('button');b.className='item';const l=document.createElement('div');l.textContent=n;const sm=document.createElement('small');sm.textContent=d;l.append(sm);const pr=document.createElement('span');pr.textContent=fmt(p);b.append(l,pr);
+  for(const [n,p0,d,fn] of s.items){const p=S.followers>=3000?Math.round(p0*.8/10)*10:p0;const b=document.createElement('button');b.className='item';const l=document.createElement('div');l.textContent=n;const sm=document.createElement('small');sm.textContent=d;l.append(sm);const pr=document.createElement('span');pr.textContent=fmt(p);b.append(l,pr);
     b.onclick=()=>{if(S.money<p){toast('金が足りない',1.4);return;}if(fn()===false){toast('今は必要ない',1.4);return;}S.money-=p;SFX.coin();toast(n+' を買った',1.4);updHUD();};box.append(b);}
   $('shop').style.display='flex';}
 $('bShopClose').onclick=()=>{$('shop').style.display='none';mode='play';};
@@ -1359,7 +1405,7 @@ const Net={api:(DEV_API||NAKASU_API_URL).replace(/\/$/,''),ready:false,token:nul
       const{grants}=await this.req('GET','/api/grants');if(!grants.length)return;const names=[],fx=[];
       for(const g of grants){if(S.gotGrants.includes(g.id))continue;S.gotGrants.push(g.id);const it=g.items||{};
         if(it.own&&PREM[it.own]){S.own[it.own]=1;equip(it.own,true);names.push(PREM[it.own].n);}
-        if(it.drink&&PREM[it.drink]){names.push(PREM[it.drink].n);fx.push(PREM[it.drink].fx);}}
+        if(it.drink&&PREM[it.drink]){names.push(PREM[it.drink].n);const d=it.drink;fx.push(()=>applyDrink(d));}}
       S.gotGrants=S.gotGrants.slice(-300);save();await this.saveNow();await this.req('POST','/api/grants/ack',{ids:grants.map(g=>g.id)});
       if(names.length){card('購入アイテム受け取り',names.join('・'));SFX.coin();}
       for(const f of fx)await f();updHUD();save();
@@ -1388,12 +1434,16 @@ const PREM={
   a_sun:{cat:'acc',n:'サングラス',d:'夜でも外さない。',yen:1200},
   a_chain:{cat:'acc',n:'金のネックレス',d:'太めの喜平チェーン。',yen:1200},
   a_watch:{cat:'acc',n:'金の腕時計',d:'左手首に。',yen:1200},
-  d_yset:{cat:'drink',n:'セット（60分）',d:'体力・ヒートゲージ 全回復',yen:1200,fx:()=>{P.hp=S.maxhp;P.heat=100;}},
-  d_ychamp:{cat:'drink',n:'シャンパン',d:'TAIKI＆おにょのシャンパンコール！ 全回復＋最大体力 +10（上限200）',yen:3700,fx:()=>{S.maxhp=Math.min(200,S.maxhp+10);P.hp=S.maxhp;P.heat=100;setTimeout(()=>toast('TAIKI＆おにょ「シャンパンいただきましたー！ ゴーゴーレッツゴー！」',3),300);}},
-  d_ytower:{cat:'drink',n:'シャンパンタワー',d:'店じゅうでコール！（動画）全回復＋最大体力 +30（上限200）',yen:12200,fx:async()=>{S.maxhp=Math.min(200,S.maxhp+30);P.hp=S.maxhp;P.heat=100;$('shop').style.display='none';await playVideo('v3');mode='play';toast('YAHMAN「シャンパンタワー、いただきましたー！！」',3);}},
-  d_mizu:{cat:'drink',n:'水割り',d:'体力 +50・ヒートゲージ +30',yen:1200,fx:()=>{P.hp=Math.min(S.maxhp,P.hp+50);P.heat=Math.min(100,P.heat+30);}},
-  d_shochu:{cat:'drink',n:'焼酎ボトル',d:'体力・ヒートゲージ 全回復',yen:2500,fx:()=>{P.hp=S.maxhp;P.heat=100;}},
-  d_mama:{cat:'drink',n:'ママにも一杯',d:'千鶴ママと乾杯。全回復＋最大体力 +5（上限200）',yen:2500,fx:()=>{S.maxhp=Math.min(200,S.maxhp+5);P.hp=S.maxhp;P.heat=100;setTimeout(()=>toast(pick(['千鶴ママ「あら、ありがと。テツも無理せんとよ」','千鶴ママ「乾杯！ 中洲の夜はこれからたい」','千鶴ママ「ほんと、変わらんね。あんたは」']),3),300);}},
+  d_yset:{cat:'drink',fol:20,n:'セット（60分）',d:'体力・ヒートゲージ 全回復',yen:1200,fx:()=>{P.hp=S.maxhp;P.heat=100;}},
+  d_ychamp:{cat:'drink',fol:300,n:'シャンパン',d:'TAIKI＆おにょのシャンパンコール！ 全回復＋最大体力 +10（上限200）',yen:3700,fx:()=>{S.maxhp=Math.min(200,S.maxhp+10);P.hp=S.maxhp;P.heat=100;setTimeout(()=>toast('TAIKI＆おにょ「シャンパンいただきましたー！ ゴーゴーレッツゴー！」',3),300);}},
+  d_ytower:{cat:'drink',fol:1500,all:1,n:'シャンパンタワー',d:'店じゅうでコール！（動画）全回復＋最大体力 +30（上限200）',yen:12200,fx:async()=>{S.maxhp=Math.min(200,S.maxhp+30);P.hp=S.maxhp;P.heat=100;$('shop').style.display='none';await playVideo('v3');mode='play';toast('YAHMAN「シャンパンタワー、いただきましたー！！」',3);}},
+  d_ibeer:{cat:'drink',n:'生ビール',d:'体力 +50・ヒートゲージ +30',yen:1200,fol:10,fx:()=>{P.hp=Math.min(S.maxhp,P.hp+50);P.heat=Math.min(100,P.heat+30);}},
+  d_inomi:{cat:'drink',n:'飲み放題（2時間）',d:'体力・ヒートゲージ 全回復＋最大体力 +5（上限200）',yen:3700,fol:40,fx:()=>{S.maxhp=Math.min(200,S.maxhp+5);P.hp=S.maxhp;P.heat=100;}},
+  d_cshot:{cat:'drink',n:'テキーラショット',d:'ヒートゲージ 満タン',yen:1200,fol:15,fx:()=>{P.heat=100;}},
+  d_cchamp:{cat:'drink',n:'店じゅうにシャンパン',d:'VIP席からフロアのみんなにシャンパン！ 全回復＋最大体力 +30（上限200）・フォロワー大幅アップ',yen:12200,fol:1500,all:1,fx:()=>{S.maxhp=Math.min(200,S.maxhp+30);P.hp=S.maxhp;P.heat=100;}},
+  d_mizu:{cat:'drink',fol:10,n:'水割り',d:'体力 +50・ヒートゲージ +30',yen:1200,fx:()=>{P.hp=Math.min(S.maxhp,P.hp+50);P.heat=Math.min(100,P.heat+30);}},
+  d_shochu:{cat:'drink',fol:20,n:'焼酎ボトル',d:'体力・ヒートゲージ 全回復',yen:2500,fx:()=>{P.hp=S.maxhp;P.heat=100;}},
+  d_mama:{cat:'drink',fol:50,n:'ママにも一杯',d:'千鶴ママと乾杯。全回復＋最大体力 +5（上限200）',yen:2500,fx:()=>{S.maxhp=Math.min(200,S.maxhp+5);P.hp=S.maxhp;P.heat=100;setTimeout(()=>toast(pick(['千鶴ママ「あら、ありがと。テツも無理せんとよ」','千鶴ママ「乾杯！ 中洲の夜はこれからたい」','千鶴ママ「ほんと、変わらんね。あんたは」']),3),300);}},
 };
 const PCAT=[['outfit','服装'],['weapon','武器'],['car','車'],['acc','アクセサリー']];
 const yenTx=n=>n.toLocaleString('ja-JP')+'円';
@@ -1421,7 +1471,7 @@ $('pcok').onchange=()=>{$('bPcBuy').disabled=!$('pcok').checked;};
 const pcEnd=v=>{$('pconf').style.display='none';const r=pcRes;pcRes=null;if(r)r(v);};
 $('bPcBuy').onclick=()=>pcEnd(true);$('bPcNo').onclick=()=>pcEnd(false);
 function premGrant(id){const it=PREM[id];if(!it)return;
-  if(it.cat==='drink'){SFX.coin();toast(it.n+' をいただいた',1.6);const r=it.fx&&it.fx();updHUD();save();return r;}
+  if(it.cat==='drink'){SFX.coin();toast(it.n+' をいただいた',1.6);const r=applyDrink(id);updHUD();save();return r;}
   S.own[id]=1;SFX.coin();toast(it.n+' を手に入れた',2);equip(id,true);}
 function equip(id,on){const it=PREM[id];if(!it||!S.own[id])return;const c=it.cat;
   if(c==='acc'){const a=S.eq.acc;const i=a.indexOf(id);if(on===undefined)on=i<0;if(on&&i<0)a.push(id);if(!on&&i>=0)a.splice(i,1);}
@@ -1449,8 +1499,8 @@ function premRow(box,id,onBuy){const it=PREM[id];const b=document.createElement(
   const l=document.createElement('div');l.textContent=it.n;const sm=document.createElement('small');sm.textContent=it.d;l.append(sm);
   const r=document.createElement('span');r.className=own?'own':'yen';r.textContent=own?(isEq?'✓ 装備中':'装備する'):(Pay.mode==='off'?'準備中':yenTx(Pay.price(id)));b.append(l,r);
   b.onclick=async()=>{if(own){equip(id);onBuy();return;}if(await Pay.buy(id)){await premGrant(id);onBuy();}};box.append(b);}
-function premList(box,ids){box.innerHTML='';const s=document.createElement('div');s.className='pnote';s.textContent=(Pay.mode==='test'||Pay.mode==='srvtest'?'💎 テスト購入モード（実際には請求されません）':Pay.mode==='off'?'💎 準備中です':'💎 店の飲食は1杯ごとのお支払いです（税込）')+'。お酒のアイテムは20歳以上の方のみ購入できます。';box.append(s);
-  for(const id of ids)premRow(box,id,()=>{if($('shop').style.display!=='none')premList(box,ids);});}
+function premList(box,ids,keep){if(!keep)box.innerHTML='';const s=document.createElement('div');s.className='pnote';s.textContent=(Pay.mode==='test'||Pay.mode==='srvtest'?'💎 テスト購入モード（実際には請求されません）':Pay.mode==='off'?'💎 準備中です':'💎 店の飲食は1杯ごとのお支払いです（税込）')+'。お酒のアイテムは20歳以上の方のみ購入できます。';box.append(s);
+  for(const id of ids)premRow(box,id,()=>{if($('shop').style.display!=='none'){if(S.venue)openVenueMenu(S.venue);else premList(box,ids);}});}
 let premCat='outfit';
 function openPrem(cat){if(cat)premCat=cat;const m=Pay.mode,me=Net.me;
   $('premsub').textContent=(m==='test'||m==='srvtest'?'テスト購入モード：実際には請求されません':m==='off'?'準備中です。近日公開予定。':'')+(Net.ready&&me?`　今月の購入額 ${yenTx(me.spentThisMonth)}／上限 ${yenTx(me.monthlyLimit)}`:'');
@@ -1462,16 +1512,110 @@ function openPrem(cat){if(cat)premCat=cat;const m=Pay.mode,me=Net.me;
 $('bPremClose').onclick=()=>{$('prem').style.display='none';};
 
 
+// ================= 店に入る・お酒を奢る・フォロワー =================
+// 居酒屋・スナック・バー・クラブに入れる。客に近づいて「奢る」（ゲーム内のお金）、カウンターで「みんなに奢る」と自分の飲み物（課金）
+const VENUES={izakaya:{room:'izakaya',n:'居酒屋 ほたる',per:800,drinks:['d_ibeer','d_inomi'],cust:[5,7],looks:['salary','salary','ol','oldman','student','salary','ol'],mul:1},
+  snack:{room:'snack',n:'スナック 月光',per:1500,drinks:['d_mizu','d_shochu','d_mama'],cust:[3,4],looks:['salary','oldman','salary','ol'],mul:1.1,minCh:1},
+  yahman:{room:'yahman',n:'BAR YAHMAN',per:2000,drinks:['d_yset','d_ychamp','d_ytower'],cust:[5,7],looks:['hostess','host','salary','ol','hostess','student'],mul:1.3,minCh:3},
+  club:{room:'club',n:'CLUB LUMINAS',per:3000,drinks:['d_cshot','d_cchamp'],cust:[7,9],looks:['hostess','host','student','ol','hostess','host','student'],mul:1.5}};
+const GUESTN={salary:'会社員の客',ol:'OLの客',hostess:'ドレスの客',host:'ホスト風の客',student:'学生の客',oldman:'常連のおじさん'};
+const REACT={salary:['え、いいんですか！？ ごちそうさまです！','いやぁ、博多の人は粋やねぇ！'],ol:['ありがとうございます！ ヨルスナに載せときますね','え、うれしい！ 写真撮っていいですか？'],
+  hostess:['やったぁ、ありがとう！ 一緒に写真撮ろ？','優しい〜！ フォローしとくね'],host:['兄貴、あざっす！ 拡散しときます！','マジっすか！ 一生ついていきます！'],
+  student:['マジっすか！ フォローします！','うわ、ありがとうございます！ 友達に自慢しよ'],oldman:['兄ちゃん、粋やねぇ。乾杯！','若いのに気前がいいのう']};
+async function enterVenue(v){const V=VENUES[v];if(!V||mission||S.room)return;if(S.wanted>0){toast('警察に追われている！ まず振り切れ',2);return;}if(P.car)exitCar(true);
+  await enterRoom(ROOMS[V.room]);S.venue=v;const r=ROOMS[V.room];const n=ri(V.cust[0],V.cust[1]);
+  ring({x:r.cx,z:r.cz+.5},n,1.6,Math.min(r.w,r.d)/2-1.4).forEach(q=>{const lk=pick(V.looks);const e=npc(lk,q.x,q.z,rand(0,TAU),GUESTN[lk]||'客');e.guest=true;e.look=lk;});
+  refreshMarkers();card(V.n,'客 '+n+'人');
+  if(S.followers>=10000){P.hp=S.maxhp;P.heat=100;setTimeout(()=>toast('ファン「あっ、鉄二さんだ！ 乾杯しましょう！」（体力・ヒート全回復）',3),900);}
+  else if(!S.venueTip){S.venueTip=1;setTimeout(()=>toast('客に近づくと「奢る」。カウンターの¥で「みんなに奢る」と注文ができる',4.5),900);}}
+async function leaveVenue(){if(!S.venue)return;for(const a of actors.slice())if(a.guest)removeActor(a);S.venue=null;await exitRoom();}
+function guests(){return actors.filter(a=>a.guest);}
+function shopPanel(h,sub){mode='shop';$('shoph').textContent=h;$('shopsub').textContent=sub;const box=$('shopitems');box.innerHTML='';$('shop').style.display='flex';return box;}
+function itemBtn(box,name,desc,price,fn){const b=document.createElement('button');b.className='item';const l=document.createElement('div');l.textContent=name;const sm=document.createElement('small');sm.textContent=desc;l.append(sm);const pr=document.createElement('span');pr.textContent=price;b.append(l,pr);b.onclick=fn;box.append(b);return b;}
+function openTreat(e){const V=VENUES[S.venue];if(!V)return;const box=shopPanel(e.name+'に奢る','奢るとヨルスナで話題になり、フォロワーが増える（ゲーム内のお金）。');
+  itemBtn(box,'一杯奢る','フォロワー +10〜25',fmt(V.per),()=>doTreat(e,1));itemBtn(box,'いい酒を奢る','フォロワー +35〜90',fmt(V.per*3),()=>doTreat(e,3));}
+function doTreat(e,tier){const V=VENUES[S.venue];if(!V||!e||e.treated)return;const cost=V.per*tier;if(S.money<cost){toast('金が足りない',1.4);return;}
+  S.money-=cost;e.treated=true;$('shop').style.display='none';mode='play';SFX.coin();burst(e.x,2,e.z,14,0xffd84a,3,.4,-1,.8);e.a=Math.atan2(P.x-e.x,P.z-e.z);
+  toast(e.name+'「'+pick(REACT[e.look]||['ありがとうございます！'])+'」',2.6);
+  const g=Math.round(rand(10,25)*(tier===3?3.5:1)*V.mul);gainFollowers(g,'奢り');P.heat=Math.min(100,P.heat+10);
+  post(pick([`${V.n}で知らん人に一杯奢ってもらった！ 気前よすぎ`,`${V.n}におった強面のお兄さん、めっちゃいい人やった`,`中洲で奢ってもらった。博多の夜、最高`]),pick(HANDLES));updHUD();save();}
+function treatAll(){const V=VENUES[S.venue];if(!V)return;const gs=guests();if(!gs.length){toast('客がいない',1.4);return;}const cost=Math.round(V.per*gs.length*.9/100)*100;
+  if(S.money<cost){toast('金が足りない（'+fmt(cost)+'）',1.6);return;}S.money-=cost;$('shop').style.display='none';mode='play';cheerAll();
+  const g=Math.round((gs.length*rand(25,40)+80)*V.mul);P.heat=100;
+  snap(url=>{addPost(`${V.n}で、みんなに一杯！ 乾杯🍻 #中洲 #博多の夜`,url,V.n);gainFollowers(g,'みんなに奢った');});updHUD();save();}
+function cheerAll(){for(const e of guests()){e.treated=true;e.a=Math.atan2(P.x-e.x,P.z-e.z);burst(e.x,2,e.z,10,pick([0xffd84a,0xff3d8b,0x3de0ff]),3,.4,-1,.9);}
+  SFX.coin();setTimeout(()=>SFX.coin(),180);toast(pick(['客たち「カンパーイ！！」','客たち「ごちそうさまでーす！！」','客たち「鉄二さん、最高！！」']),2.6);}
+function applyDrink(id){const it=PREM[id];if(!it)return;const r=it.fx&&it.fx();if(it.all&&S.venue)cheerAll();if(it.fol){const g=it.fol;if(it.all&&S.venue){const V=VENUES[S.venue];snap(url=>{addPost(`${V.n}で${it.n}！ #中洲の夜`,url,V.n);gainFollowers(g,it.n);});}else gainFollowers(g,it.n);}return r;}
+function openVenueMenu(v){const V=VENUES[v];if(!V)return;const n=guests().length,cost=Math.round(V.per*n*.9/100)*100;
+  const box=shopPanel(V.n,'お酒は20歳になってから。ゲーム内の飲食はフィクションです。');
+  if(n)itemBtn(box,`みんなに一杯奢る（${n}人）`,`ゲーム内のお金。店じゅうで乾杯して、ヨルスナに投稿。フォロワー大幅アップ`,fmt(cost),treatAll);
+  premList(box,V.drinks,true);}
+// ---- フォロワーと特典 ----
+const FMS=[[100,'「気前のいい男」として噂になり始めた'],[500,'PR案件：商店会から協賛金 ¥20,000',()=>{S.money+=20000;}],[1000,'売人の報奨金 +20%'],[3000,'屋台・コンビニが 2割引'],[10000,'店に入るとファンが盛り上げてくれる（体力・ヒート全回復）']];
+function gainFollowers(n,why){if(!(n>0))return;S.followers+=Math.round(n);toast(`ヨルスナ フォロワー +${Math.round(n)}（${why}）`,2.2);
+  for(const [v,t,fn] of FMS)if(S.followers>=v&&!S.ms.includes(v)){S.ms.push(v);if(fn)fn();setTimeout(()=>{card('フォロワー '+v.toLocaleString('ja-JP')+'人突破！',t);SFX.coin();},1400);}updHUD();save();}
+// ---- ヨルスナ（写真SNS）の投稿 ----
+const TL=[];const POSTIMG={};let snapCb=null;
+function snap(cb){snapCb=cb;}
+function addPost(txt,url,place){const id='p'+Date.now();const likes=Math.round(S.followers*rand(.08,.2)+rand(3,12));S.posts.unshift({id,txt,likes,place:place||'',t:clockTx()});if(S.posts.length>30)S.posts.pop();if(url)POSTIMG[id]=url;save();}
+// ---- 連絡アプリ ----
+const CONTACTS={mama:{n:'千鶴ママ',c:'#b04aa0',i:'月'},gen:{n:'源さん',c:'#c87a2a',i:'源'},miki:{n:'ミキ',c:'#3a8ad8',i:'ミ'},ashizuka:{n:'芦塚刑事',c:'#3a4a6a',i:'芦'},taiki:{n:'TAIKI',c:'#ff5a1a',i:'T'},onyo:{n:'おにょ',c:'#e8e0c0',i:'お'}};
+const INTRO_MSG='テツ、帰ってきたとやろ？ 落ち着いたら中洲の「月光」に顔出しなさいよ。';
+// 章が進むと届くメッセージ。TAIKI・おにょのメッセージは、ゲーム内ですでに使っているセリフだけを使う
+const CHMSG={1:[['mama','源さんの件、ありがとうね。……相談したいことがあると。また店に来て。'],['gen','テツ坊、屋台はいつでも開けとくけん。腹減ったら来んしゃい。'],['gen','そうそう、居酒屋「ほたる」の客に一杯奢ってみ。気前のいい男はすぐ噂になるばい。']],
+  2:[['mama','山中さん、ちゃんと家に帰れたって。帳簿のこと、詳しく話そう。月光で待っとるよ。']],
+  3:[['taiki','今日から鉄二さんはYAHMANの永久VIPで！'],['onyo','これからもよろしくおねがいマチュピチュ空中都市！！'],['mama','ミキって子のこと、おにょ君から聞いたよ。店で話すね。']],
+  4:[['miki','USB、ちゃんと届いた？ ……あたしは大丈夫。助けてくれてありがとう。'],['mama','TAIKI君から電話があったと。すぐYAHMANに行ってあげて。']],
+  5:[['gen','テツ坊、あいつらが屋台に火ばつけるって話、ほんとね？ ……頼んだばい。']],
+  6:[['mama','那珂川の橋……気をつけて行きなさいよ。']],
+  7:[['ashizuka','黒田。……今回の件、表向きは警察の手柄にさせてもらう。助かった。'],['taiki','鉄二さん、お疲れさまでした！ 今夜はYAHMANの奢りっす！'],['miki','保護された子たち、みんな家族のところに帰れるって。ありがとう。']]};
+function chMsgs(ch,silent){for(const [id,t] of (CHMSG[ch]||[]))addMsg(id,t,silent);}
+function addMsg(id,txt,silent){const a=S.msgs[id]||(S.msgs[id]=[]);a.push({txt,t:clockTx(),r:silent?1:0});if(a.length>20)a.shift();if(!silent)setTimeout(()=>toast('📱 '+CONTACTS[id].n+'からメッセージ',2.4),600);updBadge();}
+function unread(){let n=0;for(const id in S.msgs)for(const m of S.msgs[id])if(!m.r)n++;return n;}
+function updBadge(){const n=unread(),b=$('phBd');b.textContent=n;b.style.display=n?'block':'none';}
+// ---- スマホ ----
+let phView='home',phArg=null,phTab='tl',camT=-99;
+function openPhone(){if(mode!=='play')return;mode='phone';phoneApp('home');$('phone').style.display='flex';}
+function closePhone(){$('phone').style.display='none';if(mode==='phone')mode='play';}
+function el(tag,cls,txt){const e=document.createElement(tag);if(cls)e.className=cls;if(txt!==undefined)e.textContent=txt;return e;}
+function av(c,i){const a=el('div','av',i);a.style.background=c;if(c==='#e8e0c0')a.style.color='#222';return a;}
+function phoneApp(v,arg){phView=v;phArg=arg;const sc=$('phscr');sc.innerHTML='';$('phclk').textContent=clockTx();sc.scrollTop=0;
+  if(v==='home'){const h=el('div','phhome');h.append(el('div','phbig',clockTx()),el('div','phdate','博多の夜'));const g=el('div','apps');
+    const app=(lbl,icon,bg,fn,badge)=>{const b=el('button','app');const i=el('i','',icon);i.style.background=bg;b.append(i,el('span','',lbl));if(badge){b.append(el('span','bd',badge));}b.onclick=fn;g.append(b);};
+    app('連絡','💬','linear-gradient(135deg,#2ec46a,#1a8a4a)',()=>phoneApp('contacts'),unread()||0);
+    app('ヨルスナ','◎','linear-gradient(135deg,#7a4aff,#ff3d8b 60%,#ffb238)',()=>phoneApp('sns'));
+    app('カメラ','📷','linear-gradient(135deg,#444,#222)',phoneCamera);h.append(g);sc.append(h);}
+  else if(v==='contacts'){sc.append(el('div','aphd','連絡'));const ids=Object.keys(CONTACTS).filter(id=>S.msgs[id]&&S.msgs[id].length);if(!ids.length)sc.append(el('div','ptxt','まだメッセージはない。'));
+    for(const id of ids){const C=CONTACTS[id],a=S.msgs[id],last=a[a.length-1];const r=el('button','crow');const tx=el('div');tx.style.flex='1';tx.style.minWidth='0';tx.append(el('div','nm',C.n),el('div','pv',last.txt));r.append(av(C.c,C.i),tx);if(a.some(m=>!m.r))r.append(el('span','dot'));r.onclick=()=>phoneApp('thread',id);sc.append(r);}}
+  else if(v==='thread'){const C=CONTACTS[arg],a=S.msgs[arg]||[];sc.append(el('div','aphd','‹ '+C.n));const m=el('div','msgs');for(const x of a){const b=el('div','bub',x.txt);b.append(el('small','',x.t));m.append(b);x.r=1;}sc.append(m);updBadge();save();setTimeout(()=>sc.scrollTop=sc.scrollHeight,0);}
+  else if(v==='sns'){sc.append(el('div','aphd','ヨルスナ'));const pr=el('div','prof');const st=el('div','pst');
+    const stat=(n,l)=>{const d=el('div');d.append(el('b','',n),document.createTextNode(l));st.append(d);};stat(S.posts.length,'投稿');stat(S.followers.toLocaleString('ja-JP'),'フォロワー');stat(12,'フォロー中');
+    const nm=el('div');nm.append(el('div','trt','黒田 鉄二'),el('div','pv','@tetsu_nakasu'),st);pr.append(av('linear-gradient(135deg,#ff3d8b,#7a4aff)','鉄'),nm);sc.append(pr);
+    const nx=FMS.find(([v])=>S.followers<v);const mb=el('div','msb');if(nx){const pv=[...FMS].reverse().find(([v])=>S.followers>=v);const lo=pv?pv[0]:0;mb.append(document.createTextNode(`次の特典まで あと ${(nx[0]-S.followers).toLocaleString('ja-JP')}人（${nx[1]}）`));const bar=el('div','bar');const f=el('div');f.style.width=Math.round((S.followers-lo)/(nx[0]-lo)*100)+'%';bar.append(f);mb.append(bar);}else mb.append(document.createTextNode('すべての特典を獲得！'));sc.append(mb);
+    for(const [v,t] of FMS)sc.append(el('div','perk'+(S.followers>=v?' on':''),(S.followers>=v?'✓ ':'・')+v.toLocaleString('ja-JP')+'人：'+t));
+    const tb=el('div','tabs');for(const [k,l] of [['tl','タイムライン'],['me','自分の投稿']]){const b=el('button',phTab===k?'on':'',l);b.onclick=()=>{phTab=k;phoneApp('sns');};tb.append(b);}sc.append(tb);
+    const list=phTab==='me'?S.posts.map(p=>({me:1,...p})):[...S.posts.slice(0,5).map(p=>({me:1,...p})),...TL].slice(0,40);
+    if(!list.length)sc.append(el('div','ptxt',phTab==='me'?'まだ投稿がない。店でみんなに奢るか、カメラで撮って投稿しよう。':'まだ何もない。'));
+    for(const p of list){const c=el('div','pcard');const w=el('div','who');w.append(av(p.me?'linear-gradient(135deg,#ff3d8b,#7a4aff)':'#3a3a5a',p.me?'鉄':'@'),document.createTextNode(p.me?'@tetsu_nakasu'+(p.place?'　📍'+p.place:''):p.h));c.append(w);
+      if(p.me){if(POSTIMG[p.id]){const im=el('img','pimg');im.src=POSTIMG[p.id];im.alt=p.txt;c.append(im);}else{const d=el('div','pimg',p.place||'博多の夜');d.style.display='flex';c.append(d);}c.append(el('div','lk','♡ '+p.likes.toLocaleString('ja-JP')+'件'),el('div','cap',p.txt));}
+      else c.append(el('div','ptxt',p.txt));sc.append(c);}}}
+function phoneCamera(){if(S.t-camT<60){toast('さっき撮ったばかりだ（少し待とう）',1.6);return;}camT=S.t;closePhone();toast('📷 パシャ',1);
+  const a=areaOf(P.x,P.z),place=S.venue?VENUES[S.venue].n:a?a.n.replace('エリア',''):'博多';
+  snap(url=>{addPost(pick([`${place}の夜。`,`今夜の${place}。`,`${place}、きれいやね`]),url,place);gainFollowers(Math.round(rand(2,6)+S.followers*.002),'写真を投稿');});}
+$('bPhone').onclick=()=>{initAudio();openPhone();};$('phClose').onclick=closePhone;$('phHome').onclick=()=>phoneApp('home');
+$('phBack').onclick=()=>{if(phView==='thread')phoneApp('contacts');else if(phView==='home')closePhone();else phoneApp('home');};
+
 // ================= CONTEXT BUTTON =================
 let ctxAct=null;
 function updCtx(){let lbl=null,act=null;
   if(P.car){lbl='降りる';act=()=>exitCar();}
   else if(!S.cine&&P.downT<=0){
     for(const m of markers)if(m.on&&Math.hypot(m.p.x-P.x,m.p.z-P.z)<2.6){lbl=m.label||'話す';act=()=>useMarker(m);break;}
+    if(!act&&S.venue){let best=null,bd=1.9;for(const a of actors){if(!a.guest||a.treated)continue;const d=dist(a,P);if(d<bd){bd=d;best=a;}}if(best){lbl='奢る';act=()=>openTreat(best);}}
     if(!act&&!S.room&&!hostiles().some(h=>dist(h,P)<7)){let best=null,bd=3.4;for(const c of cars){if(c.dead||c.noEnter)continue;const d=dist(c,P);if(d<bd){bd=d;best=c;}}if(best){lbl=best.driver==='npc'?(best.police?'奪う!':'奪う'):'乗る';act=()=>enterCar(best);}}}
   ctxAct=act;$('bX').style.display=act?'flex':'none';if(lbl&&$('bX').textContent!==lbl)$('bX').textContent=lbl;}
 function btnX(){if(ctxAct)ctxAct();}
-function useMarker(m){if(m.k==='shop'){openShop(m.id);return;}if(S.wanted>0&&m.k!=='shop'){toast('警察に追われている！ まず振り切れ',2);return;}
+function useMarker(m){if(m.venue){if(m.k==='exit')leaveVenue();else openVenueMenu(m.venue);return;}if(VENUES[m.id]){enterVenue(m.id);return;}if(m.k==='shop'){openShop(m.id);return;}if(S.wanted>0&&m.k!=='shop'){toast('警察に追われている！ まず振り切れ',2);return;}
   if(m.id==='main')runMission(MAINS[S.ch]);else runMission(SUBS[m.id]);}
 
 // ================= MISSIONS =================
@@ -1492,7 +1636,7 @@ let roomNPC={};
 async function enterRoom(r){await fadeTo(()=>{if(P.car)exitCar(true);S.room=r;P.x=r.cx;P.z=r.cz-r.d/2+1.6;P.a=0;camYaw=0;scene.fog.near=12;scene.fog.far=60;
   if(r===ROOMS.snack&&!roomNPC.mama)roomNPC.mama=npc('mama',r.cx,r.cz+r.d/2-1.4,Math.PI,'千鶴ママ');});refreshMarkers();}
 async function exitRoom(){const r=S.room;if(!r)return;await fadeTo(()=>{S.room=null;P.x=r.out.x;P.z=r.out.z;P.a=r.out.a;camYaw=r.out.a;scene.fog.near=40;scene.fog.far=200;});refreshMarkers();}
-function reward(m,txt,h){S.money+=m;SFX.coin();toast(`報酬 ${fmt(m)}`,2.4);if(txt){post(txt,h);S.news='天神ビジョン　'+txt;}save();}
+function reward(m,txt,h){if(mission&&MAINS.includes(mission))chMsgs(S.ch);S.money+=m;SFX.coin();toast(`報酬 ${fmt(m)}`,2.4);if(txt){post(txt,h);S.news='天神ビジョン　'+txt;}save();}
 async function runMission(def){if(mission||!def)return;const tok=runToken;mission=def;S.objx='';S.fl=null;const mi=MAINS.indexOf(def);S.mt=mi>=0?CHT[mi]:(SUBN[Object.keys(SUBS).find(k=>SUBS[k]===def)]||'');refreshMarkers();
   await def.run(tok);if(tok!==runToken)return;mission=null;setGoal(null,'');showBoss(null);refreshMarkers();save();}
 let gen=null,miki=null;
@@ -1607,10 +1751,10 @@ function updEncounter(){if(mission||S.room||P.car||S.ch<1||S.wanted>0||S.t<S.nex
 // ================= DEATH / SAVE =================
 function die(){mode='dead';$('dead').style.display='flex';}
 function cleanupMission(){runToken++;mission=null;waiters.length=0;for(const a of actors.slice())if(a.m||(a.npc&&a!==roomNPC.mama)||a.hostile)removeActor(a);gen=null;miki=null;showBoss(null);setGoal(null,'');S.target=null;}
-$('bRevive').onclick=()=>{$('dead').style.display='none';cleanupMission();if(P.car)exitCar(true);S.room=null;scene.fog.near=40;scene.fog.far=200;S.wanted=0;
+$('bRevive').onclick=()=>{$('dead').style.display='none';cleanupMission();S.venue=null;if(P.car)exitCar(true);S.room=null;scene.fog.near=40;scene.fog.far=200;S.wanted=0;
   for(const c of cars.slice())if(c.police)removeCar(c);S.money=Math.floor(S.money*.9);P.hp=S.maxhp;P.down=false;P.downT=0;P.x=POS.hosp.x;P.z=POS.hosp.z;P.a=Math.PI/2;camYaw=P.a;mode='play';refreshMarkers();save();
   post('博多中央病院から、ガラの悪い人が退院していった','@天神OL日記');};
-function save(){const d={v:2,money:S.money,ch:S.ch,subs:S.subs,maxhp:S.maxhp,atk:S.atk,own:S.own,eq:S.eq,gotGrants:S.gotGrants,savedAt:Date.now()};try{localStorage.setItem('nakasu_night_v1',JSON.stringify(d));}catch(e){}Net.pushSave(d);}
+function save(){const d={v:2,money:S.money,ch:S.ch,subs:S.subs,maxhp:S.maxhp,atk:S.atk,own:S.own,eq:S.eq,gotGrants:S.gotGrants,fol:S.followers,posts:S.posts.slice(0,30),msgs:S.msgs,ms:S.ms,savedAt:Date.now()};try{localStorage.setItem('nakasu_night_v1',JSON.stringify(d));}catch(e){}Net.pushSave(d);}
 function load(){try{return JSON.parse(localStorage.getItem('nakasu_night_v1')||'null');}catch(e){return null;}}
 
 // ================= MENUS =================
@@ -1622,17 +1766,17 @@ const openSpon=()=>{$('spon').style.display='flex';};$('bSpon').onclick=openSpon
 $('bTitle').onclick=()=>{save();location.reload();};
 $('bEndOk').onclick=()=>{$('ending').style.display='none';cutHide();(window._yk||[]).forEach(removeActor);window._yk=null;mode='play';refreshMarkers();toast('自由行動：ストリートファイトや街のチンピラで腕を磨け',3);;if(S.room)exitRoom();};
 function begin(data){initAudio();document.body.classList.remove('ttl');$('title').style.display='none';mode='play';
-  if(data){S.money=data.money||0;S.ch=data.v===2?(data.ch||0):({0:0,1:1,2:2,3:4,4:6,5:7}[data.ch||0]??0);S.subs=data.subs||{};S.maxhp=data.maxhp||100;S.atk=data.atk||1;S.own=data.own||{};S.gotGrants=data.gotGrants||[];S.eq=Object.assign({outfit:null,weapon:null,car:null,acc:[]},data.eq||{});P.hp=S.maxhp;restylePlayer();}
+  if(data){S.money=data.money||0;S.ch=data.v===2?(data.ch||0):({0:0,1:1,2:2,3:4,4:6,5:7}[data.ch||0]??0);S.subs=data.subs||{};S.maxhp=data.maxhp||100;S.atk=data.atk||1;S.own=data.own||{};S.followers=data.fol||0;S.posts=data.posts||[];S.ms=data.ms||[];S.msgs=data.msgs||null;if(!S.msgs){S.msgs={};addMsg('mama',INTRO_MSG,true);for(let c=1;c<=S.ch;c++)chMsgs(c,true);}updBadge();S.gotGrants=data.gotGrants||[];S.eq=Object.assign({outfit:null,weapon:null,car:null,acc:[]},data.eq||{});P.hp=S.maxhp;restylePlayer();}
   P.x=POS.start.x;P.z=POS.start.z;P.a=Math.PI/2;
   if(data){try{const r=JSON.parse(sessionStorage.getItem('nakasu_ret')||'null');sessionStorage.removeItem('nakasu_ret');if(r&&walkable(r.x,r.z)){P.x=r.x;P.z=r.z;}}catch(e){}}
   camYaw=P.a;refreshMarkers();S.nextEnc=S.t+50;setTimeout(()=>Net.pullGrants(),1500);
-  if(!data){playVideo('v0').then(()=>still('c0',[['','五年。博多を離れ、遠い街で用心棒をしてきた。'],['','久しぶりの天神は、記憶よりずっと眩しかった。'],['鉄二','……変わったな、博多も。'],['','だがネオンの陰で、何かがこの街を汚し始めていた。']])).then(()=>{card('序章 帰ってきた男','—— 天神・中洲 ——');S.ch=0;save();setTimeout(()=>toast('画面の黄色い◆と、ミニマップの黄色い線をたどれば目的地に着く',4.5),3200);});}
+  if(!data){playVideo('v0').then(()=>still('c0',[['','五年。博多を離れ、遠い街で用心棒をしてきた。'],['','久しぶりの天神は、記憶よりずっと眩しかった。'],['鉄二','……変わったな、博多も。'],['','だがネオンの陰で、何かがこの街を汚し始めていた。']])).then(()=>{card('序章 帰ってきた男','—— 天神・中洲 ——');S.ch=0;addMsg('mama',INTRO_MSG);save();setTimeout(()=>toast('画面の黄色い◆と、ミニマップの黄色い線をたどれば目的地に着く',4.5),3200);});}
   else{card('おかえり',S.ch>=7?'自由行動':'第'+(S.ch+1)+'章から');}}
 $('bNew').onclick=()=>begin(null);$('bCont').onclick=()=>begin(load());
 
 // ================= HUD / MAP =================
 const mctx=$('map').getContext('2d');
-function updHUD(){$('hpb').style.width=(P.hp/S.maxhp*100)+'%';$('htb').style.width=P.heat+'%';$('htw').classList.toggle('full',P.heat>=100);$('bH').classList.toggle('ready',P.heat>=100);$('money').textContent=fmt(S.money);{const ct=clockTx(),ce=$('clock');if(ce.textContent!==ct){ce.textContent=ct;ce.classList.toggle('night',isDealerTime());}}
+function updHUD(){$('hpb').style.width=(P.hp/S.maxhp*100)+'%';$('htb').style.width=P.heat+'%';$('htw').classList.toggle('full',P.heat>=100);$('bH').classList.toggle('ready',P.heat>=100);$('money').textContent=fmt(S.money);{const fe=$('fol'),ft='👥 '+S.followers.toLocaleString('ja-JP');if(fe.textContent!==ft){fe.textContent=ft;fe.style.display=S.followers>0?'inline':'none';}}{const ct=clockTx(),ce=$('clock');if(ce.textContent!==ct){ce.textContent=ct;ce.classList.toggle('night',isDealerTime());}}
   const st=$('wanted').children;for(let i=1;i<=5;i++)st[i].className=i<=S.wanted?'on':'';$('wanted').classList.toggle('seen',S.seen);
   if(S.boss)$('bossb').style.width=Math.max(0,S.boss.hp/S.boss.maxhp*100)+'%';
   const t=S.target;if(t&&!S.boss&&S.targetT>0&&actors.includes(t)){$('ebar').style.display='block';$('ebarn').textContent=t.name||(t.type==='cop'?'警官':'通行人');$('ebarb').style.width=Math.max(0,t.hp/t.maxhp*100)+'%';}else $('ebar').style.display='none';}
@@ -1697,7 +1841,8 @@ let areaT=0;function update(dt){S.t+=dt;
   {const a=areaOf(P.x,P.z);const key=a?a.n:'';if(key!==S.areaKey){S.areaKey=key;$('arealb').textContent=a?a.n.replace('エリア',''):'';if(a&&!a.river&&mode==='play'){const el=$('areaname');el.querySelector('.a').textContent=a.n;el.querySelector('.e').textContent=a.en;el.classList.add('on');areaT=3;}}if(areaT>0){areaT-=dt;if(areaT<=0)$('areaname').classList.remove('on');}}
   if(S.callBoost&&S.room){S.callT=(S.callT||4)-dt;if(S.callT<=0){S.callT=7;P.heat=Math.min(100,P.heat+35);toast(pick(['TAIKI「シャンパンいただきましたー！」','おにょ「ゴーゴーレッツゴー！！」','TAIKI＆おにょ「YAHMAN！ YAHMAN！」','おにょ「不幸中の幸い極まりないです！！」']),1.8);SFX.coin();}}
   if(S.goal&&S.goal.track)goalPil.position.set(S.goal.x,20,S.goal.z);
-  if(S.room===ROOMS.yahman&&ROOMS.yahman.disco)ROOMS.yahman.disco.forEach((l,i)=>{const a=S.t*1.3+i*2.1;l.position.set(ROOMS.yahman.cx+Math.cos(a)*5,3.4,ROOMS.yahman.cz+Math.sin(a*1.2)*3.5);l.intensity=1.1+Math.sin(S.t*8+i)*.5;});updPlayer(dt);updActors(dt);updCars(dt);updWanted(dt);
+  if(S.room&&S.room.disco)S.room.disco.forEach((l,i)=>{const a=S.t*1.3+i*2.1;l.position.set(S.room.cx+Math.cos(a)*5,3.4,S.room.cz+Math.sin(a*1.2)*3.5);l.intensity=1.1+Math.sin(S.t*8+i)*.5;});
+  if(S.room&&S.room.tiles&&Math.floor(S.t*4)!==S.tileT){S.tileT=Math.floor(S.t*4);for(const m of S.room.tiles)m.material=pick(S.room.tileM);}updPlayer(dt);updActors(dt);updCars(dt);updWanted(dt);
   S.clock+=dt;if(S.clock>=30*60){S.clock=20*60;S.dealTip=0;post('夜が明けた。……そして、また次の夜がくる','@博多っ子速報');}
   popAcc+=dt;if(popAcc>1){popAcc=0;managePop();manageDealers();updEncounter();if(!S.room&&Math.random()<.04)post(pick(['中洲の屋台、今日も最高','天神のイルミ綺麗かった','那珂川の夜景、何回見てもよか','明太子おにぎり最強説','中洲で飲みすぎた。帰れん','博多ラーメンはバリカタ一択']));}
   checkWaiters();updCtx();
@@ -1724,7 +1869,8 @@ function frame(now){requestAnimationFrame(frame);let rdt=Math.min(.05,(now-last)
   goalPil.material.opacity=.2+.1*Math.sin(now/200);
   if(P&&mode!=='title'&&mode!=='loading'){updObjective();if(mode==='play')updRoute(rdt);updHUD();drawMap();updWP();}
   if(S.goal)goalPil.position.set(S.goal.x,20,S.goal.z);
-  bgmTick();updCamera(rdt);if(composer&&Q>0){finalPass.uniforms.time.value=(now/1000)%10;composer.render(rdt);}else R.render(scene,cam);}
+  bgmTick();updCamera(rdt);if(composer&&Q>0){finalPass.uniforms.time.value=(now/1000)%10;composer.render(rdt);}else R.render(scene,cam);
+  if(snapCb){const cb=snapCb;snapCb=null;let url='';try{const src=R.domElement,sz=Math.min(src.width,src.height),c=document.createElement('canvas');c.width=c.height=320;c.getContext('2d').drawImage(src,(src.width-sz)/2,(src.height-sz)/2,sz,sz,0,0,320,320);url=c.toDataURL('image/jpeg',.72);}catch(e){}cb(url);}}
 
 // ================= START =================
 polR=new THREE.MeshBasicMaterial({color:0xff2020});polB=new THREE.MeshBasicMaterial({color:0x2a6aff});
@@ -1738,7 +1884,7 @@ polR=new THREE.MeshBasicMaterial({color:0xff2020});polB=new THREE.MeshBasicMater
   P.g.visible=true;mode='title';$('loading').style.display='none';$('bNew').disabled=false;if(load())$('bCont').style.display='block';Net.init();
   if(new URLSearchParams(location.search).has('autostart'))begin(null);})();
 requestAnimationFrame(frame);
-window.__G={FOUT,manageDealers,isDealerTime,LAMPS,FACES_M,FACES_F,FACE_PLAYER,V3:(x,y,z)=>new THREE.Vector3(x,y,z),PREM,Pay,premGrant,equip,callMyCar,openPrem,openShop,get Q(){return Q},PEDN,get mission(){return mission},dist,spawn:spawnActor,rm:removeActor,RIG,camYaw:()=>camYaw,setYaw:v=>camYaw=v,hostiles,knockOut,useMarker,markers,enterCar,POS,S,get P(){return P},actors,cars,BLD,MAINS,runMission,get mode(){return mode},advance};
+window.__G={VENUES,enterVenue,leaveVenue,openVenueMenu,openTreat,doTreat,treatAll,openPhone,closePhone,phoneApp,addMsg,gainFollowers,FOUT,manageDealers,isDealerTime,LAMPS,FACES_M,FACES_F,FACE_PLAYER,V3:(x,y,z)=>new THREE.Vector3(x,y,z),PREM,Pay,premGrant,equip,callMyCar,openPrem,openShop,get Q(){return Q},PEDN,get mission(){return mission},dist,spawn:spawnActor,rm:removeActor,RIG,camYaw:()=>camYaw,setYaw:v=>camYaw=v,hostiles,knockOut,useMarker,markers,enterCar,POS,S,get P(){return P},actors,cars,BLD,MAINS,runMission,get mode(){return mode},advance};
 }
 </script>
 </body></html>

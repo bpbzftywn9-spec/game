@@ -64,6 +64,8 @@ python tests/full_playthrough.py # 別ターミナルで serve を起動した�
 | `PREM`, `Pay`, `openPrem`, `premGrant`, `equip`, `callMyCar`, `dressPlayer` | 課金アイテム（服装・武器・車・アクセサリー・酒代）。仕様は `docs/premium.md` |
 | `FACES_M`, `FACES_F`, `FACE_PLAYER`, `faceTex`, `addHair`, `femHair`, `stripWoman`, `FOUT` | 人物の見た目のバリエーション。男性は顔12種＋主人公専用（顔のテクスチャに眉・ひげ・しわ・傷を描き、髪型・頭の形・体格を変える）。女性は顔8種（肌の色×髪型5種：元のおだんご・ボブ・ロング・ポニーテール・まとめ髪）と服装8種（`FOUT`） |
 | `manageDealers`, `aiDealer`, `dealerBounty`, `S.clock` | 売人。ゲーム内の時計（1秒＝1分、20:00〜翌6:00をくり返す）で22時〜4時に街灯の下に出る。倒すと商店会から報奨金（手配度は上がらない） |
+| `VENUES`, `enterVenue`, `leaveVenue`, `openVenueMenu`, `openTreat`, `treatAll`, `gainFollowers`, `FMS` | 店に入る・客に奢る・フォロワーと特典。店内は `ROOMS`（居酒屋 ほたる・CLUB LUMINAS を追加） |
+| `openPhone`, `phoneApp`, `CONTACTS`, `CHMSG`, `addMsg`, `addPost`, `snap` | スマホ（📱 / Pキー）：連絡アプリ（章が進むとメッセージが届く）、写真SNS「ヨルスナ」、カメラ。`snap` は画面を正方形に切り取って投稿の写真にする（写真はセーブしない） |
 | `save`, `load` | セーブ（localStorage `nakasu_night_v1`、`v:2`。購入品は `own`、装備は `eq`） |
 
 ## 5. 守ること
@@ -107,6 +109,9 @@ python tests/full_playthrough.py # 別ターミナルで serve を起動した�
   - `docs/unity-appstore-plan.md` のストーリー全文は古いまま（Unity版に入る前に書き直す）。
 - 人物の顔を18種類にし（男性12・女性6）、通行人などにランダムで出るようにした。主人公は専用の顔。
 - 売人のボーナスを追加した（上の表）。
+- スマホを追加（2026年11月24日、オーナーの指示）：連絡アプリと写真SNS。写真SNSは、実在のサービス名（Instagram）とロゴを使わない決まりのため、架空の「ヨルスナ」にした。BAR YAHMAN の実在のInstagramへのリンクは、協力店舗の画面にこれまでどおりある。
+  - **要確認**：連絡アプリの TAIKIさん・おにょさんのメッセージは、ゲームの中ですでに使っているセリフだけを使った（新しいセリフは作っていない）。
+- 店に入れるようにした（居酒屋 ほたる・CLUB LUMINAS を新設、スナック 月光・BAR YAHMAN は外から「入る」）。客に奢る・みんなに奢るとフォロワーが増え、特典がもらえる（`docs/premium.md`）。
 - 名前の変更（2026年11月24日、オーナーの指示）：ギャング「玄海連合」→「福博連合」、トクリュウの指示役「鬼塚剛」→「工藤蓮」。
 - 女性の髪型を4種類追加（ボブ・ロング・ポニーテール・まとめ髪。元のおだんご髪と合わせて5種類）。元の髪・ヘッドホン・サングラスは、モデルのつながった部品ごとに消している（`stripWoman`）。女性の服装を8種類追加（`FOUT`。上とパンツの色・柄を変える）。
 
