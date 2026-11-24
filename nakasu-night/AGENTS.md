@@ -1,0 +1,102 @@
+# AGENTS.md — 仁義 中洲ナイト
+
+このファイルは、このリポジトリで作業するAIエージェント（Codex など）向けの説明です。作業を始める前に最後まで読んでください。
+
+## 1. プロジェクトの概要
+
+- 福岡の **天神・中洲・博多** を舞台にした3D極道アクション（GTAの街歩き・車・手配度 × 龍が如くの喧嘩・人情・サブストーリー）。
+- 現在は **Web版（Three.js r128、1ファイルのHTML）** が完成しており、全7章＋サブストーリー3本を最後まで遊べる。
+- 今後の計画は、Web版の改良と公開、その後 **Unity 6＋URP で作り直して App Store に出す** こと。Unity版の計画は `docs/unity-appstore-plan.md` にある。
+- オーナー（発注者）は日本語で話す。**報告・質問・コミットメッセージは日本語で書く。**
+
+## 2. フォルダ構成
+
+```
+web/
+  index.html        ゲーム本体（HTML・CSS・JSが1ファイルに入っている。約1,400行）
+  models/           人物モデルとアニメーション（GLBをbase64にしてJSONに包んだもの）
+    man_q.json / woman_q.json / anims.json
+  cut/              カットシーン（画像 c0〜c6, s0〜s2, y1〜y3 / 動画 v0〜v3）
+tests/
+  make_local_test.sh   CDNのthree.jsを node_modules に差し替えた web/test.html を作る
+  full_playthrough.py  全章の自動通しテスト（Playwright）
+assets-source/      人物モデルの元GLBと、素材の出どころ（Higgsfieldのジョブ番号）
+docs/
+  unity-appstore-plan.md  Unity版・App Store公開までの指示書（ストーリー全文、仕様、フェーズ、審査の注意）
+```
+
+`models/*.json` がGLBをJSONに包んでいるのは、以前の公開先が `.glb` を配信できなかったため。自前でホスティングするなら `.glb` に戻してよい（`assets-source/` に元ファイルがある）。
+
+## 3. 動かし方とテスト
+
+```bash
+npm install                      # three@0.128.0（テスト用）
+npm run serve                    # リポジトリ直下で http://localhost:8123/web/index.html
+npm run make-test                # web/test.html を作る（CDNを使わない版）
+pip install playwright && python -m playwright install chromium
+python tests/full_playthrough.py # 別ターミナルで serve を起動した状態で実行
+```
+
+- 通しテストは、ソフトウェア描画で10〜25分かかる。最後に `ERR` の後が空なら成功。
+- 手元のChromeを使う場合は `CHROME=/path/to/chrome` を指定する。
+- **コードを変えたら、通しテストが通ることを確認してから報告する。**
+- 見た目を変えたら、Playwrightでスクリーンショットを撮って自分で確認する（横長 900×560 と、縦長 390×780 の両方）。
+
+### テスト用フック
+`window.__G` にテスト用の関数と状態がある（`spawn`, `rm`, `P`, `S`, `MAINS`, `runMission`, `advance`, `hostiles`, `knockOut`, `POS`, `mode`, `mission`, `Q`, `PEDN` など）。テストはこれに依存しているので、名前を変えるときはテストも直す。
+
+## 4. コードの地図（web/index.html）
+
+| 場所 | 内容 |
+|---|---|
+| `applyQ` | 画質（Q=0 軽量 / 1 標準 / 2 高画質）。localStorage `nakasu_q` |
+| `ROADS`, `RIVERS`, `BRIDGES`, `PATHS`, `RESERVE`, `POS` | 道路・川・橋・車の経路・建物を置かない区画・主な地点の座標（1単位≒1m、範囲 −250〜250） |
+| `AREAS` | エリア判定（天神 x<−30 / 中洲 −10≦x<70 / 博多 x≧84） |
+| `buildWorld`, `genDistrict`, `buildHakata`, `streetFurniture` | 街の生成（建物、看板、櫛田神社、商店街、博多駅、信号、ガードレール） |
+| `ROOMS` | 店内（スナック月光、BAR 玄、BAR YAHMAN） |
+| `rigLook`, `makeRigged`, `dressCop` | 人物の見た目。警官は水色シャツ＋POLICEベスト＋制帽（`dressCop`） |
+| `managePop`, `spawnPedGroup`, `PEDN` | 通行人の数（軽量32／標準46／高画質58）、連れ、立ち話、客引き |
+| `CUTS`, `still`, `showStill`, `playVideo` | カットシーン |
+| `MAINS`, `SUBS` | ストーリー全7章とサブストーリー3本（セリフもここ） |
+| `CHT`, `LOCN`, `updObjective`, `updWP`, `navPath`, `updRoute` | ミッション表示（左上の目的枠、画面上の黄色い◆と距離、ミニマップの道順） |
+| `SHOPS` | 屋台・コンビニ・BAR YAHMAN の商品と価格 |
+| `save`, `load` | セーブ（localStorage `nakasu_night_v1`、`v:2`） |
+
+## 5. 守ること
+
+### 仕様
+- 章の順番、セリフ、価格、敵の数、ボスの体力は、オーナーの指示なしに変えない。
+- 1ファイル構成（`web/index.html`）は、オーナーが分割を承認するまで保つ。
+- スマホ（タッチ操作・縦横どちらの画面）で遊べることを常に保つ。重くなる変更は画質の段階ごとに調整する。
+
+### 実在の人物・店
+- **BAR YAHMAN（中洲）と、TAIKIさん・おにょさんは実在する。** オーナーが顔と名前の使用許可を得ている。味方として明るく、格好よく描く。
+- 二人の見た目・セリフ、店舗情報（住所・SNS）の変更は、必ずオーナーの確認を取る。店舗情報の正しさはオーナーが店と確認する。
+- 二人の参照写真はリポジトリに入れない（`reference-private/` に置き、Gitの管理対象から外す）。外部サービスにアップロードしない。
+
+### 権利と表現
+- 実在の企業名・ロゴ・商業施設名は使わない（架空名にする）。他作に似せたタイトルやアイコンも使わない。
+- 血や死の描写はしない。素手の喧嘩で決着する。
+- App Store版では、悪役側の警察を実在の「福岡県警」にしない（架空名にする。仮名「博多湾警察」）。Web版のセリフにある「県警」も、オーナーの了承を得たら置き換える。
+- BAR YAHMANの店内画面には「お酒は20歳になってから」と、フィクションである旨を表示し続ける。
+
+### オーナーの承認が必要なこと（自分で実行しない）
+- お金がかかること（素材の購入、有料サービス、AI生成のクレジット）
+- アカウントの作成、サインイン、公開・共有範囲の変更、ストアへの提出
+- 第三者（BAR YAHMAN、TAIKIさん、おにょさんなど）への連絡
+
+## 6. これまでの経緯（2026年11月24日時点）
+
+- 3エリア化（中洲・博多・天神）、櫛田神社、川端通商店街、博多駅、信号、地下鉄入口などで街並みを作り込んだ。
+- 実写風のカットシーン画像15枚と動画4本を Higgsfield で生成した（ジョブ番号は `assets-source/README.md`）。商用利用の条件は、オーナーがHiggsfieldの契約プランで確認する。
+- 最新の修正（Web版リリース前）：
+  1. 警察官の服装を、日本の警察らしい見た目に変更した（水色シャツ、背中に POLICE の紺色ベスト、制帽と帽章、ベルトとホルスター）。紛らわしかった青い上着のチンピラは色を変えた。
+  2. 通行人を増やした（連れ、立ち話を追加）。
+  3. ミッション表示を作り直した（左上の目的枠、黄色い◆と距離、画面外を指す矢印、ミニマップの道順、「残り◯人」、手配中の案内、ポーズ画面の目的表示）。
+- 全7章＋サブストーリー3本の自動通しテストが通っている。
+
+## 7. 次にやること（オーナーの指示を待つ）
+
+- Web版の公開先を決める（例：Cloudflare Pages、Vercel、GitHub Pages。静的ファイルだけで動く）。公開の操作はオーナーの承認後。
+- 必要に応じて：博多エリアのサブストーリー、警察の架空名への置き換え、スマホでの動作の重さの確認。
+- App Store版：`docs/unity-appstore-plan.md` のフェーズ U0 から。

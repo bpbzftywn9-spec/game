@@ -1,0 +1,6 @@
+node_modules/
+web/test.html
+*.png
+!web/**/*.png
+.DS_Store
+reference-private/
