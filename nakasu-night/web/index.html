@@ -825,7 +825,7 @@ function faceTex(F){const key='face'+F.id;if(RIG.tex[key])return RIG.tex[key];co
   const t=new THREE.CanvasTexture(c);t.flipY=false;t.encoding=THREE.sRGBEncoding;t.anisotropy=4;return RIG.tex[key]=t;}
 function skinMat(orig,rgb){const key='skin'+rgb.join('_');if(RIG.tex[key])return RIG.tex[key];const m=orig.clone();m.map=null;m.color.setRGB(rgb[0]/255,rgb[1]/255,rgb[2]/255).convertSRGBToLinear();m.userData.lin=1;return RIG.tex[key]=m;}
 // 髪型（頭のボーンに付ける）
-function addHair(hd,style,col){if(style==='bald'||!hd)return;const h=HS(hd),hm=hairMat(col);const put=(geo,x,y,z,sx,sy,sz,rx)=>{const m=new THREE.Mesh(geo,hm);m.castShadow=true;m.position.set(x*h,y*h,z*h);m.scale.set(sx*h,sy*h,sz*h);if(rx)m.rotation.x=rx;hd.add(m);return m;};
+function addHair(hd,style,col){if(style==='bald'||!hd)return;const h=HS(hd),hm=hairMat(col);const put=(geo,x,y,z,sx,sy,sz,rx)=>{const m=new THREE.Mesh(geo,hm);m.castShadow=true;m.userData.hair=1;m.position.set(x*h,y*h,z*h);m.scale.set(sx*h,sy*h,sz*h);if(rx)m.rotation.x=rx;hd.add(m);return m;};
   const S={short:[.104,.098,.118,.118],side:[.105,.1,.119,.12],slick:[.103,.09,.124,.112],pomp:[.104,.098,.118,.118],perm:[.112,.106,.124,.12],spiky:[.104,.098,.118,.118],buzz:[.1,.093,.112,.116],long:[.106,.1,.12,.118],twoblock:[.1,.104,.114,.126]}[style]||[.104,.098,.118,.118];
   const cap=put(style==='perm'?PERMG:HAIRM,0,S[3]-.008,-.012,S[0],S[1],S[2]);
   if(style!=='buzz')put(SPHG,0,S[3]+.035,.045,S[0]*.84,.04,.075);// 前髪の生え際（おでこの上が見えないように）
@@ -833,7 +833,7 @@ function addHair(hd,style,col){if(style==='bald'||!hd)return;const h=HS(hd),hm=h
   if(style==='side')put(SPHG,.045,.17,.01,.07,.045,.1);
   if(style==='twoblock')put(SPHG,0,.175,.03,.095,.05,.1);
   if(style==='long'){put(SPHG,0,.07,-.085,.1,.12,.05);}
-  if(style==='spiky')for(let i=0;i<9;i++){const a=i/9*TAU;const sp=new THREE.Mesh(SPIKEG,hm);sp.position.set(Math.sin(a)*.06*h,.2*h,(Math.cos(a)*.06-.01)*h);sp.rotation.set(Math.cos(a)*.6,0,-Math.sin(a)*.6);sp.scale.setScalar(h);hd.add(sp);}
+  if(style==='spiky')for(let i=0;i<9;i++){const a=i/9*TAU;const sp=new THREE.Mesh(SPIKEG,hm);sp.position.set(Math.sin(a)*.06*h,.2*h,(Math.cos(a)*.06-.01)*h);sp.rotation.set(Math.cos(a)*.6,0,-Math.sin(a)*.6);sp.scale.setScalar(h);sp.userData.hair=1;hd.add(sp);}
   if(style==='slick')cap.material=MC['hs'+col]||(MC['hs'+col]=linMat(new THREE.MeshStandardMaterial({color:col,roughness:.18,metalness:.25})));}
 const HAIRM=new THREE.SphereGeometry(1,22,12,0,Math.PI*2,0,Math.PI*.64),SPHG=new THREE.SphereGeometry(1,14,10),SPIKEG=new THREE.ConeGeometry(.022,.07,5);SPIKEG.translate(0,.03,0);
 const PERMG=(()=>{const g=new THREE.SphereGeometry(1,22,12,0,Math.PI*2,0,Math.PI*.64);const p=g.attributes.position;for(let i=0;i<p.count;i++){const k=1+.06*Math.sin(p.getX(i)*31)*Math.sin(p.getY(i)*29+p.getZ(i)*23);p.setXYZ(i,p.getX(i)*k,p.getY(i)*k,p.getZ(i)*k);}g.computeVertexNormals();return g;})();
@@ -944,7 +944,7 @@ function stripWoman(){let mesh;RIG.woman.traverse(o=>{if(o.isSkinnedMesh)mesh=o;
 const HAIRG=new THREE.SphereGeometry(1,20,12,0,Math.PI*2,0,Math.PI*.56);
 const hairMat=c=>MC['h'+c]||(MC['h'+c]=linMat(new THREE.MeshStandardMaterial({color:c,roughness:.45,metalness:.1})));
 function HS(b){let s=1,o=b;while(o&&o.parent){o=o.parent;if(o.isBone||o.type==='Object3D'||o.isGroup)s*=o.scale.x;}return 1/s;}
-const BONES=['Hips','Spine','Spine1','Head','RightArm','RightForeArm','LeftArm','LeftForeArm','RightUpLeg','RightLeg','LeftUpLeg'];
+const BONES=['Hips','Spine','Spine1','Head','RightArm','RightForeArm','LeftArm','LeftForeArm','RightUpLeg','RightLeg','LeftUpLeg','LeftLeg'];
 let COPM=null;
 function copMats(){if(COPM)return COPM;
   const vt=canvasTex(1024,256,(g)=>{g.fillStyle='#141c30';g.fillRect(0,0,1024,256);
@@ -1036,7 +1036,7 @@ function spawnActor(type,x,z,o={}){const lk=o.look||type;const g=RIG.ok?makeRigg
     money:o.money||ri(600,1800),flee:0,strafe:Math.random()<.5?1:-1,rushCd:rand(3,6),rush:0,tough:!!o.tough,getUp:0,sink:0,y:0,npc:!!o.npc,talkCd:0};
   actors.push(e);return e;}
 function removeActor(e){scene.remove(e.g);const i=actors.indexOf(e);if(i>=0)actors.splice(i,1);}
-function animHuman(e,dt){const u=e.g.userData;if(u.rig)return animRig(e,dt,u.rig);e.phase+=dt*(e.mv||0)*1.7;
+function animHuman(e,dt){if(e===P&&P.car&&P.car.bike){updRider(P.car);return;}const u=e.g.userData;if(u.rig)return animRig(e,dt,u.rig);e.phase+=dt*(e.mv||0)*1.7;
   let ll=0,lr=0,al=.05,ar=.05,lean=0,rx=0,y=e.y;
   if(e.down){rx=-Math.PI/2;y+=.17;}
   else{const s=Math.min(1,(e.mv||0)/3)*.75;ll=Math.sin(e.phase)*s;lr=-ll;al=-ll*.9;ar=ll*.9;
@@ -1081,26 +1081,64 @@ const SPECIAL_CARS=['kei','suv','classic','ev','limo','dekotora'];
 // ---- バイク（scooter・moto は街を走る／停まっている。naked・american・super は課金） ----
 const BIKES={scooter:{col:()=>pick([0xf0f0f0,0x2a6ac8,0xe8c020,0xc02a3a,0x6ac88a]),vmax:22,hp:60,acc:1.3,hand:1.6},moto:{col:()=>pick([0x1a1a1e,0xc02a3a,0x2a4a8a,0xd8d8dc]),vmax:32,hp:80,acc:1.4,hand:1.5},
   naked:{col:()=>0x141416,vmax:38,hp:90,acc:1.5,hand:1.5},american:{col:()=>0x5a0a14,vmax:35,hp:140,acc:1.2,hand:1.1},super:{col:()=>0x1a5ad8,vmax:46,hp:80,acc:1.8,hand:1.4}};
-function bikeMesh(kind){const g=new THREE.Group();const B=BIKES[kind];const paint=std(B.col(),.25,.6,1.3),dark=std(0x16161a,.5,.4,.8),chrome=std(0xe8e8ec,.15,1,1.4);
-  const wheel=(z,r)=>{const w=new THREE.Mesh(new THREE.CylinderGeometry(r,r,.13,16),std(0x0e0e0e,.8,0,.3));w.rotation.z=Math.PI/2;w.position.set(0,r,z);g.add(w);const h=new THREE.Mesh(new THREE.CylinderGeometry(r*.45,r*.45,.15,10),chrome);h.rotation.z=Math.PI/2;h.position.set(0,r,z);g.add(h);};
-  let fz=.72,rz=-.72,r=.33,bar=1.05,seat=.86;
-  if(kind==='scooter'){r=.23;fz=.62;rz=-.6;box(.42,.28,1.15,paint,0,.42,0,g);box(.46,.62,.12,paint,0,.78,.46,g);box(.34,.12,.58,dark,0,.74,-.24,g);bar=1.08;seat=.74;}
-  else if(kind==='american'){fz=.9;rz=-.85;r=.34;box(.26,.3,1.3,dark,0,.55,0,g);box(.4,.26,.55,paint,0,.86,.2,g);box(.36,.08,.55,std(0x2a1a10,.7,0,.4),0,.74,-.3,g);box(.4,.14,.5,paint,0,.6,-.85,g);
-    for(const s of [-1,1])box(.06,.06,1.1,chrome,s*.18,.38,-.45,g);bar=1.22;seat=.74;}
-  else if(kind==='super'){box(.34,.38,1.1,paint,0,.66,.05,g);box(.42,.42,.55,paint,0,.82,.55,g);box(.36,.12,.4,dark,0,.98,-.32,g);box(.3,.16,.5,paint,0,1.0,-.68,g);box(.3,.16,.12,std(0x0a1018,.04,.9,1.6),0,1.08,.78,g);bar=1.0;seat=.98;}
-  else{box(.3,.34,1.1,dark,0,.6,0,g);box(.38,.24,.52,paint,0,.86,.18,g);box(.32,.1,.6,dark,0,.88,-.32,g);box(.3,.1,.36,paint,0,.92,-.72,g);}
-  wheel(fz,r);wheel(rz,r);box(.06,.6,.06,chrome,0,r+.32,fz-.12,g).rotation.x=-.35;box(kind==='american'?.9:.68,.05,.05,chrome,0,bar,fz-.22,g);
-  box(.16,.12,.06,bas(0xfff2c0),0,bar-.22,fz+.02,g);box(.14,.07,.04,bas(0xff2020),0,seat+.02,rz-.1,g);
-  // 乗っている人（人形。プレイヤーが乗ると服の色になる）
-  const rd=new THREE.Group();const jm=std(0x2e2e36,.7,0,.5),pm=std(0x26262c,.7,0,.5),hm=std(0x111114,.2,.6,1.2);
-  const t=box(.42,.55,.28,jm,0,seat+.36,-.12,rd);t.rotation.x=kind==='super'?.75:kind==='american'?-.05:.3;
-  box(.3,.3,.32,hm,0,seat+.78+(kind==='super'?-.12:0),kind==='super'?.12:-.02,rd);
-  for(const sx of [-1,1]){const a=box(.11,.11,.55,jm,sx*.24,seat+.48,(fz-.22-.12)/2+.05,rd);a.rotation.x=-.5;box(.14,.14,.6,pm,sx*.16,seat-.05,.15,rd).rotation.x=.4;box(.13,.42,.14,pm,sx*.16,seat-.35,.38,rd);}
-  g.add(rd);g.userData.rider={g:rd,jm,pm};rd.visible=false;
-  const b=new THREE.Mesh(beamG,beamM);b.rotation.x=-Math.PI/2;b.scale.set(.6,.8,1);b.position.set(0,.06,fz+4.2);g.add(b);
+const UPV=new THREE.Vector3(0,1,0);
+function bikeMesh(kind){const g=new THREE.Group();const B=BIKES[kind];const paint=std(B.col(),.22,.65,1.4),dark=std(0x16161a,.5,.4,.8),chrome=std(0xe8e8ec,.12,1,1.5),rubber=std(0x0e0e10,.85,0,.3),seatM=std(0x121214,.75,0,.4),glassM=std(0x0a1018,.05,.9,1.8);
+  const ell=(m,x,y,z,sx,sy,sz,rx)=>{const e=new THREE.Mesh(SPHG,m);e.position.set(x,y,z);e.scale.set(sx,sy,sz);if(rx)e.rotation.x=rx;e.castShadow=true;g.add(e);return e;};
+  const tube=(a,b,r,m)=>{const A=new THREE.Vector3(...a),Bv=new THREE.Vector3(...b),d=Bv.clone().sub(A);const t=new THREE.Mesh(new THREE.CylinderGeometry(r,r,d.length(),10),m);t.position.copy(A).addScaledVector(d,.5);t.quaternion.setFromUnitVectors(UPV,d.normalize());t.castShadow=true;g.add(t);return t;};
+  const wheel=(z,r)=>{const t=new THREE.Mesh(new THREE.TorusGeometry(r-.07,.07,10,24),rubber);t.rotation.y=Math.PI/2;t.position.set(0,r,z);t.castShadow=true;g.add(t);
+    const rim=new THREE.Mesh(new THREE.CylinderGeometry(r-.11,r-.11,.05,20),chrome);rim.rotation.z=Math.PI/2;rim.position.set(0,r,z);g.add(rim);const hub=new THREE.Mesh(new THREE.CylinderGeometry(r*.3,r*.3,.14,12),dark);hub.rotation.z=Math.PI/2;hub.position.set(0,r,z);g.add(hub);};
+  const fender=(z,r,arc,start)=>{const f=new THREE.Mesh(new THREE.TorusGeometry(r+.03,.06,6,16,arc),paint);f.rotation.y=Math.PI/2;f.rotation.x=start;f.position.set(0,r,z);f.scale.set(1,1,1.6);g.add(f);};
+  const light=(y,z,r)=>{const h=new THREE.Mesh(new THREE.CylinderGeometry(r,r*.85,.1,16),chrome);h.rotation.x=Math.PI/2;h.position.set(0,y,z);g.add(h);const l=new THREE.Mesh(new THREE.CircleGeometry(r*.85,16),bas(0xfff2c0));l.position.set(0,y,z+.051);g.add(l);};
+  let seatY=.9,seatZ=-.32;
+  if(kind==='scooter'){const fz=.6,rz=-.58,r=.23;wheel(fz,r);wheel(rz,r);
+    ell(paint,0,.5,-.34,.25,.24,.46);ell(paint,0,.66,.42,.25,.42,.12,-.25);ell(paint,0,.98,.5,.2,.08,.14);box(.4,.06,.62,dark,0,.3,.06,g);
+    ell(seatM,0,.76,-.28,.18,.06,.32);tube([0,.3,fz],[0,.9,.5],.03,chrome);tube([-.32,1.0,.5],[.32,1.0,.5],.022,chrome);light(.86,.55,.09);
+    fender(fz,r,Math.PI*.7,Math.PI*.15);tube([.14,.24,-.2],[.16,.28,-.66],.04,chrome);seatY=.8;seatZ=-.26;}
+  else if(kind==='american'){const fz=.95,rz=-.85;wheel(fz,.34);wheel(rz,.36);fender(rz,.36,Math.PI*.9,Math.PI*.05);fender(fz,.34,Math.PI*.6,Math.PI*.2);
+    for(const sx of [-.07,.07])tube([sx,.34,fz],[sx,1.16,.52],.03,chrome);tube([-.48,1.24,.42],[.48,1.24,.42],.025,chrome);for(const sx of [-1,1])tube([sx*.48,1.24,.42],[sx*.5,1.1,.28],.025,chrome);
+    ell(paint,0,.84,.22,.2,.13,.34);ell(seatM,0,.72,-.22,.2,.06,.26);ell(seatM,0,.8,-.55,.15,.07,.14);
+    box(.26,.26,.4,dark,0,.42,.08,g);for(const a of [-.45,.45]){const c=tube([0,.5,.08],[0,.82,.08+a*.6],.08,chrome);}
+    tube([0,.98,.5],[0,.66,-.3],.04,dark);tube([0,.36,rz],[0,.42,.0],.04,dark);for(const y of [.28,.38])tube([.2,y,.1],[.22,y+.06,-1.1],.045,chrome);light(1.0,.68,.11);seatY=.76;seatZ=-.26;}
+  else if(kind==='super'){const fz=.72,rz=-.7;wheel(fz,.32);wheel(rz,.32);fender(fz,.32,Math.PI*.55,Math.PI*.25);
+    ell(paint,0,.76,.34,.24,.27,.44);ell(glassM,0,1.02,.42,.17,.12,.2,-.6);ell(paint,0,.9,-.04,.21,.15,.3);ell(seatM,0,.97,-.36,.15,.05,.24);
+    {const t=new THREE.Mesh(new THREE.ConeGeometry(.15,.36,12),paint);t.rotation.x=-Math.PI/2-.3;t.position.set(0,1.0,-.62);t.castShadow=true;g.add(t);}
+    box(.3,.3,.42,dark,0,.44,.02,g);for(const sx of [-.07,.07])tube([sx,.32,fz],[sx,.95,.5],.028,chrome);for(const sx of [-1,1])tube([sx*.06,.93,.47],[sx*.34,.9,.44],.022,chrome);
+    tube([0,.32,rz],[0,.48,-.05],.045,dark);tube([.16,.36,-.1],[.18,.62,-.62],.055,chrome);box(.24,.07,.05,bas(0xfff2c0),0,.82,.77,g);seatY=1.0;seatZ=-.34;}
+  else{const fz=.72,rz=-.72;wheel(fz,.33);wheel(rz,.33);fender(fz,.33,Math.PI*.6,Math.PI*.2);fender(rz,.33,Math.PI*.5,Math.PI*.1);
+    ell(paint,0,.86,.18,.2,.13,.3);ell(seatM,0,.88,-.32,.16,.055,.3);{const t=new THREE.Mesh(new THREE.ConeGeometry(.12,.26,10),paint);t.rotation.x=-Math.PI/2-.25;t.position.set(0,.91,-.62);g.add(t);}
+    box(.3,.32,.42,dark,0,.44,.06,g);for(const sx of [-.15,.15])tube([sx,.5,.16],[sx,.62,.22],.07,chrome);
+    for(const sx of [-.07,.07])tube([sx,.33,fz],[sx,1.0,.52],.03,chrome);tube([-.36,1.06,.5],[.36,1.06,.5],.022,chrome);
+    tube([0,.98,.5],[0,.78,-.3],.04,dark);tube([0,.33,rz],[0,.45,-.02],.04,dark);tube([.17,.34,0],[.2,.5,-.72],.05,chrome);light(.95,.64,.1);seatY=.9;seatZ=-.3;}
+  box(.14,.07,.04,bas(0xff2020),0,seatY+.04,kind==='american'?-1.15:-.95,g);
+  g.userData.seat={y:seatY,z:seatZ};
+  const b=new THREE.Mesh(beamG,beamM);b.rotation.x=-Math.PI/2;b.scale.set(.6,.8,1);b.position.set(0,.06,4.9);g.add(b);
   const sh=new THREE.Mesh(new THREE.PlaneGeometry(.9,2.2),shadowM);sh.rotation.x=-Math.PI/2;sh.position.y=.03;g.add(sh);
   g.traverse(o=>{if(o.isMesh&&o.geometry===BOX)o.castShadow=true;});lin(g);scene.add(g);return g;}
-function riderShow(c,who){const R=c.g.userData.rider;if(!R)return;R.g.visible=!!who;if(who==='player'){const pal=rigLook('player').pal;setC(R.jm,pal.j);setC(R.pm,pal.p);}else if(who){setC(R.jm,pick([0x2a2a30,0x6a4a2a,0x1a2a5a,0xd8d8d8]));setC(R.pm,0x1a1a20);}}
+// ---- バイクに乗った姿：本物の人物モデルを座らせる（太ももを前に、ひざを曲げ、手をハンドルへ）。ヘルメットをかぶる ----
+// lean=上体の前傾 arm=腕を前へ fore=ひじ thigh=太もも knee=ひざ（ラジアン）。スーパースポーツは深い前傾、アメリカンは背すじを立てて足を前へ
+const SIT={scooter:{lean:.1,arm:-.62,fore:-.5,thigh:-1.32,knee:1.32,spread:.12},moto:{lean:.32,arm:-.78,fore:-.42,thigh:-1.22,knee:1.5,spread:.16},naked:{lean:.34,arm:-.8,fore:-.42,thigh:-1.22,knee:1.5,spread:.16},
+  american:{lean:-.08,arm:-1.05,fore:-.2,thigh:-1.45,knee:.95,spread:.22},super:{lean:.55,arm:-.72,fore:-.55,thigh:-1.12,knee:1.85,spread:.14}};
+function sitPose(g,kind){const rig=g.userData.rig;if(!rig)return 0;const B=rig.b,P2=SIT[kind]||SIT.moto;
+  for(const k in rig.acts)rig.acts[k].stop();rig.acts.Idle.reset();rig.acts.Idle.time=.4;rig.acts.Idle.play();rig.cur='Idle';rig.mixer.update(0);
+  g.updateMatrixWorld(true);g.getWorldQuaternion(rig.gq);rig.saved=BONES.map(n=>B[n]?B[n].quaternion.clone():null);
+  const hp=new THREE.Vector3(),gp=new THREE.Vector3();B.Hips.getWorldPosition(hp);g.getWorldPosition(gp);const hipH=(hp.y-gp.y)/(g.scale.y||1);
+  rotC(rig,B.Spine,AX,P2.lean);
+  for(const [up,lo,s] of [[B.RightUpLeg,B.RightLeg,-1],[B.LeftUpLeg,B.LeftLeg,1]]){rotC(rig,up,AX,P2.thigh);rotC(rig,up,AY,s*P2.spread);rotC(rig,lo,AX,P2.knee);}
+  for(const [ar,fo,s] of [[B.RightArm,B.RightForeArm,-1],[B.LeftArm,B.LeftForeArm,1]]){rotC(rig,ar,AX,P2.arm);rotC(rig,ar,AY,s*.18);rotC(rig,fo,AX,P2.fore);}
+  rig.sitting=true;return hipH;}
+function standPose(g){const rig=g.userData.rig;if(!rig||!rig.saved)return;BONES.forEach((n,i)=>{if(rig.b[n]&&rig.saved[i])rig.b[n].quaternion.copy(rig.saved[i]);});rig.saved=null;rig.sitting=false;}
+// ヘルメット（頭の骨に付ける。かぶっている間は髪を隠す）
+function helmet(g,on,col){const hd=g.getObjectByName('Head');if(!hd)return;let hm=hd.children.find(o=>o.userData.helmet);
+  if(on&&!hm){const h=HS(hd);hm=new THREE.Group();hm.userData.helmet=1;const shell=new THREE.Mesh(SPHG,std(col||0x111114,.22,.55,1.2));shell.scale.set(.138*h,.142*h,.152*h);shell.position.set(0,.085*h,-.008*h);shell.castShadow=true;
+    const vis=new THREE.Mesh(new THREE.SphereGeometry(1,20,10,-Math.PI*.32,Math.PI*.64,Math.PI*.36,Math.PI*.2),std(0x0a1018,.05,.9,1.8));vis.scale.set(.145*h,.15*h,.16*h);vis.position.set(0,.085*h,-.006*h);hm.add(shell,vis);hd.add(hm);}
+  if(hm)hm.visible=!!on;for(const o of hd.children)if(o.userData.hair)o.visible=!on;}
+// プレイヤーをバイクの座席に合わせる（毎フレーム）。バイクと同じだけ傾ける
+function updRider(c){if(!P||P.car!==c)return;const st=c.g.userData.seat;const fx=Math.sin(c.a),fz=Math.cos(c.a);
+  P.g.visible=true;P.g.position.set(c.x+fx*st.z,st.y+.05-(P.hipH||.95)*P.g.scale.y,c.z+fz*st.z);P.g.rotation.set(0,c.a,c.g.rotation.z);}
+// 走っているバイクの運転手：人物モデルを座らせて、バイクの子にする
+function riderShow(c,who){const st=c.g.userData.seat;if(!st)return;if(c.npcRider){c.g.remove(c.npcRider);c.npcRider=null;}
+  if(who==='npc'&&RIG.ok){const lk=pick(['salary','student','host','thug','oldman','salary']);const rg=makeRigged(lk);scene.remove(rg);const hipH=sitPose(rg,c.kind);helmet(rg,true,pick([0x111114,0xe8e8ec,0xc02a3a,0x2a4a8a]));
+    rg.userData.blob.visible=false;rg.position.set(0,st.y+.05-hipH,st.z);c.g.add(rg);c.npcRider=rg;}}
 function makeCarMesh(kind){if(BIKES[kind])return bikeMesh(kind);if(SPECIAL_CARS.includes(kind))return specialCar(kind);const g=new THREE.Group();
   if(kind==='van')g.scale.set(1.12,1.3,1.18);const col=kind==='van'?0x0b0b0d:kind==='police'?0xf2f2f2:kind==='taxi'?pick([0xf0c020,0x2a6a3a,0xe8e8e8]):kind==='sports'?0xc4101c:kind==='vip'?0x050507:pick([0xd0d0d8,0x1a1a20,0x8a1020,0x203a6a,0xe8e8e8,0x5a5a60,0xc06020,0x2a2a2a]);
   const paint=std(col,.28,.55,1.4),glass=std(0x0a1018,.04,.9,1.8);
@@ -1364,7 +1402,7 @@ function carPhys(c,dt){const ox=c.x,oz=c.z;c.x+=Math.sin(c.a)*c.v*dt;c.z+=Math.c
   const fx=c.x+Math.sin(c.a)*2.2*Math.sign(c.v||1),fz=c.z+Math.cos(c.a)*2.2*Math.sign(c.v||1);
   if(isWater(fx,fz)||outB(c.x,c.z)||isWater(c.x,c.z)){c.x=ox;c.z=oz;if(Math.abs(c.v)>8&&c.driver==='player'){SFX.crash();shake=.3;c.hp-=Math.abs(c.v)*.8;}c.v=-c.v*.25;}
   if(collide(c,c.r||1.7)){if(Math.abs(c.v)>7){if(c.driver==='player'&&!(c.ccd>S.t)){c.ccd=S.t+.5;SFX.crash();shake=Math.max(shake,.3);c.hp-=Math.abs(c.v)*.7;burst(c.x,1,c.z,6,0xffd080,5,.5,8,.3);}}c.v*=.55;}
-  c.g.position.set(c.x,0,c.z);c.g.rotation.y=c.a;c.g.rotation.z=c.driver==='player'?(c.bike?clamp(-c.steer*c.v*.03,-.55,.55):clamp(-c.steer*c.v*.004,-.05,.05)):0;}
+  c.g.position.set(c.x,0,c.z);c.g.rotation.y=c.a;c.g.rotation.z=c.driver==='player'?(c.bike?clamp(-c.steer*c.v*.03,-.55,.55):clamp(-c.steer*c.v*.004,-.05,.05)):0;if(c.bike&&c.driver==='player')updRider(c);}
 function driveNPC(c,dt){const p=c.path;const B=p[c.idx],A=p[(c.idx-1+p.length)%p.length];let fx=B[0]-A[0],fz=B[1]-A[1];const L=Math.hypot(fx,fz)||1;fx/=L;fz/=L;
   const tx=B[0]+fz*c.lane,tz=B[1]-fx*c.lane;const ta=Math.atan2(tx-c.x,tz-c.z);c.a=lerpAng(c.a,ta,Math.min(1,dt*2.2));
   let vt=c.fast?17:11;const sa=Math.sin(c.a),ca=Math.cos(c.a);
@@ -1403,10 +1441,10 @@ function drivePlayer(c,dt){const mv=getMove();let thr=0,steer=0;
   P.x=c.x;P.z=c.z;$('spd').textContent=Math.round(Math.abs(c.v)*3.6)+' km/h';}
 function enterCar(c){if(c.dead)return;if(c.driver==='npc'){const x=c.x+Math.cos(c.a)*2.2,z=c.z-Math.sin(c.a)*2.2;const d=spawnActor('ped',walkable(x,z)?x:P.x,walkable(x,z)?z:P.z,{look:c.police?'cop':pick(PEDLOOKS)});d.flee=8;
   if(c.police){addWanted(2);}else{crimeSeen(1);post(pick(['車ジャックされた！ 天神で！','今、目の前で車取られた…','運転手引きずり出されとった']));}}
-  c.driver='player';P.car=c;P.g.visible=false;if(c.bike)riderShow(c,'player');P.act=null;document.body.classList.add('incar');$('spd').style.display='inline';}
+  c.driver='player';P.car=c;P.g.visible=false;if(c.bike){riderShow(c,null);P.hipH=sitPose(P.g,c.kind);helmet(P.g,true);updRider(c);}P.act=null;document.body.classList.add('incar');$('spd').style.display='inline';}
 function exitCar(force){const c=P.car;if(!c)return;if(!force&&Math.abs(c.v)>6){toast('止まってから降りろ',1.2);return;}
   for(const s of [1,-1,0]){const x=c.x+Math.cos(c.a)*2.4*s-(s?0:Math.sin(c.a)*3.2),z=c.z-Math.sin(c.a)*2.4*s-(s?0:Math.cos(c.a)*3.2);if(walkable(x,z)){P.x=x;P.z=z;break;}}
-  if(!c.dead)c.driver=null;c.v=c.dead?c.v:0;if(c.bike)riderShow(c,null);P.car=null;P.g.visible=true;document.body.classList.remove('incar');$('spd').style.display='none';brakeHeld=false;}
+  if(!c.dead)c.driver=null;c.v=c.dead?c.v:0;if(c.bike){standPose(P.g);helmet(P.g,false);P.g.rotation.z=0;}P.car=null;P.g.visible=true;document.body.classList.remove('incar');$('spd').style.display='none';brakeHeld=false;}
 
 // ================= POPULATION =================
 function randPoint(dmin,dmax,ok){for(let i=0;i<20;i++){const a=rand(0,TAU),d=rand(dmin,dmax);const x=P.x+Math.sin(a)*d,z=P.z+Math.cos(a)*d;if(ok(x,z))return {x,z};}return null;}
@@ -1609,7 +1647,7 @@ function dressPlayer(model){let eq;try{eq=S.eq;}catch(e){return;}if(!eq)return;
     if(a==='a_sun'){for(const sx of [-1,1])add('Head',new THREE.BoxGeometry(.07,.042,.012),dark,sx*.036,.074,.1);add('Head',new THREE.BoxGeometry(.16,.01,.01),dark,0,.088,.1);}
     if(a==='a_chain')add('Neck',new THREE.TorusGeometry(.082,.009,6,24),gold,0,-.01,.018,Math.PI/2-.35,0,0);
     if(a==='a_watch')add('LeftHand',new THREE.CylinderGeometry(.04,.04,.03,14),gold,0,-.005,0);}}
-function restylePlayer(){if(!P||!RIG.ok)return;const og=P.g;const ng=makeRigged('player');ng.position.copy(og.position);ng.rotation.copy(og.rotation);ng.visible=og.visible;scene.remove(og);scene.add(ng);P.g=ng;}
+function restylePlayer(){if(!P||!RIG.ok)return;const og=P.g;const ng=makeRigged('player');ng.position.copy(og.position);ng.rotation.copy(og.rotation);ng.visible=og.visible;if(P.car&&P.car.bike){ng.rotation.set(0,P.car.a,0);P.hipH=sitPose(ng,P.car.kind);helmet(ng,true);}scene.remove(og);scene.add(ng);P.g=ng;}
 const myVeh={car:null,bike:null};
 function callMyCar(cat='car'){const it=S.eq[cat]&&PREM[S.eq[cat]];if(!it)return false;if(P.car||S.room||mission){toast('今は呼べない',1.6);return false;}
   if(myVeh[cat])removeCar(myVeh[cat]);let pt=null;for(const q of ring(P,8,3,6))if(walkable(q.x,q.z)){pt=q;break;}if(!pt)pt={x:P.x+3,z:P.z};
@@ -2007,7 +2045,7 @@ polR=new THREE.MeshBasicMaterial({color:0xff2020});polB=new THREE.MeshBasicMater
   P.g.visible=true;mode='title';$('loading').style.display='none';$('bNew').disabled=false;if(load())$('bCont').style.display='block';Net.init();
   if(new URLSearchParams(location.search).has('autostart'))begin(null);})();
 requestAnimationFrame(frame);
-window.__G={kegoPop,get TRAIN(){return TRAIN},spawnCar,VENUES,enterVenue,leaveVenue,openVenueMenu,openTreat,doTreat,treatAll,openPhone,closePhone,phoneApp,addMsg,gainFollowers,FOUT,manageDealers,isDealerTime,LAMPS,FACES_M,FACES_F,FACE_PLAYER,V3:(x,y,z)=>new THREE.Vector3(x,y,z),PREM,Pay,premGrant,equip,callMyCar,openPrem,openShop,get Q(){return Q},PEDN,get mission(){return mission},dist,spawn:spawnActor,rm:removeActor,RIG,camYaw:()=>camYaw,setYaw:v=>camYaw=v,hostiles,knockOut,useMarker,markers,enterCar,POS,S,get P(){return P},actors,cars,BLD,MAINS,runMission,get mode(){return mode},advance};
+window.__G={removeCar,exitCar,kegoPop,get TRAIN(){return TRAIN},spawnCar,VENUES,enterVenue,leaveVenue,openVenueMenu,openTreat,doTreat,treatAll,openPhone,closePhone,phoneApp,addMsg,gainFollowers,FOUT,manageDealers,isDealerTime,LAMPS,FACES_M,FACES_F,FACE_PLAYER,V3:(x,y,z)=>new THREE.Vector3(x,y,z),PREM,Pay,premGrant,equip,callMyCar,openPrem,openShop,get Q(){return Q},PEDN,get mission(){return mission},dist,spawn:spawnActor,rm:removeActor,RIG,camYaw:()=>camYaw,setYaw:v=>camYaw=v,hostiles,knockOut,useMarker,markers,enterCar,POS,S,get P(){return P},actors,cars,BLD,MAINS,runMission,get mode(){return mode},advance};
 }
 </script>
 </body></html>

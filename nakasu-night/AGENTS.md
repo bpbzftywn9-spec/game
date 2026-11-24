@@ -54,7 +54,7 @@ python tests/full_playthrough.py # 別ターミナルで serve を起動した�
 | `ROADS`, `RIVERS`, `BRIDGES`, `PATHS`, `RESERVE`, `POS` | 道路・川・橋・車の経路・建物を置かない区画・主な地点の座標（1単位≒1m、範囲 −250〜250） |
 | `AREAS` | エリア判定（薬院 x<−30かつz>140 / 呉服町 x≧134かつz<−60 / 天神 x<−30 / 中洲 −10≦x<70 / 博多 x≧84）。地図は北が −z |
 | `buildYakuin`, `updTrain`, `buildGofuku` | 薬院（城南線、天神から南へのびる鉄道の高架・電車・薬院駅、カフェの多い低めの街並み）と呉服町（大博通り×明治通りの交差点の標識、オフィス街、聖福寺の山門） |
-| `BIKES`, `bikeMesh`, `riderShow`, `trafficKind` | バイク（スクーター・バイクは街を走る／停まっている、課金の3種）。車と同じ `cars` で動き、`c.bike` のときは細い当たり判定・傾き・乗っている人の人形を表示 |
+| `BIKES`, `bikeMesh`, `SIT`, `sitPose`, `standPose`, `helmet`, `updRider`, `riderShow`, `trafficKind` | バイク（スクーター・バイクは街を走る／停まっている、課金の3種）。車と同じ `cars` で動き、`c.bike` のときは細い当たり判定と傾き。乗っている人は本物の人物モデルを座らせ（`sitPose`、バイクごとの姿勢は `SIT`）、ヘルメットをかぶせる |
 | `KEGO`, `buildKego`, `kegoPop` | 警固公園（天神。西鉄の天神駅の西・国体道路の北）：芝生・築山・イルミネーション・園内灯・警固神社の鳥居・警固交番。夜は若者が集まる |
 | `specialCar`, `SPECIAL_CARS` | 課金の車のうち、軽・SUV・旧車・EV・リムジン・デコトラの形 |
 | `buildWorld`, `genDistrict`, `buildHakata`, `streetFurniture` | 街の生成（建物、看板、櫛田神社、商店街、博多駅、信号、ガードレール） |
