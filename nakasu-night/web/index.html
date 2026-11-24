@@ -101,6 +101,12 @@ body.incar #bA,body.incar #bD,body.incar #bH{display:none}
 #shop,#pause{background:rgba(0,0,0,.6)}
 .panel{max-height:88vh;overflow-y:auto;touch-action:pan-y;background:linear-gradient(180deg,#120a2a,#2a0a2e);border:2px solid var(--pink);border-radius:16px;padding:16px;width:min(92vw,420px)}
 .panel h3{margin:0 0 4px;color:var(--gold);font-size:22px}
+.ptab{display:inline-block;margin:0 4px 8px 0;padding:6px 12px;border-radius:16px;border:1px solid rgba(255,255,255,.5);background:rgba(255,255,255,.06);color:#fff;font-size:14px;font-weight:800}
+.ptab.on{background:#ffd84a;color:#1a0a1a;border-color:#ffd84a}
+.item>div{flex:1}.item .yen{color:#ffd84a;white-space:nowrap}.item .own{color:#8dff7a;white-space:nowrap;font-size:13px}.item.eq{border-color:#8dff7a;background:rgba(141,255,122,.12)}
+.pnote{font-size:11px;line-height:1.6;opacity:.75;margin:8px 0 4px;text-align:left}
+.ptest{display:none;font-size:12px;font-weight:800;color:#1a0a1a;background:#8dff7a;border-radius:8px;padding:4px 8px;margin:4px 0 8px}
+.pchk{display:flex;gap:8px;align-items:flex-start;font-size:13px;line-height:1.5;margin:6px 0 4px}.pchk input{width:20px;height:20px;flex:none;margin-top:1px}
 .panel .sub{font-size:12px;opacity:.8;margin-bottom:8px}
 .item{display:flex;justify-content:space-between;align-items:center;gap:10px;width:100%;margin:6px 0;padding:10px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.4);background:rgba(255,255,255,.08);color:#fff;font-size:15px;font-weight:700;text-align:left}
 .item small{display:block;font-size:11px;opacity:.75;font-weight:600}
@@ -161,9 +167,19 @@ body.ttl #hud,body.ttl #mapw,body.ttl #topbtns,body.ttl #btns,body.ttl #feed{dis
 </div>
 <div class="ov" id="dead"><h2 class="dg">仁義、ここに尽きる…</h2><p>病院送り。治療費で所持金の1割を失い、進行中のミッションは中断される。</p><button class="mbtn pri" id="bRevive">病院で目を覚ます</button></div>
 <div class="ov" id="shop"><div class="panel"><h3 class="dg" id="shoph">屋台</h3><div class="sub" id="shopsub"></div><div id="shopitems"></div><button class="mbtn" id="bShopClose">店を出る</button></div></div>
+<div class="ov" id="prem" style="z-index:34;background:rgba(0,0,0,.6)"><div class="panel"><h3 class="dg" style="color:#ffd84a">💎 プレミアムショップ</h3><div class="sub" id="premsub"></div>
+  <div id="premtabs"></div><div id="premitems"></div>
+  <p class="pnote">価格は税込です。服装・武器・車・アクセサリーは一度買えばずっと使え、何度でも着替えられます。購入したアイテムはこの端末のセーブデータに保存されます。</p>
+  <button class="mbtn" id="bPremClose">閉じる</button></div></div>
+<div class="ov" id="pconf" style="z-index:38;background:rgba(0,0,0,.72)"><div class="panel" style="text-align:left">
+  <h3 class="dg" id="pch" style="color:#ffd84a;margin:0 0 4px"></h3><div class="sub" id="pcd"></div>
+  <div id="pcp" style="font-size:26px;font-weight:900;margin:8px 0">0円</div>
+  <div id="pctest" class="ptest">テスト購入：実際には請求されません</div>
+  <label class="pchk"><input type="checkbox" id="pcok"> <span id="pcokt"></span></label>
+  <button class="mbtn pri" id="bPcBuy">購入する</button><button class="mbtn" id="bPcNo">やめる</button></div></div>
 <div class="ov" id="pause"><div class="panel" style="text-align:center"><h3 class="dg" style="color:var(--pink)">ポーズ</h3>
-  <p style="font-size:13px;line-height:1.75;text-align:left">黄色の<b style="color:#ffd84a">◆</b>とミニマップの<b style="color:#ffd84a">黄色い線</b>＝次の目的地<br>黄色の<b style="color:#ffd84a">！</b>＝メインストーリー<br>水色の<b style="color:#3de0ff">？</b>＝サブストーリー<br>緑の<b style="color:#8dff7a">¥</b>＝屋台・コンビニ（回復）<br>攻撃を当ててゲージ満タンで<b style="color:#3de0ff">極</b>＝ヒートアクション。川・屋台・車・壁の近くで技が変わる。<br>市民や警官を殴る・車を奪うと<b style="color:#ffd84a">手配度</b>が上がる。警察の視界から消えれば下がる。</p>
-  <p id="pobj" style="font-size:14px;line-height:1.6;text-align:left;background:rgba(255,216,74,.12);border-left:4px solid #ffd84a;padding:8px 10px;border-radius:0 8px 8px 0"></p><button class="mbtn pri" id="bResume">再開</button><button class="mbtn" id="bSave">セーブ</button><button class="mbtn" id="bQ">画質</button><button class="mbtn" id="bSpon">協力店舗：BAR YAHMAN</button><button class="mbtn" id="bTitle">タイトルへ</button></div></div>
+  <p style="font-size:13px;line-height:1.75;text-align:left">黄色の<b style="color:#ffd84a">◆</b>とミニマップの<b style="color:#ffd84a">黄色い線</b>＝次の目的地<br>黄色の<b style="color:#ffd84a">！</b>＝メインストーリー<br>水色の<b style="color:#3de0ff">？</b>＝サブストーリー<br>緑の<b style="color:#8dff7a">¥</b>＝屋台・コンビニ・飲み屋（回復）<br>攻撃を当ててゲージ満タンで<b style="color:#3de0ff">極</b>＝ヒートアクション。川・屋台・車・壁の近くで技が変わる。<br>市民や警官を殴る・車を奪うと<b style="color:#ffd84a">手配度</b>が上がる。警察の視界から消えれば下がる。</p>
+  <p id="pobj" style="font-size:14px;line-height:1.6;text-align:left;background:rgba(255,216,74,.12);border-left:4px solid #ffd84a;padding:8px 10px;border-radius:0 8px 8px 0"></p><button class="mbtn pri" id="bResume">再開</button><button class="mbtn" id="bSave">セーブ</button><button class="mbtn" id="bPrem" style="border-color:#ffd84a;color:#ffe9a0">💎 プレミアムショップ</button><button class="mbtn" id="bMyCar" style="display:none">🚗 マイカーを呼ぶ</button><button class="mbtn" id="bQ">画質</button><button class="mbtn" id="bSpon">協力店舗：BAR YAHMAN</button><button class="mbtn" id="bTitle">タイトルへ</button></div></div>
 <div class="ov" id="ending"><h2 class="dg">第一部 完</h2><p id="endtx"></p><button class="mbtn pri" id="bEndOk">自由行動を続ける</button><button class="mbtn" id="bSpon2">協力店舗：BAR YAHMAN</button></div>
 <div class="ov" id="spon" style="background:rgba(0,0,0,.7);z-index:36"><div class="panel" style="text-align:left">
   <h3 class="dg" style="color:#ff7a3a">BAR YAHMAN</h3><div class="sub">福岡・中洲のエンターテイメントバー。「夜のディズニーランド」。</div>
@@ -650,6 +666,7 @@ function rigLook(lk){const fem=lk==='ol'||lk==='hostess'||lk==='mama';
     onyo:{j:0xeef0e0,v:0xeef0e0,s:0xeef0e0,t:0xeef0e0,p:0xeef0e0,f:0xf4f4f4,hat:0x141414,floral:1,towel:1,wide:1},
     gen:{j:0xeeeeea,v:0xdcdcd4,s:0xf4f4f0,t:0x2a2a2a,p:0x2a2a2e,f:0x2a1a10,beard:1}};
   if(fem){const pants={ol:[0x1a1a22,0x3a3a46],hostess:[0xd8206a,0x111111,0x7a2ad0,0xf0f0f0],mama:[0x5a1460]}[lk];return {fem:1,pal:{p:pk(pants)}};}
+  if(lk==='player')return {pal:Object.assign({},P_.player,outfitPal())};
   if(P_[lk])return {pal:P_[lk]};
   if(lk==='thug'){const j=pk([0xc89818,0x5a1e7a,0xe0e0e0,0x7a2a4a,0x1e7a3a,0xb03a10,0x141414]);return {pal:{j,v:j,s:pk([0x111111,0x8a1020,0xe8e8e8]),t:0x111111,p:pk([0x111111,0xd0c8b8,0x1e2e50]),f:pk([0xeeeeee,0x111111])},beard:Math.random()<.4};}
   if(lk==='host'){const j=pk([0xf0f0f0,0x111111,0x22224a,0x5a0a22]);return {pal:{j,v:0x111111,s:pk([0x111111,0xe03a7a,0xe8e8e8]),t:0x111111,p:j===0xf0f0f0?0xf0f0f0:0x111111,f:0x0a0a0a,rose:1}};}
@@ -732,6 +749,7 @@ function makeRigged(lk,scale){const L=rigLook(lk);const fem=!!L.fem;const tpl=fe
     const cap=new THREE.Mesh(HAIRG,hm);cap.castShadow=true;hd.add(cap);const sc=1/((hd.getWorldScale(_v).x)||1)*(model.parent?1:1);cap.position.set(0,.118*HS(hd),-.014*HS(hd));cap.scale.set(.104*HS(hd),.098*HS(hd),.118*HS(hd));if(p.fluff){cap.scale.multiplyScalar(1.16);cap.position.y*=1.08;}}}
   if(p.glasses){const hd=model.getObjectByName('Head');if(hd){const gm=new THREE.MeshStandardMaterial({color:0xf0d0b0,roughness:.2,transparent:true,opacity:.55});for(const sx of [-1,1]){const fr=new THREE.Mesh(new THREE.BoxGeometry(.068,.05,.008),gm);fr.position.set(sx*.036*HS(hd),.072*HS(hd),.098*HS(hd));fr.scale.setScalar(HS(hd));hd.add(fr);}const br=new THREE.Mesh(new THREE.BoxGeometry(.014,.008,.008),gm);br.position.set(0,.08*HS(hd),.1*HS(hd));br.scale.setScalar(HS(hd));hd.add(br);}}
   if(p.police)dressCop(model);
+  if(lk==='player')dressPlayer(model);
   if(p.towel){const nk=model.getObjectByName('Neck');if(nk){const tw=new THREE.Mesh(new THREE.TorusGeometry(.1,.035,8,18),std(0xf0e6b0,.9,0,.4));tw.rotation.x=Math.PI/2;tw.position.set(0,.02*HS(nk),.0);tw.scale.set(HS(nk)*1.1,HS(nk)*1.1,HS(nk));nk.add(tw);}}
   if(p.wide){model.scale.x*=1.24;model.scale.z*=1.2;}
   const g=new THREE.Group();g.rotation.order='YXZ';g.add(model);
@@ -791,10 +809,11 @@ function animHuman(e,dt){const u=e.g.userData;if(u.rig)return animRig(e,dt,u.rig
 const cars=[];
 const beamM=new THREE.MeshBasicMaterial({color:0xfff0c0,map:glowTex,transparent:true,opacity:.22,blending:THREE.AdditiveBlending,depthWrite:false});const beamG=new THREE.PlaneGeometry(3.4,10);
 function makeCarMesh(kind){const g=new THREE.Group();
-  if(kind==='van')g.scale.set(1.12,1.3,1.18);const col=kind==='van'?0x0b0b0d:kind==='police'?0xf2f2f2:kind==='taxi'?pick([0xf0c020,0x2a6a3a,0xe8e8e8]):pick([0xd0d0d8,0x1a1a20,0x8a1020,0x203a6a,0xe8e8e8,0x5a5a60,0xc06020,0x2a2a2a]);
+  if(kind==='van')g.scale.set(1.12,1.3,1.18);const col=kind==='van'?0x0b0b0d:kind==='police'?0xf2f2f2:kind==='taxi'?pick([0xf0c020,0x2a6a3a,0xe8e8e8]):kind==='sports'?0xc4101c:kind==='vip'?0x050507:pick([0xd0d0d8,0x1a1a20,0x8a1020,0x203a6a,0xe8e8e8,0x5a5a60,0xc06020,0x2a2a2a]);
   const paint=std(col,.28,.55,1.4),glass=std(0x0a1018,.04,.9,1.8);
-  box(1.9,.62,4.3,paint,0,.62,0,g);if(kind==='police')box(1.92,.32,4.32,std(0x111111,.3,.5),0,.46,0,g);
-  box(1.66,.56,2.1,glass,0,1.2,-.25,g);box(1.64,.08,2.0,paint,0,1.5,-.25,g);box(1.8,.1,1.2,paint,0,.98,1.5,g);
+  if(kind==='sports'){box(1.96,.5,4.4,paint,0,.52,0,g);box(1.6,.42,1.7,glass,0,.98,-.35,g);box(1.58,.06,1.5,paint,0,1.2,-.35,g);box(1.9,.06,.32,std(0x111111,.3,.5),0,1.05,-2.05,g);for(const x of [.75,-.75])box(.08,.26,.08,0x111111,x,.9,-2.05,g);}
+  else box(1.9,.62,4.3,paint,0,.62,0,g);if(kind==='vip'){box(1.92,.06,4.32,std(0xd8b048,.3,.8),0,.94,0,g);}if(kind==='police')box(1.92,.32,4.32,std(0x111111,.3,.5),0,.46,0,g);
+  if(kind!=='sports'){box(1.66,.56,2.1,glass,0,1.2,-.25,g);box(1.64,.08,2.0,paint,0,1.5,-.25,g);box(1.8,.1,1.2,paint,0,.98,1.5,g);}
   for(const [x,z] of [[.92,1.35],[-.92,1.35],[.92,-1.35],[-.92,-1.35]])box(.3,.62,.62,0x0e0e0e,x,.31,z,g);
   for(const x of [.6,-.6]){box(.42,.16,.05,bas(0xfff2c0),x,.7,2.16,g);box(.42,.14,.05,bas(0xff2020),x,.72,-2.16,g);}
   if(kind==='police'){box(.6,.16,.36,polR,-.35,1.62,-.25,g);box(.6,.16,.36,polB,.35,1.62,-.25,g);}
@@ -825,7 +844,7 @@ const goalPil=new THREE.Mesh(pillarG,linMat(new THREE.MeshBasicMaterial({color:0
 
 // ================= STATE =================
 let mode='loading',tScale=1,hitstop=0,shake=0,camYaw=0,camLookT=0,mission=null,runToken=0;
-const S={t:0,money:0,ch:0,subs:{},maxhp:100,atk:1,wanted:0,lostT:0,seen:false,crimeCd:0,room:null,goal:null,goalLabel:'',boss:null,cine:null,nextEnc:60,target:null,targetT:0,news:'天神ビジョン　今夜の博多は晴れ。中洲の屋台は通常営業中。夜のディズニーランド・BAR YAHMANは中洲2丁目で深夜営業中！',flicker:0};
+const S={own:{},eq:{outfit:null,weapon:null,car:null,acc:[]},t:0,money:0,ch:0,subs:{},maxhp:100,atk:1,wanted:0,lostT:0,seen:false,crimeCd:0,room:null,goal:null,goalLabel:'',boss:null,cine:null,nextEnc:60,target:null,targetT:0,news:'天神ビジョン　今夜の博多は晴れ。中洲の屋台は通常営業中。夜のディズニーランド・BAR YAHMANは中洲2丁目で深夜営業中！',flicker:0};
 function makePlayer(){P=spawnActor('player',POS.start.x,POS.start.z,{look:'player',hp:100});P.a=Math.PI/2;P.heat=0;P.act=null;P.queue=null;P.combo=0;P.comboT=0;P.dodge=0;P.inv=0;P.downT=0;P.car=null;P.dcd=0;P.regenT=0;}
 
 // ================= UI =================
@@ -967,10 +986,10 @@ function startAtk(k){const f=nearestFoe(4.2);if(f)P.a=Math.atan2(f.x-P.x,f.z-P.z
   if(k==='p'){P.combo=P.comboT>0?(P.combo%3)+1:1;P.act={k:'p',n:P.combo,t:0,dur:P.combo===3?.42:.27,hitAt:P.combo===3?.17:.1,hit:false};P.comboT=.75;}
   else P.act={k:'k',n:0,t:0,dur:.5,hitAt:.22,hit:false};SFX.whiff();}
 function btnD(){if(P.car||P.downT>0||P.dcd>0)return;const mv=getMove();P.act=null;P.dodge=.32;P.inv=.4;P.dcd=.55;P.da=mv.m>.2?Math.atan2(mv.x,mv.z):P.a+Math.PI;}
-function doHit(act){const range=act.k==='k'?2.3:1.95,cone=act.k==='k'?1.0:.9;let dmg=(act.k==='k'?17:act.n===3?15:9)*S.atk;const kb=act.k==='k'?9:act.n===3?7:2.2;let any=false;
+function doHit(act){const range=act.k==='k'?2.3:1.95,cone=act.k==='k'?1.0:.9;let dmg=(act.k==='k'?17:act.n===3?15:9)*atkNow();const kb=act.k==='k'?9:act.n===3?7:2.2;let any=false;
   for(const e of actors.slice()){if(e===P||e.down||e.npc||e.dead)continue;const d=dist(e,P);if(d>range+e.r)continue;const ang=Math.atan2(e.x-P.x,e.z-P.z);if(Math.abs(angDiff(P.a,ang))>cone)continue;
     hurtActor(e,dmg,ang,kb,act.k==='k');any=true;}
-  if(any){P.heat=Math.min(100,P.heat+(act.k==='k'?11:7));hitstop=.055;shake=Math.max(shake,.18);(act.k==='k'?SFX.kick:SFX.hit)();}}
+  if(any){P.heat=Math.min(100,P.heat+(act.k==='k'?11:7)*heatNow());hitstop=.055;shake=Math.max(shake,.18);(act.k==='k'?SFX.kick:SFX.hit)();}}
 function hurtActor(e,dmg,ang,kb,isKick){
   if(e.guard&&!isKick&&e.hitT<=0&&!e.down&&Math.abs(angDiff(e.a,Math.atan2(P.x-e.x,P.z-e.z)))<.9&&Math.random()<e.guard){dmg*=.15;kb*=.3;burst(e.x,1.4,e.z,6,0x6ab8ff,4,.5,6,.25);SFX.block();if(Math.random()<.3)toast('ガードされた！ 蹴りで崩せ',1.4);}
   else burst(e.x,1.4,e.z,9,0xfff0a0,5,.55,8,.3);
@@ -1001,7 +1020,7 @@ function btnH(){if(P.car||P.heat<100||P.downT>0||S.cine)return;let t=nearestFoe(
   P.heat=0;P.act=null;P.a=ang;S.cine={t:0,tgt:t,name,kind,done:false};tScale=.3;P.spin=.5;P.inv=1.6;
   $('heatname').textContent=name;$('heatname').style.display='block';SFX.whiff();}
 function updCine(rdt){const c=S.cine;if(!c)return;c.t+=rdt;const t=c.tgt;
-  if(!c.done&&c.t>.55){c.done=true;tScale=.45;const ang=Math.atan2(t.x-P.x,t.z-P.z);let dmg=t.boss?75:t.down?40:60;dmg*=S.atk;SFX.heat();shake=.6;hitstop=.12;burst(t.x,1.2,t.z,26,0x9ff0ff,8,.8,6,.5);burst(t.x,1.2,t.z,14,0xffffff,5,.5,4,.35);
+  if(!c.done&&c.t>.55){c.done=true;tScale=.45;const ang=Math.atan2(t.x-P.x,t.z-P.z);let dmg=t.boss?75:t.down?40:60;dmg*=atkNow();SFX.heat();shake=.6;hitstop=.12;burst(t.x,1.2,t.z,26,0x9ff0ff,8,.8,6,.5);burst(t.x,1.2,t.z,14,0xffffff,5,.5,4,.35);
     if(c.kind==='river'){t.hp=0;t.down=true;t.dead=true;t.flying={t:0,sx:t.x,sz:t.z,ex:t.x+Math.sin(ang)*7,ez:t.z+Math.cos(ang)*7};if(t.hostile){S.money+=t.money;toast(`${fmt(t.money)} 手に入れた`,1.4);}if(t===S.boss)showBoss(null);post(pick(['人が那珂川に投げ込まれた！？','今、中洲で人が川に飛んだ','那珂川にドボンって音した']));}
     else{t.hitT=.5;t.hp-=dmg;t.kx=Math.sin(ang)*12;t.kz=Math.cos(ang)*12;if(t.hp<=0)knockOut(t,ang);else if(t===S.boss){t.downT=1.6;}S.target=t;S.targetT=3;}}
   if(c.t>1.15){S.cine=null;tScale=1;$('heatname').style.display='none';}}
@@ -1081,7 +1100,7 @@ function drivePlayer(c,dt){const mv=getMove();let thr=0,steer=0;
   else if(mv.m>.2){const da=Math.atan2(mv.x,mv.z);const diff=angDiff(c.a,da);if(Math.abs(diff)<2.1){thr=mv.m;steer=clamp(diff*2.2,-1,1);}else{thr=-mv.m*.7;steer=clamp(-Math.sign(diff),-1,1);}}
   c.steer=steer;const brake=brakeHeld||keys.Space;
   if(thr>0)c.v+=thr*(c.v<0?26:15)*dt;else if(thr<0)c.v+=thr*(c.v>0?28:10)*dt;
-  c.v*=Math.exp(-(brake?3.2:.35)*dt);c.v=clamp(c.v,-9,30);
+  c.v*=Math.exp(-(brake?3.2:.35)*dt);c.v=clamp(c.v,-9,c.vmax||30);
   c.a+=steer*clamp(c.v/5,-1,1)*1.9*dt*(brake&&Math.abs(c.v)>8?1.5:1);
   P.x=c.x;P.z=c.z;$('spd').textContent=Math.round(Math.abs(c.v)*3.6)+' km/h';}
 function enterCar(c){if(c.dead)return;if(c.driver==='npc'){const x=c.x+Math.cos(c.a)*2.2,z=c.z-Math.sin(c.a)*2.2;const d=spawnActor('ped',walkable(x,z)?x:P.x,walkable(x,z)?z:P.z,{look:c.police?'cop':pick(PEDLOOKS)});d.flee=8;
@@ -1129,17 +1148,98 @@ function updWanted(dt){S.crimeCd-=dt;if(S.wanted<=0){S.seen=false;return;}let se
 // ================= MARKERS / SHOPS =================
 const MAINLOC=[POS.snack,POS.snack,POS.snack,POS.snack,POS.yahman,POS.yatai,POS.bridge];
 function refreshMarkers(){if(!markers.length){makeMarker('main',POS.snack,'main');makeMarker('sub',POS.sSnatch,'snatch','話す');makeMarker('sub',POS.sDrunk,'drunk','話す');makeMarker('sub',POS.sFight,'fight','話す');
-    makeMarker('shop',{x:-3.4,z:12+2*9.2+1.6},'yatai','屋台');makeMarker('shop',{x:-3.4,z:12+4*9.2+1.6},'yatai','屋台');makeMarker('shop',POS.shopN,'conv','買う');makeMarker('shop',{x:POS.yahman.x+2.2,z:POS.yahman.z},'yahman','飲む');makeMarker('shop',POS.shopT,'conv','買う');}
-  for(const m of markers){let on=!mission&&!S.room;if(m.id==='main'){on=on&&S.ch<7;if(S.ch<7){m.p=MAINLOC[S.ch];m.label=S.ch===6?'向かう':'話す';}}else if(m.id==='yahman')on=on&&S.ch>=3&&S.ch!==4;else if(m.k==='sub')on=on&&S.ch>=1&&(m.id==='fight'||!S.subs[m.id]);
+    makeMarker('shop',{x:-3.4,z:12+2*9.2+1.6},'yatai','屋台');makeMarker('shop',{x:-3.4,z:12+4*9.2+1.6},'yatai','屋台');makeMarker('shop',POS.shopN,'conv','買う');makeMarker('shop',{x:POS.yahman.x+2.2,z:POS.yahman.z},'yahman','飲む');makeMarker('shop',POS.shopT,'conv','買う');makeMarker('shop',{x:POS.snack.x,z:POS.snack.z+3},'snack','飲む');}
+  for(const m of markers){let on=!mission&&!S.room;if(m.id==='main'){on=on&&S.ch<7;if(S.ch<7){m.p=MAINLOC[S.ch];m.label=S.ch===6?'向かう':'話す';}}else if(m.id==='yahman')on=on&&S.ch>=3&&S.ch!==4;else if(m.id==='snack')on=on&&S.ch>=1;else if(m.k==='sub')on=on&&S.ch>=1&&(m.id==='fight'||!S.subs[m.id]);
     m.on=on;m.sp.visible=on;m.pil.visible=on;m.pil.position.set(m.p.x,20,m.p.z);}}
-const SHOPS={yahman:{h:'BAR YAHMAN',sub:'中洲の「夜のディズニーランド」。お酒は20歳になってから。',items:[['セット（60分）',4000,'体力・ヒートゲージ 全回復',()=>{if(P.hp>=S.maxhp&&P.heat>=100)return false;P.hp=S.maxhp;P.heat=100;}],['シャンパン',30000,'TAIKI＆おにょのシャンパンコール！ 最大体力 +10（上限200）',()=>{if(S.maxhp>=200)return false;S.maxhp+=10;P.hp=S.maxhp;setTimeout(()=>toast('TAIKI＆おにょ「シャンパンいただきましたー！ ゴーゴーレッツゴー！」',3),300);}]]},yatai:{h:'中洲の屋台',sub:'博多の夜はやっぱりここ。',items:[['おでん',400,'体力 +25',()=>heal(25)],['ラーメン',600,'体力 +40',()=>heal(40)],['焼きラーメン',900,'体力 +60',()=>heal(60)],['もつ鍋',1800,'体力 全回復',()=>heal(999)]]},
+const SHOPS={yahman:{h:'BAR YAHMAN',sub:'中洲の「夜のディズニーランド」。お酒は20歳になってから。ゲーム内の飲食はフィクションです。',prem:['d_yset','d_ychamp','d_ytower']},
+  snack:{h:'スナック 月光',sub:'千鶴ママの店。お酒は20歳になってから。ゲーム内の飲食はフィクションです。',prem:['d_mizu','d_shochu','d_mama']},
+  yatai:{h:'中洲の屋台',sub:'博多の夜はやっぱりここ。',items:[['おでん',400,'体力 +25',()=>heal(25)],['ラーメン',600,'体力 +40',()=>heal(40)],['焼きラーメン',900,'体力 +60',()=>heal(60)],['もつ鍋',1800,'体力 全回復',()=>heal(999)]]},
   conv:{h:'ヨカマート',sub:'24時間営業。だいたい何でもある。',items:[['栄養ドリンク',500,'ヒートゲージ +50',()=>{P.heat=Math.min(100,P.heat+50);}],['包帯',1200,'体力 +50',()=>heal(50)],['プロテイン',8000,'最大体力 +20（上限200）',()=>{if(S.maxhp>=200)return false;S.maxhp+=20;P.hp+=20;}],['メリケンサック',30000,'攻撃力 +30%（1回だけ）',()=>{if(S.atk>1)return false;S.atk=1.3;}]]}};
 function heal(n){if(P.hp>=S.maxhp)return false;P.hp=Math.min(S.maxhp,P.hp+n);}
 function openShop(k){const s=SHOPS[k];mode='shop';$('shoph').textContent=s.h;$('shopsub').textContent=s.sub;const box=$('shopitems');box.innerHTML='';
+  if(s.prem){premList(box,s.prem);$('shop').style.display='flex';return;}
   for(const [n,p,d,fn] of s.items){const b=document.createElement('button');b.className='item';const l=document.createElement('div');l.textContent=n;const sm=document.createElement('small');sm.textContent=d;l.append(sm);const pr=document.createElement('span');pr.textContent=fmt(p);b.append(l,pr);
     b.onclick=()=>{if(S.money<p){toast('金が足りない',1.4);return;}if(fn()===false){toast('今は必要ない',1.4);return;}S.money-=p;SFX.coin();toast(n+' を買った',1.4);updHUD();};box.append(b);}
   $('shop').style.display='flex';}
 $('bShopClose').onclick=()=>{$('shop').style.display='none';mode='play';};
+// ================= PREMIUM（課金アイテム） =================
+// 価格は日本円・税込（仮）。ゲーム内通貨は売らず、アイテムを直接売る（資金決済法の前払式支払手段にしないため）。
+// cat: outfit 服装 / weapon 武器（拳の装備。素手の喧嘩のまま） / car 車 / acc アクセサリー … 一度買えばずっと使える
+//      drink 酒代 … 店で飲むたびに買う（消費型）
+const PREM={
+  o_white:{cat:'outfit',n:'白スーツ「中洲の帝王」',d:'白のスリーピースに黒シャツ、金のネクタイ。',yen:250,pal:{j:0xf0f0ee,v:0xe2e2de,s:0x111111,t:0xd8b048,p:0xf0f0ee,f:0xf4f4f4}},
+  o_wine:{cat:'outfit',n:'ワインレッドのスーツ',d:'中洲のネオンに映える深い赤。',yen:250,pal:{j:0x6a0a1e,v:0x4a0614,s:0x111111,t:0x111111,p:0x6a0a1e,f:0x0a0a0a}},
+  o_leather:{cat:'outfit',n:'黒の革ジャン',d:'白Tシャツにデニム。夜の屋台通りに。',yen:250,pal:{j:0x0c0c0e,v:0x0c0c0e,s:0xe8e8e8,t:0xe8e8e8,p:0x1e2e50,f:0x0a0a0a}},
+  o_gold:{cat:'outfit',n:'成金ゴールドのセットアップ',d:'目立ちすぎて、もう隠れられない。',yen:480,pal:{j:0xc89818,v:0xa87810,s:0x111111,t:0x111111,p:0xc89818,f:0xf0f0f0}},
+  w_bandage:{cat:'weapon',n:'龍のバンテージ',d:'拳に巻くさらし。攻撃力 +15%',yen:120,atk:1.15,col:0xf2f0e8},
+  w_glove:{cat:'weapon',n:'鉄甲グローブ',d:'攻撃力 +25%、ヒートゲージが1.5倍たまる',yen:370,atk:1.25,heat:1.5,col:0x1a1a1e},
+  w_knuckle:{cat:'weapon',n:'金のメリケンサック',d:'攻撃力 +40%',yen:480,atk:1.4,col:0xe8b840},
+  c_sports:{cat:'car',n:'スポーツカー「博多レッド」',d:'最高速度が速い（約137km/h）。ポーズ画面からいつでも呼べる。',yen:480,kind:'sports',vmax:38,hp:150},
+  c_vip:{cat:'car',n:'黒塗りのVIPセダン',d:'頑丈（耐久2倍）。ポーズ画面からいつでも呼べる。',yen:480,kind:'vip',vmax:31,hp:320},
+  a_sun:{cat:'acc',n:'サングラス',d:'夜でも外さない。',yen:120},
+  a_chain:{cat:'acc',n:'金のネックレス',d:'太めの喜平チェーン。',yen:120},
+  a_watch:{cat:'acc',n:'金の腕時計',d:'左手首に。',yen:120},
+  d_yset:{cat:'drink',n:'セット（60分）',d:'体力・ヒートゲージ 全回復',yen:120,fx:()=>{P.hp=S.maxhp;P.heat=100;}},
+  d_ychamp:{cat:'drink',n:'シャンパン',d:'TAIKI＆おにょのシャンパンコール！ 全回復＋最大体力 +10（上限200）',yen:370,fx:()=>{S.maxhp=Math.min(200,S.maxhp+10);P.hp=S.maxhp;P.heat=100;setTimeout(()=>toast('TAIKI＆おにょ「シャンパンいただきましたー！ ゴーゴーレッツゴー！」',3),300);}},
+  d_ytower:{cat:'drink',n:'シャンパンタワー',d:'店じゅうでコール！（動画）全回復＋最大体力 +30（上限200）',yen:1220,fx:async()=>{S.maxhp=Math.min(200,S.maxhp+30);P.hp=S.maxhp;P.heat=100;$('shop').style.display='none';await playVideo('v3');mode='play';toast('YAHMAN「シャンパンタワー、いただきましたー！！」',3);}},
+  d_mizu:{cat:'drink',n:'水割り',d:'体力 +50・ヒートゲージ +30',yen:120,fx:()=>{P.hp=Math.min(S.maxhp,P.hp+50);P.heat=Math.min(100,P.heat+30);}},
+  d_shochu:{cat:'drink',n:'焼酎ボトル',d:'体力・ヒートゲージ 全回復',yen:250,fx:()=>{P.hp=S.maxhp;P.heat=100;}},
+  d_mama:{cat:'drink',n:'ママにも一杯',d:'千鶴ママと乾杯。全回復＋最大体力 +5（上限200）',yen:250,fx:()=>{S.maxhp=Math.min(200,S.maxhp+5);P.hp=S.maxhp;P.heat=100;setTimeout(()=>toast(pick(['千鶴ママ「あら、ありがと。テツも無理せんとよ」','千鶴ママ「乾杯！ 中洲の夜はこれからたい」','千鶴ママ「ほんと、変わらんね。あんたは」']),3),300);}},
+};
+const PCAT=[['outfit','服装'],['weapon','武器'],['car','車'],['acc','アクセサリー']];
+const yenTx=n=>n.toLocaleString('ja-JP')+'円';
+// 決済：本番の決済（Stripeなど）は未接続。?pay=test か localhost のときだけテスト購入で動く。それ以外は「準備中」。
+const Pay={mode:(/[?&]pay=test(&|$)/.test(location.search)||/^(localhost|127\.0\.0\.1)$/.test(location.hostname))?'test':'off',
+  async buy(id){const it=PREM[id];if(this.mode==='off'){toast('プレミアムアイテムは準備中です',2);return false;}
+    const ok=await premConfirm(it);if(!ok)return false;
+    if(this.mode==='test')return true;return false;}};
+let pcRes=null;
+function premConfirm(it){return new Promise(res=>{pcRes=res;$('pch').textContent=it.n;$('pcd').textContent=it.d;$('pcp').textContent=yenTx(it.yen)+'（税込）';
+  $('pctest').style.display=Pay.mode==='test'?'block':'none';
+  $('pcokt').textContent=it.cat==='drink'?'20歳以上です（お酒のアイテムは20歳以上の方のみ購入できます）':'18歳以上です。または、保護者の同意を得ています';
+  $('pcok').checked=false;$('bPcBuy').disabled=true;$('pconf').style.display='flex';});}
+$('pcok').onchange=()=>{$('bPcBuy').disabled=!$('pcok').checked;};
+const pcEnd=v=>{$('pconf').style.display='none';const r=pcRes;pcRes=null;if(r)r(v);};
+$('bPcBuy').onclick=()=>pcEnd(true);$('bPcNo').onclick=()=>pcEnd(false);
+function premGrant(id){const it=PREM[id];if(!it)return;
+  if(it.cat==='drink'){SFX.coin();toast(it.n+' をいただいた',1.6);const r=it.fx&&it.fx();updHUD();save();return r;}
+  S.own[id]=1;SFX.coin();toast(it.n+' を手に入れた',2);equip(id,true);}
+function equip(id,on){const it=PREM[id];if(!it||!S.own[id])return;const c=it.cat;
+  if(c==='acc'){const a=S.eq.acc;const i=a.indexOf(id);if(on===undefined)on=i<0;if(on&&i<0)a.push(id);if(!on&&i>=0)a.splice(i,1);}
+  else{if(on===undefined)on=S.eq[c]!==id;S.eq[c]=on?id:null;}
+  if(c!=='car')restylePlayer();else if(!on&&myCar){removeCar(myCar);myCar=null;}
+  save();}
+function outfitPal(){try{const o=S.eq.outfit&&PREM[S.eq.outfit];return o?o.pal:{};}catch(e){return {};}}
+function atkNow(){const w=S.eq.weapon&&PREM[S.eq.weapon];return S.atk*(w?w.atk:1);}
+function heatNow(){const w=S.eq.weapon&&PREM[S.eq.weapon];return w&&w.heat?w.heat:1;}
+function dressPlayer(model){let eq;try{eq=S.eq;}catch(e){return;}if(!eq)return;
+  const add=(bn,geo,mat,x,y,z,rx,ry,rz)=>{const b=model.getObjectByName(bn);if(!b)return;const h=HS(b);const m=new THREE.Mesh(geo,mat);m.castShadow=true;m.position.set(x*h,y*h,z*h);m.rotation.set(rx||0,ry||0,rz||0);m.scale.setScalar(h);b.add(m);};
+  const gold=std(0xe8b840,.25,.9,.9),dark=std(0x08080a,.15,.6,1);
+  const w=eq.weapon&&PREM[eq.weapon];if(w){const m=std(w.col,w.col===0xe8b840?.25:.7,w.col===0xe8b840?.9:.1,1);for(const hb of ['RightHand','LeftHand'])add(hb,new THREE.BoxGeometry(.1,.07,.075),m,0,.07,.0);}
+  for(const a of eq.acc||[]){
+    if(a==='a_sun'){for(const sx of [-1,1])add('Head',new THREE.BoxGeometry(.07,.042,.012),dark,sx*.036,.074,.1);add('Head',new THREE.BoxGeometry(.16,.01,.01),dark,0,.088,.1);}
+    if(a==='a_chain')add('Neck',new THREE.TorusGeometry(.082,.009,6,24),gold,0,-.01,.018,Math.PI/2-.35,0,0);
+    if(a==='a_watch')add('LeftHand',new THREE.CylinderGeometry(.04,.04,.03,14),gold,0,-.005,0);}}
+function restylePlayer(){if(!P||!RIG.ok)return;const og=P.g;const ng=makeRigged('player');ng.position.copy(og.position);ng.rotation.copy(og.rotation);ng.visible=og.visible;scene.remove(og);scene.add(ng);P.g=ng;}
+let myCar=null;
+function callMyCar(){const it=S.eq.car&&PREM[S.eq.car];if(!it)return false;if(P.car||S.room||mission){toast('今は呼べない',1.6);return false;}
+  if(myCar)removeCar(myCar);let pt=null;for(const q of ring(P,8,4,7))if(walkable(q.x,q.z)){pt=q;break;}if(!pt)pt={x:P.x+3,z:P.z};
+  const c=spawnCar(pt.x,pt.z,P.a,it.kind,{parked:true});c.vmax=it.vmax;c.hp=it.hp;c.keep=true;c.mine=true;myCar=c;toast(it.n+' が来た（近づいて「乗る」）',2.4);return c;}
+function premRow(box,id,onBuy){const it=PREM[id];const b=document.createElement('button');b.className='item';const own=it.cat!=='drink'&&S.own[id];
+  const isEq=own&&(it.cat==='acc'?S.eq.acc.includes(id):S.eq[it.cat]===id);if(isEq)b.classList.add('eq');
+  const l=document.createElement('div');l.textContent=it.n;const sm=document.createElement('small');sm.textContent=it.d;l.append(sm);
+  const r=document.createElement('span');r.className=own?'own':'yen';r.textContent=own?(isEq?'✓ 装備中':'装備する'):(Pay.mode==='off'?'準備中':yenTx(it.yen));b.append(l,r);
+  b.onclick=async()=>{if(own){equip(id);onBuy();return;}if(await Pay.buy(id)){await premGrant(id);onBuy();}};box.append(b);}
+function premList(box,ids){box.innerHTML='';const s=document.createElement('div');s.className='pnote';s.textContent=Pay.mode==='test'?'💎 テスト購入モード（実際には請求されません）':'💎 店の飲食は1杯ごとのお支払いです（税込）';box.append(s);
+  for(const id of ids)premRow(box,id,()=>{if($('shop').style.display!=='none')premList(box,ids);});}
+let premCat='outfit';
+function openPrem(cat){if(cat)premCat=cat;$('premsub').textContent=Pay.mode==='test'?'テスト購入モード：実際には請求されません':Pay.mode==='off'?'準備中です。近日公開予定。':'';
+  const tb=$('premtabs');tb.innerHTML='';for(const [k,n] of PCAT){const t=document.createElement('button');t.className='ptab'+(k===premCat?' on':'');t.textContent=n;t.onclick=()=>openPrem(k);tb.append(t);}
+  const box=$('premitems');box.innerHTML='';for(const id in PREM)if(PREM[id].cat===premCat)premRow(box,id,()=>openPrem());
+  if(premCat==='car'&&S.eq.car){const b=document.createElement('button');b.className='mbtn';b.textContent='🚗 マイカーを呼ぶ';b.onclick=()=>{if(callMyCar()){$('prem').style.display='none';closePause();}};box.append(b);}
+  $('prem').style.display='flex';}
+$('bPremClose').onclick=()=>{$('prem').style.display='none';};
+
 
 // ================= CONTEXT BUTTON =================
 let ctxAct=null;
@@ -1289,19 +1389,19 @@ function cleanupMission(){runToken++;mission=null;waiters.length=0;for(const a o
 $('bRevive').onclick=()=>{$('dead').style.display='none';cleanupMission();if(P.car)exitCar(true);S.room=null;scene.fog.near=40;scene.fog.far=200;S.wanted=0;
   for(const c of cars.slice())if(c.police)removeCar(c);S.money=Math.floor(S.money*.9);P.hp=S.maxhp;P.down=false;P.downT=0;P.x=POS.hosp.x;P.z=POS.hosp.z;P.a=Math.PI/2;camYaw=P.a;mode='play';refreshMarkers();save();
   post('博多中央病院から、ガラの悪い人が退院していった','@天神OL日記');};
-function save(){try{localStorage.setItem('nakasu_night_v1',JSON.stringify({v:2,money:S.money,ch:S.ch,subs:S.subs,maxhp:S.maxhp,atk:S.atk}));}catch(e){}}
+function save(){try{localStorage.setItem('nakasu_night_v1',JSON.stringify({v:2,money:S.money,ch:S.ch,subs:S.subs,maxhp:S.maxhp,atk:S.atk,own:S.own,eq:S.eq}));}catch(e){}}
 function load(){try{return JSON.parse(localStorage.getItem('nakasu_night_v1')||'null');}catch(e){return null;}}
 
 // ================= MENUS =================
-function openPause(){mode='pause';const t=$('objt').textContent,x=$('objx').textContent;$('pobj').innerHTML='';const b=document.createElement('b');b.textContent=t||'現在の目的';$('pobj').append(b,document.createElement('br'),x||'—');$('pause').style.display='flex';}
+function openPause(){mode='pause';$('bMyCar').style.display=S.eq.car&&!P.car&&!S.room&&!mission?'block':'none';const t=$('objt').textContent,x=$('objx').textContent;$('pobj').innerHTML='';const b=document.createElement('b');b.textContent=t||'現在の目的';$('pobj').append(b,document.createElement('br'),x||'—');$('pause').style.display='flex';}
 function closePause(){$('pause').style.display='none';mode='play';}
-$('bPause').onclick=()=>{if(mode==='play')openPause();};$('bResume').onclick=closePause;$('bSave').onclick=()=>{save();toast('セーブした',1.4);};
+$('bPause').onclick=()=>{if(mode==='play')openPause();};$('bResume').onclick=closePause;$('bSave').onclick=()=>{save();toast('セーブした',1.4);};$('bPrem').onclick=()=>openPrem();$('bMyCar').onclick=()=>{if(callMyCar())closePause();};
 $('bQ').onclick=()=>{Q=(Q+2)%3;applyQ();toast('画質：'+QN[Q]+(Q===0?'（影・光のにじみ・雨なし）':''),1.6);};
 const openSpon=()=>{$('spon').style.display='flex';};$('bSpon').onclick=openSpon;$('bSpon2').onclick=openSpon;$('bSponClose').onclick=()=>{$('spon').style.display='none';};
 $('bTitle').onclick=()=>{save();location.reload();};
 $('bEndOk').onclick=()=>{$('ending').style.display='none';cutHide();(window._yk||[]).forEach(removeActor);window._yk=null;mode='play';refreshMarkers();toast('自由行動：ストリートファイトや街のチンピラで腕を磨け',3);;if(S.room)exitRoom();};
 function begin(data){initAudio();document.body.classList.remove('ttl');$('title').style.display='none';mode='play';
-  if(data){S.money=data.money||0;S.ch=data.v===2?(data.ch||0):({0:0,1:1,2:2,3:4,4:6,5:7}[data.ch||0]??0);S.subs=data.subs||{};S.maxhp=data.maxhp||100;S.atk=data.atk||1;P.hp=S.maxhp;}
+  if(data){S.money=data.money||0;S.ch=data.v===2?(data.ch||0):({0:0,1:1,2:2,3:4,4:6,5:7}[data.ch||0]??0);S.subs=data.subs||{};S.maxhp=data.maxhp||100;S.atk=data.atk||1;S.own=data.own||{};S.eq=Object.assign({outfit:null,weapon:null,car:null,acc:[]},data.eq||{});P.hp=S.maxhp;restylePlayer();}
   P.x=POS.start.x;P.z=POS.start.z;P.a=Math.PI/2;camYaw=P.a;refreshMarkers();S.nextEnc=S.t+50;
   if(!data){playVideo('v0').then(()=>still('c0',[['','五年。塀の中で数えた年月だ。'],['','天神の街は、記憶よりずっと眩しかった。'],['鉄二','……変わったな、博多も。'],['','那珂川の向こうで、中洲のネオンが呼んでいる。']])).then(()=>{card('序章 帰ってきた男','—— 天神・中洲 ——');S.ch=0;save();setTimeout(()=>toast('画面の黄色い◆と、ミニマップの黄色い線をたどれば目的地に着く',4.5),3200);});}
   else{card('おかえり',S.ch>=7?'自由行動':'第'+(S.ch+1)+'章から');}}
@@ -1413,7 +1513,7 @@ polR=new THREE.MeshBasicMaterial({color:0xff2020});polB=new THREE.MeshBasicMater
   P.g.visible=true;mode='title';$('loading').style.display='none';$('bNew').disabled=false;if(load())$('bCont').style.display='block';
   if(new URLSearchParams(location.search).has('autostart'))begin(null);})();
 requestAnimationFrame(frame);
-window.__G={get Q(){return Q},PEDN,get mission(){return mission},dist,spawn:spawnActor,rm:removeActor,RIG,camYaw:()=>camYaw,setYaw:v=>camYaw=v,hostiles,knockOut,useMarker,markers,enterCar,POS,S,get P(){return P},actors,cars,BLD,MAINS,runMission,get mode(){return mode},advance};
+window.__G={PREM,Pay,premGrant,equip,callMyCar,openPrem,openShop,get Q(){return Q},PEDN,get mission(){return mission},dist,spawn:spawnActor,rm:removeActor,RIG,camYaw:()=>camYaw,setYaw:v=>camYaw=v,hostiles,knockOut,useMarker,markers,enterCar,POS,S,get P(){return P},actors,cars,BLD,MAINS,runMission,get mode(){return mode},advance};
 }
 </script>
 </body></html>

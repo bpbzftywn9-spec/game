@@ -24,6 +24,7 @@ assets-source/      人物モデルの元GLBと、素材の出どころ（Higgsf
 docs/
   unity-appstore-plan.md  Unity版・App Store公開までの指示書（ストーリー全文、仕様、フェーズ、審査の注意）
   cloudflare-pages.md     Web版を Cloudflare Pages で公開する手順
+  premium.md              課金アイテムの仕様（商品・価格（仮）・決済の状態）
 wrangler.toml       Cloudflare Pages の設定（公開するのは web/ だけ）
 ```
 
@@ -60,7 +61,8 @@ python tests/full_playthrough.py # 別ターミナルで serve を起動した�
 | `MAINS`, `SUBS` | ストーリー全7章とサブストーリー3本（セリフもここ） |
 | `CHT`, `LOCN`, `updObjective`, `updWP`, `navPath`, `updRoute` | ミッション表示（左上の目的枠、画面上の黄色い◆と距離、ミニマップの道順） |
 | `SHOPS` | 屋台・コンビニ・BAR YAHMAN の商品と価格 |
-| `save`, `load` | セーブ（localStorage `nakasu_night_v1`、`v:2`） |
+| `PREM`, `Pay`, `openPrem`, `premGrant`, `equip`, `callMyCar`, `dressPlayer` | 課金アイテム（服装・武器・車・アクセサリー・酒代）。仕様は `docs/premium.md` |
+| `save`, `load` | セーブ（localStorage `nakasu_night_v1`、`v:2`。購入品は `own`、装備は `eq`） |
 
 ## 5. 守ること
 
