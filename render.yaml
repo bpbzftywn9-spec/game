@@ -28,7 +28,7 @@ services:
       - key: NAKASU_URL               # 仁義 中洲ナイトのURL（Cloudflare Pages。例: https://nakasu-night.pages.dev/）
         sync: false
       - key: NAKASU_MONTHLY_LIMIT_JPY # 中洲ナイトの月間購入上限（円）
-        value: "50000"
+        value: "100000"
       - key: STRIPE_SECRET_KEY        # 最初は sk_test_ で始まるテストキー
         sync: false
       - key: STRIPE_WEBHOOK_SECRET    # デプロイ後に Stripe で Webhook を作ってから入れる

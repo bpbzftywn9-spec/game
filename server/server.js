@@ -45,7 +45,7 @@ const originOf = u => { try { return new URL(u).origin; } catch { return ''; } }
 const GAMES = {
   jingi: { name: '仁義サンシャイン', products: PRODUCTS_JINGI, url: CFG.publicUrl + '/', monthlyLimit: CFG.monthlyLimit },
   nakasu: { name: '仁義 中洲ナイト', products: PRODUCTS_NAKASU, url: process.env.NAKASU_URL || '',
-    monthlyLimit: Number(process.env.NAKASU_MONTHLY_LIMIT_JPY || 50000) },
+    monthlyLimit: Number(process.env.NAKASU_MONTHLY_LIMIT_JPY || 100000) },
 };
 const PRODUCTS = Object.values(GAMES).flatMap(g => g.products);
 if (new Set(PRODUCTS.map(p => p.id)).size !== PRODUCTS.length) throw new Error('product ids must be unique across games');
