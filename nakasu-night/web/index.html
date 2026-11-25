@@ -4,7 +4,7 @@
 <title>仁義 中洲ナイト</title>
 <meta name="theme-color" content="#07081a">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Noto+Sans+JP:wght@700;900&family=Noto+Serif+JP:wght@700&display=swap" rel="stylesheet">
 <style>
 /* VOICE: 博多の夜の治安を裏から守るアクション。荒っぽく、でも人情がある。
    IDEA: 那珂川に映る中洲のネオン看板そのものがUIになる。
@@ -309,7 +309,8 @@ function makeEnv(){const t=canvasTex(1024,512,(g,w,h)=>{let gr=g.createLinearGra
     gr=g.createLinearGradient(0,h/2,0,h);gr.addColorStop(0,'#141018');gr.addColorStop(1,'#050508');g.fillStyle=gr;g.fillRect(0,h/2,w,h/2);
     for(let i=0;i<70;i++){const x=rand(0,w),bw=rand(20,70),bh=rand(30,150);g.fillStyle='#0b0a12';g.fillRect(x,h/2-bh,bw,bh);
       for(let k=0;k<14;k++){g.fillStyle=pick(['#ffcf80','#ffe8c0','#9fc8ff','#262433','#262433']);g.fillRect(x+rand(2,bw-6),h/2-rand(6,bh),3,3);}}
-    for(let i=0;i<90;i++){const c=pick(NEON);g.shadowColor=c;g.shadowBlur=18;g.fillStyle=c;const x=rand(0,w),y=rand(h*.3,h*.52);if(Math.random()<.5)g.fillRect(x,y,rand(4,8),rand(16,40));else g.fillRect(x,y,rand(18,50),rand(5,10));}
+    // 街の明かり（反射に映る）：小さく、ぼかした看板と窓の明かり
+    for(let i=0;i<80;i++){const c=Math.random()<.55?pick(NEON):pick(['#fff0d8','#ffe0b0','#e8f0ff']);g.shadowColor=c;g.shadowBlur=8;g.fillStyle=c;g.globalAlpha=rand(.45,.9);const x=rand(0,w),y=rand(h*.38,h*.5);if(Math.random()<.6)g.fillRect(x,y,rand(2,4),rand(5,14));else g.fillRect(x,y,rand(5,12),rand(2,4));}g.globalAlpha=1;
     g.shadowBlur=0;for(let i=0;i<60;i++){const c=pick(NEON);g.globalAlpha=.35;g.fillStyle=c;g.fillRect(rand(0,w),h/2+rand(0,40),rand(3,8),rand(30,90));}g.globalAlpha=1;});
   t.mapping=THREE.EquirectangularReflectionMapping;const pm=new THREE.PMREMGenerator(R);scene.environment=pm.fromEquirectangular(t).texture;pm.dispose();
   const sky=canvasTex(2048,512,(g,w,h)=>{const gr=g.createLinearGradient(0,0,0,h/2);gr.addColorStop(0,'#020208');gr.addColorStop(.55,'#0b0d22');gr.addColorStop(.85,'#2a1a38');gr.addColorStop(1,'#4a2a3a');g.fillStyle=gr;g.fillRect(0,0,w,h/2);
@@ -327,6 +328,8 @@ const std=(c,r,m,ei)=>MC['s'+c+r+m]||(MC['s'+c+r+m]=linMat(new THREE.MeshStandar
 function box(w,h,d,mat,x,y,z,par){const m=new THREE.Mesh(BOX,typeof mat==='number'?lam(mat):mat);m.scale.set(w,h,d);m.position.set(x,y,z);(par||scene).add(m);return m;}
 const FONT='"Dela Gothic One","Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif';
 function canvasTex(w,h,draw){const c=document.createElement('canvas');c.width=w;c.height=h;const g=c.getContext('2d');draw(g,w,h);const t=new THREE.CanvasTexture(c);t.anisotropy=4;t.encoding=THREE.sRGBEncoding;return t;}
+// 壁や箱の表面に貼る板（看板など）は、奥行きの精度が低くても沈まないよう少し手前に描く
+const decal=m=>{m.polygonOffset=true;m.polygonOffsetFactor=-1;m.polygonOffsetUnits=-4;return m;};
 const glowTex=canvasTex(64,64,(g)=>{const r=g.createRadialGradient(32,32,0,32,32,32);r.addColorStop(0,'rgba(255,255,255,1)');r.addColorStop(.35,'rgba(255,255,255,.6)');r.addColorStop(1,'rgba(255,255,255,0)');g.fillStyle=r;g.fillRect(0,0,64,64);});
 
 // geometry merge (per material) to keep draw calls low
@@ -370,36 +373,140 @@ function paverTex(){const t=canvasTex(512,512,(g,w,h)=>{g.fillStyle='#2c2a2e';g.
     for(let k=0;k<30;k++){const q=ri(40,90);g.fillStyle=`rgba(${q},${q},${q},.4)`;g.fillRect(x+rand(2,s-4),y+rand(2,s/2-4),2,2);}}
   for(let i=0;i<12;i++){const r=g.createRadialGradient(0,0,0,0,0,1);r.addColorStop(0,'rgba(15,12,18,.6)');r.addColorStop(1,'rgba(15,12,18,0)');g.save();g.translate(rand(0,w),rand(0,h));g.scale(rand(30,90),rand(20,60));g.fillStyle=r;g.beginPath();g.arc(0,0,1,0,TAU);g.fill();g.restore();}});
   t.wrapS=t.wrapT=THREE.RepeatWrapping;return t;}
-function storeTex(){const t=canvasTex(512,128,(g,w,h)=>{g.fillStyle='#0c0a10';g.fillRect(0,0,w,h);
-  for(let i=0;i<4;i++){const x=i*128;const warm=Math.random()<.65;const gr=g.createLinearGradient(0,0,0,h);gr.addColorStop(0,warm?'#ffe6b8':'#e8f4ff');gr.addColorStop(1,warm?'#c88a50':'#8aa8c8');
-    if(Math.random()<.18){g.fillStyle='#3a3640';g.fillRect(x+6,10,116,h-10);for(let k=10;k<h;k+=5){g.fillStyle='#2a2630';g.fillRect(x+6,k,116,2);}continue;}
-    g.fillStyle=gr;g.fillRect(x+6,10,116,h-10);
-    for(let r=0;r<3;r++){g.fillStyle='rgba(60,40,30,.55)';g.fillRect(x+12,30+r*28,104,4);for(let k=0;k<9;k++){g.fillStyle=pick(['#c84a3a','#3a7ac8','#e8c040','#4a9a5a','#d8d8d8','#8a4ac8']);g.fillRect(x+14+k*11,18+r*28,8,12);}}
-    for(let k=0;k<ri(0,2);k++){g.fillStyle='rgba(20,15,20,.85)';const px=x+rand(20,100);g.beginPath();g.arc(px,62,7,0,TAU);g.fill();g.fillRect(px-8,68,16,h-68);}
-    g.fillStyle='#16141a';g.fillRect(x,0,6,h);g.fillRect(x+60,10,3,h);g.fillStyle='rgba(255,255,255,.12)';g.fillRect(x+10,12,40,h-14);}
-  g.fillStyle='#1a1820';g.fillRect(0,0,w,10);});t.wrapS=THREE.RepeatWrapping;return t;}
-function winTex(lit,warm){const t=canvasTex(512,512,(g)=>{g.fillStyle=pick(['#2a2830','#302c2a','#26282e','#34302e']);g.fillRect(0,0,512,512);
-  for(let i=0;i<4000;i++){const v=ri(30,62);g.fillStyle=`rgba(${v},${v},${v+4},.5)`;g.fillRect(rand(0,512),rand(0,512),2,2);}
-  const C=6,Rw=6,cw=512/C,rh=512/Rw;
-  for(let r=0;r<Rw;r++){g.fillStyle='rgba(0,0,0,.35)';g.fillRect(0,r*rh+rh-10,512,10);g.fillStyle='rgba(255,255,255,.05)';g.fillRect(0,r*rh+rh-12,512,2);
-    for(let c=0;c<C;c++){const x=c*cw+12,y=r*rh+16,ww=cw-24,hh=rh-34;const on=Math.random()<lit;
-      if(on){const col=pick(warm?['#ffd9a0','#ffc880','#fff0d0','#ffb070','#ffe8c0']:['#d8ecff','#f0f6ff','#bcd8ff','#fff4e0']);const gr=g.createLinearGradient(0,y,0,y+hh);gr.addColorStop(0,col);gr.addColorStop(1,'#806048');g.fillStyle=gr;g.fillRect(x,y,ww,hh);
-        const bl=Math.random();if(bl<.35){g.fillStyle='rgba(30,22,18,.55)';for(let k=0;k<hh*.6;k+=4)g.fillRect(x,y+k,ww,2);}else if(bl<.6){g.fillStyle='rgba(40,25,30,.75)';g.fillRect(x,y,ww*.3,hh);g.fillRect(x+ww*.72,y,ww*.28,hh);}
-        if(Math.random()<.25){g.fillStyle='rgba(15,10,12,.7)';g.fillRect(x+ww*.4,y+hh*.35,ww*.18,hh*.65);}}
-      else{const gr=g.createLinearGradient(x,y,x+ww,y+hh);gr.addColorStop(0,'#1c2230');gr.addColorStop(1,'#0c0e14');g.fillStyle=gr;g.fillRect(x,y,ww,hh);g.fillStyle='rgba(120,140,180,.12)';g.fillRect(x,y,ww*.35,hh);}
-      g.fillStyle='#141218';g.fillRect(x+ww/2-1.5,y,3,hh);g.strokeStyle='#18161c';g.lineWidth=3;g.strokeRect(x,y,ww,hh);
-      if(Math.random()<.08){g.fillStyle='#5a5a5e';g.fillRect(x+ww*.15,y+hh+2,ww*.5,12);}}}});t.wrapS=t.wrapT=THREE.RepeatWrapping;return t;}
+// ---- 描画の小道具 ----
+const SANS='"Noto Sans JP","Hiragino Kaku Gothic ProN","Yu Gothic","IPAPGothic",sans-serif',SERIF='"Noto Serif JP","Hiragino Mincho ProN","Yu Mincho","IPAPMincho",serif';
+function fr(g,c,x,y,w,h){g.fillStyle=c;g.fillRect(x,y,w,h);}
+function lgr(g,x0,y0,x1,y1,cs){const r=g.createLinearGradient(x0,y0,x1,y1);cs.forEach((c,i)=>r.addColorStop(i/(cs.length-1),c));return r;}
+function hashS(s){let h=7;for(const c of s)h=(Math.imul(h,31)+c.codePointAt(0))>>>0;return h;}
+function tint(hex,k){const n=parseInt(hex.slice(1),16);const f=v=>Math.max(0,Math.min(255,Math.round(k<1?v*k:v+(255-v)*(k-1))));return `rgb(${f(n>>16)},${f(n>>8&255)},${f(n&255)})`;}
+const lum=hex=>{const n=parseInt(hex.slice(1),16);return .3*(n>>16)+.59*(n>>8&255)+.11*(n&255);};
+// 文字を枠に収めて書く（縦書きは「ー」を90度回す）
+function sText(g,text,vert,x,y,w,h,ff,pass){g.textAlign='center';g.textBaseline='middle';
+  if(vert){const ch=[...text];const fs=Math.min(w*.8,h*.94/ch.length);g.font=`${ff[0]} ${fs}px ${ff[1]}`;const top=y+(h-fs*ch.length)/2+fs/2;
+    pass(()=>ch.forEach((c,i)=>{const cy=top+i*fs;if('ー〜−'.includes(c)){g.save();g.translate(x+w/2,cy);g.rotate(Math.PI/2);g.fillText(c,0,0);g.restore();}else g.fillText(c,x+w/2,cy);}));}
+  else{let fs=h*.64;g.font=`${ff[0]} ${fs}px ${ff[1]}`;const mw=g.measureText(text).width;if(mw>w*.9){fs*=w*.9/mw;g.font=`${ff[0]} ${fs}px ${ff[1]}`;}pass(()=>g.fillText(text,x+w/2,y+h/2+fs*.05));}}
+// 内照式の看板（アクリルの箱に中から光を当てたもの）。日本の繁華街の看板の多くはこれ
+function drawBox(g,x,y,w,h,text,bg,fg,vert,ff){fr(g,'#1c1c20',x,y,w,h);const m=Math.max(2,Math.min(w,h)*.06);const ix=x+m,iy=y+m,iw=w-2*m,ih=h-2*m;
+  fr(g,bg,ix,iy,iw,ih);const rg=g.createRadialGradient(ix+iw/2,iy+ih/2,0,ix+iw/2,iy+ih/2,Math.max(iw,ih)*.7);rg.addColorStop(0,'rgba(255,255,255,.10)');rg.addColorStop(1,'rgba(0,0,0,.2)');fr(g,rg,ix,iy,iw,ih);
+  g.fillStyle=fg;sText(g,text,vert,ix,iy,iw,ih,ff,f=>f());fr(g,'rgba(255,255,255,.16)',ix,iy,iw,Math.max(1,m*.5));}
+const JFOOD=/[居酒焼鳥鍋寿司鮨ふぐ料理水炊明太茶舗呉服和菓博織うどんぜんざい割烹天ぷら珈琲]/;
+function sfont(text,h){const k=h%3;if(JFOOD.test(text)&&k<2)return ['700',SERIF];return k===0?['400',FONT]:['900',SANS];}
+const PALS=[['#f6f1e4',null],[null,'#ffffff'],['#c41a1a','#fff6e0'],['#f2d01c','#1a1a1a'],['#141418',null]];
+function boxPal(col,h){const L=lum(col)>185;let p=(h>>>4)%5;if(L&&p===1)p=0;const P=PALS[p];
+  const bg=P[0]||tint(col,.6);const fg=P[1]||(p===0?(L?['#b0141c','#1a1a1a','#1a2a6a'][(h>>>8)%3]:tint(col,.5)):col);return [bg,fg];}
+
+// ---- 1階の店先（8種類：居酒屋・ラーメン・明るい小売店・シャッター・バーの入口・ドラッグストア・カフェ・ビルの入口） ----
+function lantern(g,x,y,rx,ry,col,ch){const r=g.createRadialGradient(x,y,0,x,y,ry);r.addColorStop(0,'#ffe0b0');r.addColorStop(.5,col);r.addColorStop(1,tint(col,.55));g.fillStyle=r;g.beginPath();g.ellipse(x,y,rx,ry,0,0,TAU);g.fill();
+  fr(g,'#1a1210',x-rx*.6,y-ry-1.5,rx*1.2,2.5);fr(g,'#1a1210',x-rx*.6,y+ry-1,rx*1.2,2.5);if(ch){g.fillStyle='#1a1010';g.font=`700 ${ry*.9}px ${SERIF}`;g.textAlign='center';g.textBaseline='middle';g.fillText(ch,x,y+.5);}}
+function silh(g,x,y,s){g.fillStyle='rgba(30,22,22,.85)';g.beginPath();g.arc(x,y,s,0,TAU);g.fill();g.fillRect(x-s*1.3,y+s,s*2.6,s*2.6);}
+const SHOPSEG=[
+ g=>{fr(g,'#3a2416',0,0,128,66);for(let x=0;x<128;x+=4)fr(g,'rgba(0,0,0,.18)',x,0,1,66);fr(g,lgr(g,0,14,0,66,['#ffd89a','#d8904a']),28,14,72,52);
+   silh(g,48,36,4);silh(g,80,38,4);g.fillStyle='rgba(60,34,16,.8)';for(let x=28;x<=100;x+=6)g.fillRect(x,14,1.1,52);for(let y=14;y<66;y+=6)g.fillRect(28,y,72,.9);fr(g,'#2a180c',27,12,74,2.4);fr(g,'#2a180c',63,14,2,52);
+   for(let k=0;k<4;k++)fr(g,'#1c2c5a',28.5+k*18,14,17,17);g.fillStyle='#f4f0e4';g.font='700 12px '+SERIF;g.textAlign='center';g.textBaseline='middle';['酒','処','千','鳥'].forEach((c,k)=>g.fillText(c,37+k*18,22.5));
+   lantern(g,14,30,7,10,'#d8301c','酒');lantern(g,114,24,6,9,'#d8301c');fr(g,'#efe6cc',104,42,18,22);for(let y=45;y<62;y+=3)fr(g,'#3a2a1a',106,y,14,1);},
+ g=>{fr(g,'#d6cfc0',0,0,128,66);fr(g,'#2a2a2a',0,62,128,4);fr(g,lgr(g,0,16,0,62,['#fff2cc','#e8b870']),10,16,108,46);for(let k=0;k<5;k++)silh(g,22+k*20,32,4);fr(g,'#6a4a2a',10,44,108,4);
+   fr(g,'rgba(255,255,255,.18)',10,16,108,46);fr(g,'#8a8a8a',10,15,108,1.5);for(const x of [10,46,82,117])fr(g,'#8a8a8a',x,16,1.5,46);
+   for(let k=0;k<3;k++)fr(g,'#f6f4ee',44+k*14,15,13,16);g.fillStyle='#1a1a1a';g.font='700 10px '+SERIF;g.textAlign='center';g.textBaseline='middle';['ら','ー','麺'].forEach((c,k)=>g.fillText(c,50.5+k*14,23));
+   fr(g,'#c81e1e',112,40,12,22);g.fillStyle='#fff';g.font='700 5px '+SANS;['営','業','中'].forEach((c,k)=>g.fillText(c,118,45+k*6));},
+ g=>{fr(g,'#e8e8e8',0,0,128,66);fr(g,'#f8fbfb',6,12,116,54);for(let r=0;r<4;r++){const y=16+r*10;fr(g,'#b8c0c4',8,y+8,112,1.5);for(let x=9;x<119;x+=3.2)fr(g,pick(['#e04848','#3a78d8','#f0c838','#48a858','#f4f4f4','#e88a2a','#8a4ac8','#f48ab8']),x,y+1.5,2.4,6.5);}
+   silh(g,60,40,3.4);fr(g,'rgba(120,130,140,.6)',6,12,116,1.5);for(const x of [6,44,84,122])fr(g,'#9aa2a8',x-1,12,2,54);fr(g,'#f4e04a',48,50,12,13);fr(g,'#e83a3a',64,52,10,11);fr(g,'#3a8ad8',96,50,14,6);},
+ g=>{fr(g,'#3a3a3e',0,0,128,66);fr(g,'#7a7c80',6,8,116,58);for(let y=8;y<66;y+=2)fr(g,'rgba(0,0,0,.25)',6,y,116,.7);fr(g,'#5a5c60',6,8,116,3);fr(g,'rgba(30,26,20,.3)',6,50,116,16);
+   fr(g,'#f4f2ea',52,24,24,9);g.fillStyle='#c81e1e';g.font='700 5.4px '+SANS;g.textAlign='center';g.textBaseline='middle';g.fillText('本日休業',64,28.6);},
+ g=>{fr(g,'#1c1a1e',0,0,128,66);for(let y=0;y<66;y+=6)for(let x=(y/6%2)*8;x<128;x+=16)fr(g,'rgba(255,255,255,.05)',x,y,15,5);
+   fr(g,lgr(g,0,10,0,66,['#3a2418','#d08a40']),18,10,30,56);for(let k=0;k<6;k++)fr(g,'rgba(0,0,0,.4)',18,40+k*4.4,30,1.2);fr(g,'#3a2212',70,14,22,52);fr(g,'#ffcf88',76,22,10,9);fr(g,'#c8a060',88,40,2,4);
+   const r=g.createRadialGradient(81,10,0,81,10,14);r.addColorStop(0,'rgba(255,210,150,.9)');r.addColorStop(1,'rgba(255,210,150,0)');fr(g,r,66,0,30,24);
+   fr(g,'#202024',100,38,18,28);fr(g,'#f4ecd8',102,40,14,20);g.fillStyle='#8a1a2a';g.font='700 5.5px '+SANS;g.textAlign='center';g.textBaseline='middle';g.fillText('BAR',109,46);g.font='700 4px '+SANS;g.fillText('3F',109,54);
+   fr(g,'#e8e4da',18,3,30,5);g.fillStyle='#1a1a1a';g.font='700 3.6px '+SANS;g.fillText('B1F・2F〜6F',33,5.6);},
+ g=>{fr(g,'#f2f2f2',0,0,128,66);fr(g,'#fdfdf8',4,10,120,56);for(let r=0;r<4;r++){const y=16+r*10.5;fr(g,'#d0d0d0',5,y+8.5,118,1.2);for(let x=6;x<122;x+=2.6)fr(g,pick(['#e8e8f8','#f8d0d8','#c8e8f8','#f8f0c0','#d8f0d8','#ffffff','#e85a5a','#5a8ae8']),x,y+2,2,6.5);}
+   g.textAlign='center';g.textBaseline='middle';for(let k=0;k<6;k++){const x=8+k*19.5;fr(g,'#ffe23a',x,10,15,5.4);g.fillStyle='#d81e1e';g.font='900 4.2px '+SANS;g.fillText(['特価','激安','新商品','SALE','特価','おすすめ'][k],x+7.5,12.8);}
+   fr(g,'#e83a3a',8,52,26,14);fr(g,'#2a6ad8',94,52,26,14);for(let x=9;x<33;x+=3)fr(g,'#f8f0f0',x,54,2,10);for(let x=95;x<119;x+=3)fr(g,'#f0f4ff',x,54,2,10);},
+ g=>{fr(g,'#5a3a22',0,0,128,66);fr(g,lgr(g,0,10,0,66,['#ffe2b4','#c88e56']),8,10,112,56);for(let k=0;k<3;k++){silh(g,26+k*38,38,3.6);fr(g,'#4a2c18',16+k*38,46,22,2);}
+   for(const x of [8,45,82,119])fr(g,'#3a2414',x,10,2,56);fr(g,'#3a2414',8,10,112,2);for(const x of [26,64,102]){fr(g,'#3a2414',x-.3,10,.6,8);g.fillStyle='#fff6d8';g.beginPath();g.arc(x,19,2.6,0,TAU);g.fill();}
+   g.fillStyle='#2e5a2a';for(const x of [12,116]){g.beginPath();g.arc(x,58,6,0,TAU);g.fill();}fr(g,'#2a2e2a',96,44,14,20);g.fillStyle='#f4f4ec';g.font='700 4px '+SANS;g.textAlign='center';g.textBaseline='middle';g.fillText('CAFE',103,48);for(let y=52;y<62;y+=3)fr(g,'#c8c8c0',98,y,10,.8);},
+ g=>{fr(g,'#8a8680',0,0,128,66);for(let y=0;y<66;y+=11)fr(g,'rgba(0,0,0,.18)',0,y,128,.8);for(let x=0;x<128;x+=22)fr(g,'rgba(0,0,0,.18)',x,0,.8,66);fr(g,lgr(g,0,12,0,66,['#f6f6f0','#c4c8c4']),34,12,60,54);
+   fr(g,'#a8a49c',44,24,12,30);fr(g,'#a8a49c',72,24,12,30);fr(g,'#e8e0c0',56,30,3,4);fr(g,'#8a8e92',33,11,62,1.6);fr(g,'#8a8e92',63,12,1.6,54);
+   fr(g,'#1a1a1c',8,16,20,36);for(let k=0;k<8;k++)fr(g,pick(['#f4f0e4','#ffe0a0','#f8c8d8','#c8e0ff']),9.5,18+k*4.2,17,3.2);fr(g,'#b8b8b0',100,28,22,18);for(let y=28;y<46;y+=4.5)fr(g,'#8a8a84',100,y,22,.7);for(let x=100;x<122;x+=5.5)fr(g,'#8a8a84',x,28,.7,18);}];
+function storeTex(){const t=canvasTex(1024,128,(g,w,h)=>{fr(g,'#0c0a10',0,0,w,h);for(let i=0;i<8;i++){g.save();g.translate(i*128,0);g.beginPath();g.rect(0,0,128,h);g.clip();g.scale(1,h/66);SHOPSEG[i](g);g.restore();}});t.wrapS=THREE.RepeatWrapping;return t;}
+
+// ---- 外壁と窓：色の画像と、夜に光る部分だけの画像（emissiveMap）を同時に描く ----
+function dualTex(w,h,draw,es){const c=document.createElement('canvas');c.width=w;c.height=h;const e=document.createElement('canvas');e.width=w;e.height=h;
+  const g=c.getContext('2d'),ge=e.getContext('2d');fr(ge,'#000',0,0,w,h);draw(g,ge,w,h);
+  const sh=(cv,k)=>{if(k===1)return cv;const o=document.createElement('canvas');o.width=w*k;o.height=h*k;o.getContext('2d').drawImage(cv,0,0,o.width,o.height);return o;};
+  const k=Q===0?.5:1;const cc=sh(c,k),ec=sh(e,(es||1)*k);// 軽量画質では半分の大きさにしてメモリを抑える
+  const mk=cv=>{const t=new THREE.CanvasTexture(cv);t.anisotropy=4;t.encoding=THREE.sRGBEncoding;t.wrapS=t.wrapT=THREE.RepeatWrapping;return t;};return [mk(cc),mk(ec)];}
+// 窓の外に貼る文字（カッティングシート）。業種だけで、実在の店名は使わない
+const WLET=['英会話','歯科','整体','麻雀','学習塾','ネイル','司法書士','不動産','鍼灸','カラオケ','美容室','占い','ヨガ','税理士','脱毛','雀荘','ダンス','行政書士'];
+function winStain(g,x,y,w,l){const gr=g.createLinearGradient(0,y,0,y+(l||rand(26,60)));gr.addColorStop(0,'rgba(20,18,16,.22)');gr.addColorStop(1,'rgba(20,18,16,0)');g.fillStyle=gr;g.fillRect(x,y,w,l||60);}
+function drawWin(g,e,x,y,w,h,fl){fr(g,'#9ea3a8',x-3,y-3,w+6,h+6);fr(g,'#c9c9c3',x-5,y+h+2,w+10,4);winStain(g,x+2,y+h+6,w-4);
+  const on=fl.on&&Math.random()<.88;
+  if(on){const gr=lgr(g,0,y,0,y+h,fl.c);for(const c of [g,e]){fr(c,gr,x,y,w,h);fr(c,'rgba(255,255,255,.9)',x+w*.15,y+3,w*.7,2);}
+    const k=Math.random();
+    if(k<.28){const cc=fl.warm?'rgba(120,90,60,.5)':'rgba(140,150,160,.45)',n=Math.max(6,Math.round(w/5));for(const c of [g,e])for(let i=0;i<n;i++)fr(c,cc,x+i*w/n,y,w/n*.55,h);}
+    else if(k<.52){const d=h*rand(.3,.9),cc=fl.warm?'rgba(150,110,70,.55)':'rgba(170,175,180,.5)';for(const c of [g,e])for(let yy=0;yy<d;yy+=4)fr(c,cc,x,y+yy,w,2.4);}
+    else if(k<.72){const cc=pick(['rgba(120,40,40,.8)','rgba(200,180,140,.75)','rgba(60,80,110,.8)','rgba(150,140,120,.75)']),a=rand(.15,.35),b=rand(.15,.35);for(const c of [g,e]){fr(c,cc,x,y,w*a,h);fr(c,cc,x+w*(1-b),y,w*b,h);}}
+    const s1=Math.random()<.6,sx=x+w*rand(0,.5),sw=w*rand(.2,.45),pp=Math.random()<.18,px=x+w*rand(.2,.8);
+    for(const c of [g,e]){if(s1)fr(c,'rgba(40,36,40,.55)',sx,y+h*.55,sw,h*.45);if(pp){c.fillStyle='rgba(30,26,30,.7)';c.beginPath();c.arc(px,y+h*.42,h*.07,0,TAU);c.fill();c.fillRect(px-h*.08,y+h*.5,h*.16,h*.5);}}}
+  else{fr(g,lgr(g,x,y,x+w*.6,y+h,['#2c3846','#0e1218']),x,y,w,h);g.fillStyle='rgba(170,190,220,.10)';g.beginPath();g.moveTo(x+w*.1,y);g.lineTo(x+w*.45,y);g.lineTo(x+w*.15,y+h);g.lineTo(x,y+h);g.closePath();g.fill();
+    if(Math.random()<.3)fr(g,pick(['rgba(140,120,100,.5)','rgba(90,70,60,.5)']),x,y,w,h);}
+  if(w>40){fr(g,'#8e9398',x+w/2-1.5,y,3,h);fr(e,'#000',x+w/2-1.5,y,3,h);}return on;}
+function winLetters(g,e,txt,xs,y,h,on){const ch=[...txt];const per=Math.ceil(ch.length/xs.length);let i=0;
+  for(const [x,w] of xs){const part=ch.slice(i,i+per).join('');i+=per;if(!part)break;const fs=Math.min(h*.6,(w*.9)/[...part].length);
+    for(const [c,col] of [[g,'#f6f6f0'],[e,on?'#b8b8b0':'#3a3a38']]){c.fillStyle=col;c.font=`900 ${fs}px ${SANS}`;c.textAlign='center';c.textBaseline='middle';c.fillText(part,x+w/2,y+h/2);}}}
+function vacancy(g,e,x,y,w,h){const pw=w*.74,ph=h*.56,px=x+(w-pw)/2,py=y+(h-ph)/2;fr(g,'#f4f2ea',px,py,pw,ph);fr(e,'#5a5a54',px,py,pw,ph);
+  for(const [c,col] of [[g,'#c81e1e'],[e,'#401010']]){c.fillStyle=col;c.textAlign='center';c.textBaseline='middle';const fs=Math.min(ph*.36,pw/4.4);c.font=`900 ${fs}px ${SANS}`;c.fillText('テナント',px+pw/2,py+ph*.3);c.fillText('募集',px+pw/2,py+ph*.72);}}
+function acPaint(g,x,y,s){fr(g,'#c8c8c2',x,y,s*1.4,s);g.fillStyle='#2a2a2c';g.beginPath();g.arc(x+s*.5,y+s*.5,s*.36,0,TAU);g.fill();g.strokeStyle='#8a8a86';g.lineWidth=1;for(let r=s*.1;r<s*.36;r+=s*.09){g.beginPath();g.arc(x+s*.5,y+s*.5,r,0,TAU);g.stroke();}fr(g,'#b0b0aa',x+s*.95,y+s*.15,s*.35,s*.7);winStain(g,x,y+s,s*1.4,30);}
+// 6種類の外壁：タイル貼りの雑居ビル／横長の窓のオフィス／古いコンクリート／黒っぽい新しいビル（ホテル風）／茶色のタイル／白いタイル
+const FAC=[{wall:['#bcae96','#ab9d86'],tile:1,bays:4,ww:.66,wh:.52},{wall:['#90918f','#80817f'],ribbon:1},{wall:['#9c978d','#8b867c'],bays:5,ww:.48,wh:.48,ac:.45},
+  {wall:['#3e4046','#35373c'],bays:6,ww:.3,wh:.68,warm:.8},{wall:['#7c5644','#6c4a3a'],tile:1,bays:4,ww:.58,wh:.52,ac:.2},{wall:['#d4d0c8','#c6c2ba'],tile:1,bays:5,ww:.6,wh:.5,ac:.25}];
+function facadeTex(ti){const P=FAC[ti];return dualTex(512,1024,(g,e,w,h)=>{fr(g,lgr(g,0,0,0,h,P.wall),0,0,w,h);
+  for(let i=0;i<4000;i++){const v=rand(-.08,.08);fr(g,v>0?`rgba(255,255,255,${v})`:`rgba(0,0,0,${-v})`,rand(0,w),rand(0,h),rand(1,3),rand(1,3));}
+  if(P.tile){g.fillStyle='rgba(0,0,0,.10)';for(let y=0;y<h;y+=7){g.fillRect(0,y,w,1);for(let x=((y/7)%2)*12;x<w;x+=24)g.fillRect(x,y,1,7);}}
+  const FL=10,fh=h/FL;
+  for(let f=0;f<FL;f++){const y=f*fh;fr(g,'rgba(0,0,0,.12)',0,y+fh-7,w,7);fr(g,'rgba(255,255,255,.10)',0,y+fh-9,w,2);
+    const warm=Math.random()<(P.warm||.35);const fl={on:Math.random()<(P.warm?.62:.5),warm,c:warm?pick([['#fff1d6','#f2cf98','#9a7048'],['#ffe7c0','#e8b880','#8a5a38']]):pick([['#f6faff','#d8e4ee','#8a98a6'],['#fbfbf4','#e4e6dc','#9a9c90']])};
+    const xs=[];const wy=y+fh*.18,wh=P.ribbon?fh*.5:fh*P.wh;
+    if(P.ribbon){fr(g,'#a0a5aa',0,wy-3,w,wh+6);const n=8,cw=w/n;for(let c=0;c<n;c++){drawWin(g,e,c*cw+2,wy,cw-4,wh,fl);xs.push([c*cw+2,cw-4]);}}
+    else{const bw=w/P.bays;for(let b=0;b<P.bays;b++){const ww=bw*P.ww,wx=b*bw+(bw-ww)/2;drawWin(g,e,wx,wy,ww,wh,fl);xs.push([wx,ww]);if(P.ac&&Math.random()<P.ac)acPaint(g,wx+ww-28,wy+wh+9,19);}}
+    if(f>=6&&f<=8&&Math.random()<.3)winLetters(g,e,pick(WLET),xs,wy,wh,fl.on);else if(Math.random()<.07){const [x0,w0]=xs[ri(0,xs.length-1)];vacancy(g,e,x0,wy,w0,wh);}}
+  for(let i=0;i<40;i++){const x=rand(0,w),y=rand(0,h),l=rand(40,160);g.fillStyle=lgr(g,0,y,0,y+l,['rgba(30,26,22,.10)','rgba(30,26,22,0)']);g.fillRect(x,y,rand(2,7),l);}
+  fr(g,P.wall[1],0,0,14,h);fr(e,'#000',0,0,14,h);},.5);}
+// ガラスのカーテンウォール（オフィスビル・駅）：階ごとに明かりがつく。腰の部分は不透明のガラス
+function glassTex(){return dualTex(512,1024,(g,e,w,h)=>{const FL=8,fh=h/FL,NC=10,cw=w/NC;
+  for(let f=0;f<FL;f++){const y=f*fh,sp=fh*.24,gh=fh-sp;
+    fr(g,lgr(g,0,y,0,y+gh,['#3a4c60','#18212c']),0,y,w,gh);fr(g,lgr(g,0,y+gh,0,y+fh,['#1c232c','#11161c']),0,y+gh,w,sp);
+    const r=Math.random(),warm=Math.random()<.18;let a0=0,a1=-1;if(r<.22){a1=NC-1;}else if(r<.6){a0=ri(0,NC-3);a1=Math.min(NC-1,a0+ri(2,5));}
+    const cs=warm?['#f6e4c8','#d8bc94','#9a7a50']:['#e6eef6','#bccad6','#7e8c9a'];const blind=Math.random()<.3?rand(.25,.7):0;
+    for(let c=a0;c<=a1;c++){const x=c*cw;for(const cx of [g,e]){fr(cx,lgr(cx,0,y,0,y+gh,cs),x,y,cw,gh);fr(cx,'#ffffff',x+cw*.18,y+6,cw*.26,2.5);fr(cx,'#ffffff',x+cw*.58,y+6,cw*.26,2.5);
+        fr(cx,'rgba(60,66,78,.62)',x,y+gh*.6,cw,gh*.4);fr(cx,'rgba(90,96,108,.5)',x+cw*rand(.1,.6),y+gh*.45,cw*.3,gh*.15);if(c%4===1)fr(cx,'rgba(80,86,96,.7)',x+cw*.4,y,cw*.2,gh);if(blind)for(let yy=0;yy<gh*blind;yy+=4)fr(cx,'rgba(150,160,170,.55)',x,y+yy,cw,2.2);}
+      if(Math.random()<.2){const px=x+rand(8,cw-8);for(const cx of [g,e]){cx.fillStyle='rgba(40,44,52,.75)';cx.beginPath();cx.arc(px,y+gh*.5,4.5,0,TAU);cx.fill();cx.fillRect(px-5,y+gh*.56,10,gh*.44);}}}
+    g.fillStyle='rgba(180,200,230,.07)';g.beginPath();g.moveTo(rand(0,w),y);g.lineTo(rand(0,w)+60,y);g.lineTo(rand(0,w),y+gh);g.lineTo(rand(0,w)-60,y+gh);g.fill();
+    for(const cx of [g,e]){const mc=cx===g?'#66707c':'#000';for(let c=0;c<=NC;c++)fr(cx,mc,c*cw-1.5,y,3,fh);fr(cx,cx===g?'#4e5660':'#000',0,y,w,3);fr(cx,cx===g?'#4e5660':'#000',0,y+gh-2,w,4);}}},.5);}
+
+// ---- 看板 ----
+// 光り方の種類：box＝内照式の箱、neon＝ネオン管、chan＝暗い板に光る文字（駅・ビル名）、road＝青い案内標識、wood＝木の額（神社・寺）、stone＝石に彫った文字
+const SIGN_NEON=new Set(['CLUB LUMINAS','NIGHT CLUB','BAR YAHMAN','ヤーマン 2F','夜のディズニーランド','スナック月光','BAR 玄','会員制','中洲 NAKASU','ようこそ中洲へ','CLUB','LOUNGE','KARAOKE','NAKASU','BAR','PUB','ダーツ','ガールズバー','GAME','SHOPPING']);
+const SIGN_CHAN=new Set(['博多駅','HAKATA STATION','薬院駅','YAKUIN STA.','天神','TENJIN','CANAL','HAKATA','呉服町','HOTEL','CINEMA','OFFICE','BUSINESS','CLINIC','天神地下街','FASHION']);
+function signStyle(text,col,h){if(col==='#ffe0a0')return 'wood';if(text==='警固公園')return 'stone';if(col==='#3d8bff'||text==='GOFUKUMACHI')return 'road';if(SIGN_NEON.has(text))return 'neon';if(SIGN_CHAN.has(text))return 'chan';return h%9<2?'neon':'box';}
+function rrect(g,x,y,w,h,r){g.beginPath();g.moveTo(x+r,y);g.arcTo(x+w,y,x+w,y+h,r);g.arcTo(x+w,y+h,x,y+h,r);g.arcTo(x,y+h,x,y,r);g.arcTo(x,y,x+w,y,r);g.closePath();}
+function drawSign(g,w,h,text,col,vert,st,hs){const u=Math.min(w,h)/64;
+  if(st==='box'){const [bg,fg]=boxPal(col,hs);drawBox(g,0,0,w,h,text,bg,fg,vert,sfont(text,hs));return;}
+  if(st==='neon'){fr(g,'#0b0810',0,0,w,h);g.strokeStyle='#2a2630';g.lineWidth=3*u;g.strokeRect(1.5*u,1.5*u,w-3*u,h-3*u);g.strokeStyle=col;g.lineWidth=4*u;g.shadowColor=col;g.shadowBlur=12*u;g.strokeRect(8*u,8*u,w-16*u,h-16*u);
+    const ff=sfont(text,hs);sText(g,text,vert,6*u,6*u,w-12*u,h-12*u,ff[1]===SERIF?ff:['400',FONT],f=>{g.fillStyle=col;g.shadowBlur=16*u;f();g.shadowBlur=0;g.fillStyle='rgba(255,255,255,.88)';f();});return;}
+  if(st==='chan'){fr(g,'#121216',0,0,w,h);for(let x=0;x<w;x+=w/6)fr(g,'rgba(255,255,255,.035)',x,0,1,h);fr(g,'rgba(255,255,255,.06)',0,0,w,2*u);
+    sText(g,text,vert,4*u,4*u,w-8*u,h-8*u,['900',SANS],f=>{g.shadowColor=col;g.shadowBlur=7*u;g.fillStyle=col;f();g.shadowBlur=0;g.fillStyle=tint(col,1.6);f();});return;}
+  if(st==='road'){fr(g,'#1a4ea8',0,0,w,h);g.strokeStyle='#f4f6f8';g.lineWidth=3*u;rrect(g,4*u,4*u,w-8*u,h-8*u,5*u);g.stroke();g.fillStyle='#f4f6f8';sText(g,text,vert,8*u,8*u,w-16*u,h-16*u,['700',SANS],f=>f());return;}
+  if(st==='wood'){fr(g,'#3b2616',0,0,w,h);for(let i=0;i<40;i++)fr(g,`rgba(${pick(['20,10,4','90,60,36'])},.25)`,0,rand(0,h),w,rand(1,3));g.strokeStyle='#22140a';g.lineWidth=6*u;g.strokeRect(3*u,3*u,w-6*u,h-6*u);
+    g.fillStyle='#e8c878';sText(g,text,vert,8*u,8*u,w-16*u,h-16*u,['700',SERIF],f=>f());return;}
+  if(st==='stone'){fr(g,'#8a8782',0,0,w,h);for(let i=0;i<900;i++)fr(g,pick(['rgba(40,38,36,.3)','rgba(220,216,210,.25)']),rand(0,w),rand(0,h),1.5,1.5);
+    sText(g,text,vert,6*u,6*u,w-12*u,h-12*u,['700',SERIF],f=>{g.fillStyle='rgba(230,226,220,.5)';g.save();g.translate(1,1);f();g.restore();g.fillStyle='#2c2a28';f();});}}
+const SIGNC={};
+function signTex(text,col,vert){const k=text+col+vert;if(SIGNC[k])return SIGNC[k];const hs=hashS(k),st=signStyle(text,col,hs);const L=Q===0?256:384,S2=L/4;
+  const t=canvasTex(vert?S2:L,vert?L:S2,(g,w,h)=>drawSign(g,w,h,text,col,vert,st,hs));const lit=st==='box'||st==='neon'||st==='chan';
+  const m=decal(lit?new THREE.MeshBasicMaterial({map:t,side:THREE.DoubleSide,color:st==='box'?0xd4d4d4:0xffffff}):new THREE.MeshLambertMaterial({map:t,side:THREE.DoubleSide,emissive:0xffffff,emissiveMap:t,emissiveIntensity:st==='road'?.3:.08}));
+  return SIGNC[k]={t,m,key:k,st,lit};}
 function oldWinTex(lit,warm){const t=canvasTex(256,256,(g)=>{g.fillStyle='#17161f';g.fillRect(0,0,256,256);
   for(let r=0;r<4;r++)for(let c=0;c<4;c++){const on=Math.random()<lit;g.fillStyle=on?pick(warm?['#ffd89a','#ffc070','#fff0c8','#ff9ec4']:['#bfe0ff','#e8f2ff','#9fc8ff']):'#262433';g.fillRect(c*64+10,r*64+12,44,36);if(on&&Math.random()<.45){g.fillStyle='rgba(0,0,0,.4)';g.fillRect(c*64+10,r*64+12,20,36);}}
   g.fillStyle='#0d0c13';for(let r=0;r<4;r++)g.fillRect(0,r*64+56,256,8);});t.wrapS=t.wrapT=THREE.RepeatWrapping;return t;}
-const SIGNC={};
-function signTex(text,col,vert){const k=text+col+vert;if(SIGNC[k])return SIGNC[k];
-  const t=canvasTex(vert?64:256,vert?256:64,(g,w,h)=>{g.fillStyle='#0d0612';g.fillRect(0,0,w,h);g.strokeStyle=col;g.lineWidth=5;g.shadowColor=col;g.shadowBlur=12;g.strokeRect(5,5,w-10,h-10);
-    g.textAlign='center';g.textBaseline='middle';
-    const draw=(fn)=>{g.fillStyle=col;g.shadowBlur=16;fn();g.shadowBlur=0;g.fillStyle='rgba(255,255,255,.88)';fn();};
-    if(vert){const ch=[...text];const fs=Math.min(44,(h-26)/ch.length*.95);g.font=fs+'px '+FONT;const top=(h-fs*ch.length)/2+fs/2;draw(()=>ch.forEach((c,i)=>g.fillText(c,w/2,top+i*fs)));}
-    else{let fs=40;g.font=fs+'px '+FONT;const mw=g.measureText(text).width;if(mw>w-28){fs=Math.floor(fs*(w-28)/mw);g.font=fs+'px '+FONT;}draw(()=>g.fillText(text,w/2,h/2+2));}});
-  const m=new THREE.MeshBasicMaterial({map:t,side:THREE.DoubleSide,color:0xffffff});SIGNC[k]={t,m,key:k};return SIGNC[k];}
 const NEON=['#ff3d8b','#3de0ff','#ffb238','#b26bff','#4dff88','#ff5a3d','#ffe14d'];
 const N_V=['スナック紫','居酒屋','ホルモン','焼鳥','カラオケ','ラウンジ華','もつ鍋','無料案内所','クラブ蝶','BAR','PUB','博多ラーメン','ふぐ料理','寿司','スナック凛','明太子','水炊き','ガールズバー','ダーツ','焼酎'];
 const N_H=['NAKASU','中洲','KARAOKE','もつ鍋','CLUB','LOUNGE','焼きラーメン','GAME','HOTEL','BAR'];
@@ -413,9 +520,6 @@ function areaOf(x,z){if(S.room)return null;for(const a of AREAS)if(a.test(x,z))r
 function litOnly(t,thr){const src=t.image;const c=document.createElement('canvas');c.width=src.width;c.height=src.height;const g=c.getContext('2d');g.drawImage(src,0,0);const d=g.getImageData(0,0,c.width,c.height),p=d.data;
   for(let i=0;i<p.length;i+=4){const r=p[i],gg=p[i+1],b=p[i+2];const lit=r>=235&&gg>=140&&(r-b)>=40;if(!lit){p[i]=p[i+1]=p[i+2]=0;}}g.putImageData(d,0,0);
   const e=new THREE.CanvasTexture(c);e.encoding=THREE.sRGBEncoding;e.wrapS=e.wrapT=THREE.RepeatWrapping;e.repeat.copy(t.repeat);return e;}
-function glassTex(){const t=canvasTex(512,512,(g,w,h)=>{const gr=g.createLinearGradient(0,0,w,h);gr.addColorStop(0,'#1c2e44');gr.addColorStop(.5,'#0e1824');gr.addColorStop(1,'#22344a');g.fillStyle=gr;g.fillRect(0,0,w,h);
-  const n=8,c=w/n;for(let r=0;r<n;r++)for(let k=0;k<n;k++){if(Math.random()<.22){g.fillStyle=pick(['rgba(255,226,170,.85)','rgba(220,236,255,.8)','rgba(255,240,210,.7)']);g.fillRect(k*c+3,r*c+3,c-6,c-6);}else if(Math.random()<.3){g.fillStyle='rgba(120,160,210,.12)';g.fillRect(k*c+3,r*c+3,c-6,c-6);}}
-  g.strokeStyle='#5a6676';g.lineWidth=3;for(let i=0;i<=n;i++){g.beginPath();g.moveTo(i*c,0);g.lineTo(i*c,h);g.stroke();}g.lineWidth=5;for(let i=0;i<=n;i++){g.beginPath();g.moveTo(0,i*c);g.lineTo(w,i*c);g.stroke();}});t.wrapS=t.wrapT=THREE.RepeatWrapping;return t;}
 function aptTex(){const t=canvasTex(512,512,(g,w,h)=>{g.fillStyle=pick(['#bdb4a6','#c8c2b6','#a8a49c']);g.fillRect(0,0,w,h);for(let i=0;i<3000;i++){const v=ri(150,200);g.fillStyle=`rgba(${v},${v-6},${v-12},.4)`;g.fillRect(rand(0,w),rand(0,h),2,2);}
   const F=6,U=4,fh=h/F,uw=w/U;for(let f=0;f<F;f++)for(let u=0;u<U;u++){const x=u*uw,y=f*fh;const on=Math.random()<.4;g.fillStyle=on?pick(['#ffd8a0','#fff0d0','#ffc070']):'#2a2c34';g.fillRect(x+10,y+12,uw-20,fh*.55);
     g.fillStyle='rgba(30,26,24,.5)';g.fillRect(x+uw/2-2,y+12,4,fh*.55);if(on&&Math.random()<.5){g.fillStyle='rgba(60,40,30,.6)';g.fillRect(x+10,y+12,uw*.3,fh*.55);}
@@ -427,10 +531,54 @@ function woodTex(){const t=canvasTex(256,256,(g,w,h)=>{g.fillStyle='#efe6d4';g.f
 function bandTex(cols){const t=canvasTex(256,512,(g,w,h)=>{const bh=h/cols.length;cols.forEach((c,i)=>{g.fillStyle=c;g.fillRect(0,i*bh,w,bh);for(let k=0;k<5;k++){g.fillStyle=Math.random()<.5?'rgba(255,220,170,.8)':'rgba(30,30,40,.7)';g.fillRect(8+k*49,i*bh+bh*.3,36,bh*.4);}});});t.wrapS=t.wrapT=THREE.RepeatWrapping;return t;}
 const TEN_N=['スナック紅','ラウンジ蘭','BAR 灯','クラブ雅','麻雀','焼肉','占い','スナック恋','バー碧','パブ花','ラウンジ凛','鮨','居酒屋','クラブ月','カラオケ','スナック桜','BAR 黒','ラウンジ夢','ダーツ','ふぐ'];
 const TENM=[],TGEO={};
-function tenantMat(i){if(TENM[i])return TENM[i];const t=canvasTex(128,512,(g,w,h)=>{g.fillStyle='#0a0a0e';g.fillRect(0,0,w,h);const n=7,ph=h/n;for(let k=0;k<n;k++){const c=pick(['#fff4e0','#ffe14d','#ff9ec4','#9fe8ff','#ffffff','#ffb070','#c8a0ff']);g.fillStyle=c;g.fillRect(5,k*ph+4,w-10,ph-8);
-  g.fillStyle=pick(['#1a1020','#a0101e','#102a6a','#1a1a1a']);const nm=pick(TEN_N);let fs=26;g.font=fs+'px '+FONT;while(g.measureText(nm).width>w-18&&fs>10){fs--;g.font=fs+'px '+FONT;}g.textAlign='center';g.textBaseline='middle';g.fillText(nm,w/2,k*ph+ph/2+1);}});
-  return TENM[i]=new THREE.MeshBasicMaterial({map:t,side:THREE.DoubleSide});}
-function addTenant(x,y,z,ry,hh){const i=ri(0,7);tenantMat(i);const g=new THREE.PlaneGeometry(1.25,hh);g.rotateY(ry);g.translate(x,y,z);(TGEO[i]||(TGEO[i]=[])).push(g);const b=boxGeo(.18,hh,.18,0,0,0,ry);b.translate(x-Math.cos(ry)*.7,y,z+Math.sin(ry)*.7);addGeo('upole',b);}
+const TPALS=[['#f6f1e4','#b0141c'],['#f6f1e4','#1a1a1a'],['#f6f1e4','#5a1a7a'],['#fbe8ef','#c0185a'],['#1a1a1e','#f0c860'],['#2a1a3a','#ffd0f0'],['#c41a1a','#fff6e0'],['#f2d01c','#1a1a1a'],['#e6f2ff','#1a3a8a'],['#f6f1e4','#0a5a3a']];
+// ビルの角に縦に並ぶ袖看板（各階の店の名前。いくつかは空きで「テナント募集」）
+function tenantMat(i){if(TENM[i])return TENM[i];const t=canvasTex(160,800,(g,w,h)=>{fr(g,'#202024',0,0,w,h);const n=7,ph=h/n;
+  for(let k=0;k<n;k++){const y=k*ph;if(Math.random()<.1){fr(g,'#3a3a3e',5,y+4,w-10,ph-8);g.fillStyle='#6a6a70';g.font='700 19px '+SANS;g.textAlign='center';g.textBaseline='middle';g.fillText('テナント募集',w/2,y+ph/2);}
+    else{const nm=pick(TEN_N),p=pick(TPALS);drawBox(g,4,y+3,w-8,ph-6,nm,p[0],p[1],false,Math.random()<.45?['700',SERIF]:Math.random()<.5?['400',FONT]:['900',SANS]);}
+    fr(g,'rgba(0,0,0,.6)',w-32,y+ph-24,26,16);g.fillStyle='#fff';g.font='700 12px '+SANS;g.textAlign='center';g.textBaseline='middle';g.fillText((n+1-k)+'F',w-19,y+ph-16);}});
+  return TENM[i]=decal(new THREE.MeshBasicMaterial({map:t,color:0xd4d4d4,side:THREE.DoubleSide}));}
+function addTenant(x,y,z,ry,hh){const i=ri(0,7);tenantMat(i);const nx=Math.sin(ry),nz=Math.cos(ry);
+  for(const sd of [1,-1]){const g=new THREE.PlaneGeometry(1.25,hh);g.rotateY(ry+(sd<0?Math.PI:0));g.translate(x+nx*.14*sd,y,z+nz*.14*sd);(TGEO[i]||(TGEO[i]=[])).push(g);}
+  addGeo('sgnbox',boxGeo(1.33,hh+.1,.26,x,y,z,ry));const b=boxGeo(.18,hh,.18,0,0,0,ry);b.translate(x-Math.cos(ry)*.7,y,z+Math.sin(ry)*.7);addGeo('upole',b);}
+// ---- 絵をまとめた画像（アトラス）：1枚の画像に何種類も描き、描画の回数を増やさない ----
+function atlasPlane(w,h,cell,cols,rows){const g=new THREE.PlaneGeometry(w,h);const uv=g.attributes.uv;const c=cell%cols,r=Math.floor(cell/cols);for(let i=0;i<uv.count;i++)uv.setXY(i,(c+uv.getX(i))/cols,1-(r+1-uv.getY(i))/rows);return g;}
+function pxPlane(w,h,x0,y0,x1,y1,CW,CH){const g=new THREE.PlaneGeometry(w,h);const uv=g.attributes.uv;for(let i=0;i<uv.count;i++)uv.setXY(i,(x0+(x1-x0)*uv.getX(i))/CW,1-(y1-(y1-y0)*uv.getY(i))/CH);return g;}
+const putG=(g,x,y,z,ry)=>{if(ry)g.rotateY(ry);g.translate(x,y,z);return g;};
+// 店の上の看板（架空の店名）
+const FASC_N=['やきとり 鳥よし','博多ラーメン 一心','もつ鍋 よかろう','酒処 千鳥','ドラッグ ミナト','珈琲 灯台','うどん 八助','寿司 しま','中華 福来','居酒屋 まるきん','餃子 二番','天ぷら 志乃','焼肉 牛若','ベーカリー 麦','洋食 キッチン港','たばこ・酒 林商店'];
+const fasciaTex=()=>canvasTex(1024,512,g=>FASC_N.forEach((nm,i)=>{const p=pick(TPALS);drawBox(g,(i%2)*512+2,Math.floor(i/2)*64+3,508,58,nm,p[0],p[1],false,JFOOD.test(nm)&&Math.random()<.7?['700',SERIF]:pick([['400',FONT],['900',SANS]]));}));
+// 置き看板（店の前に立てる小さな看板）
+const STAND_N=['スナック 恋','BAR','ラウンジ','居酒屋','2F','カラオケ','焼鳥','もつ鍋','占い','BAR 3F','スナック','ふぐ','クラブ','麻雀','バー','ダーツ'];
+const standTex=()=>canvasTex(1024,512,g=>STAND_N.forEach((nm,i)=>{const p=pick(TPALS);drawBox(g,(i%8)*128+3,Math.floor(i/8)*256+3,122,250,nm,p[0],p[1],true,Math.random()<.5?['700',SERIF]:['900',SANS]);}));
+// 自動販売機の前面（白・赤・青・黒）
+const vendTex=()=>canvasTex(1024,512,g=>{['#ececee','#c8202a','#1e4ea8','#1a1a1e'].forEach((bc,i)=>{const x=i*256;fr(g,bc,x,0,256,512);fr(g,'#dff0ff',x+14,20,228,250);
+  for(let r=0;r<3;r++){const y=28+r*80;fr(g,'#b8c8d8',x+16,y+58,224,3);for(let k=0;k<8;k++){const cx=x+20+k*27.5;fr(g,pick(['#e8e8e8','#2a6ad8','#e04030','#f0c030','#3aa04a','#8a4a2a','#f08ab0','#1a1a1a','#e8e0c8']),cx,y,18,48);fr(g,'rgba(255,255,255,.45)',cx+2,y+4,4,40);fr(g,'#30d050',cx+3,y+64,12,6);}}
+  fr(g,'#2a2a2e',x+150,290,62,90);fr(g,'#c8c8c8',x+160,300,10,26);fr(g,'#c8c8c8',x+180,300,22,8);fr(g,'#101010',x+162,340,40,4);fr(g,'#1a1a1a',x+30,420,196,60);fr(g,'#3a3a3e',x+34,424,188,52);
+  fr(g,'rgba(255,255,255,.85)',x+30,292,100,40);g.fillStyle='#222';g.font='700 18px '+SANS;g.textAlign='center';g.textBaseline='middle';g.fillText('つめた〜い',x+80,312);});});
+// 屋上の広告看板（架空の広告）
+const BB=[['#c41a1a','#ffffff','#ffe14d','からし明太子','博多 なみ千鳥'],['#14244a','#ffffff','#9fd0ff','ビジネスホテル 那珂ステイ','中洲川端 徒歩3分'],['#f4f4f0','#1a3a9a','#d81e1e','学習塾 フクオカ進学ゼミ','冬期講習 受付中'],['#111114','#e8c060','#ffffff','もつ鍋 炎丸','中洲本店 営業中']];
+const bboardTex=()=>canvasTex(1024,512,g=>BB.forEach(([bg,fg,f2,t1,t2],i)=>{const x=(i%2)*512,y=Math.floor(i/2)*256;fr(g,'#2a2a2e',x,y,512,256);fr(g,bg,x+8,y+8,496,240);const rg=g.createRadialGradient(x+256,y+20,0,x+256,y+20,300);rg.addColorStop(0,'rgba(255,255,255,.14)');rg.addColorStop(1,'rgba(0,0,0,.18)');fr(g,rg,x+8,y+8,496,240);
+  g.fillStyle=fg;sText(g,t1,false,x+20,y+24,472,130,i===3?['700',SERIF]:['900',SANS],f=>f());g.fillStyle=f2;sText(g,t2,false,x+60,y+160,392,70,['700',SANS],f=>f());}));
+// 道路の標識（最高速度40・駐車禁止・裏側）
+const rsignTex=()=>canvasTex(384,128,g=>{const c=(i,f)=>{g.save();g.translate(i*128+64,64);f();g.restore();};
+  c(0,()=>{g.fillStyle='#d8201c';g.beginPath();g.arc(0,0,60,0,TAU);g.fill();g.fillStyle='#f6f6f4';g.beginPath();g.arc(0,0,46,0,TAU);g.fill();g.fillStyle='#1a3a9a';g.font='700 54px '+SANS;g.textAlign='center';g.textBaseline='middle';g.fillText('40',0,3);});
+  c(1,()=>{g.fillStyle='#d8201c';g.beginPath();g.arc(0,0,60,0,TAU);g.fill();g.fillStyle='#1e4ea8';g.beginPath();g.arc(0,0,48,0,TAU);g.fill();g.strokeStyle='#d8201c';g.lineWidth=12;g.beginPath();g.moveTo(-34,-34);g.lineTo(34,34);g.stroke();});
+  c(2,()=>{g.fillStyle='#8a8c90';g.beginPath();g.arc(0,0,60,0,TAU);g.fill();fr(g,'#5a5c60',-8,-60,16,120);});});
+// 青い案内標識（交差点の手前）と、交差点名の標識。地名は実在の地名
+const GUIDE=[{u:['中洲・呉服町','Nakasu/Gofukumachi'],l:['天神北','Tenjin-kita'],r:['薬院','Yakuin']},{u:['中洲・天神','Nakasu/Tenjin'],l:['博多駅','Hakata Sta.'],r:['博多ふ頭','Hakata Pier']},{u:['天神北','Tenjin-kita'],l:['赤坂','Akasaka'],r:['中洲・博多','Nakasu/Hakata']}];
+const XNAME=[['天神','Tenjin'],['呉服町','Gofukumachi']];
+function guideTex(){return canvasTex(512,1024,g=>{const tri=(a,b,c,d,e,f)=>{g.beginPath();g.moveTo(a,b);g.lineTo(c,d);g.lineTo(e,f);g.closePath();g.fill();};
+  GUIDE.forEach((d,i)=>{const y0=i*300,w=512,h=300;fr(g,'#1a4ea8',0,y0,w,h);g.strokeStyle='#f4f6f8';g.lineWidth=5;rrect(g,8,y0+8,w-16,h-16,14);g.stroke();
+    g.fillStyle='#f4f6f8';const cx=w/2,cy=y0+h*.66;const W2='#f4f6f8';fr(g,W2,cx-10,cy,20,h*.27);fr(g,W2,cx-10,y0+h*.36,20,cy-(y0+h*.36));g.fillStyle=W2;tri(cx,y0+h*.27,cx-24,y0+h*.38,cx+24,y0+h*.38);
+    fr(g,W2,w*.22,cy-10,cx-w*.22,20);g.fillStyle=W2;tri(w*.13,cy,w*.23,cy-24,w*.23,cy+24);fr(g,W2,cx,cy-10,w*.78-cx,20);g.fillStyle=W2;tri(w*.87,cy,w*.77,cy-24,w*.77,cy+24);
+    g.textAlign='center';g.textBaseline='middle';const T=(t,x,y,fs,mw)=>{g.font=`700 ${fs}px ${SANS}`;const m=g.measureText(t).width;if(m>mw)g.font=`700 ${fs*mw/m}px ${SANS}`;g.fillText(t,x,y);};
+    T(d.u[0],cx,y0+h*.11,38,300);T(d.u[1],cx,y0+h*.21,18,300);T(d.l[0],w*.2,cy-44,34,180);T(d.l[1],w*.2,cy+40,16,180);T(d.r[0],w*.8,cy-44,34,180);T(d.r[1],w*.8,cy+40,16,180);});
+  XNAME.forEach(([j,e],i)=>{const x=i*256,y=900;fr(g,'#1a4ea8',x+2,y+2,252,120);g.strokeStyle='#f4f6f8';g.lineWidth=3;rrect(g,x+7,y+7,242,110,8);g.stroke();g.fillStyle='#f4f6f8';g.textAlign='center';g.textBaseline='middle';g.font='700 46px '+SANS;g.fillText(j,x+128,y+50);g.font='700 20px '+SANS;g.fillText(e,x+128,y+96);});});}
+const acTex=()=>canvasTex(128,96,(g,w,h)=>{fr(g,'#c9c9c2',0,0,w,h);fr(g,'#b4b4ac',0,h-6,w,6);g.fillStyle='#2c2c2e';g.beginPath();g.arc(46,48,32,0,TAU);g.fill();g.strokeStyle='#8a8a84';g.lineWidth=2;for(let r=6;r<32;r+=6){g.beginPath();g.arc(46,48,r,0,TAU);g.stroke();}
+  g.beginPath();g.moveTo(14,48);g.lineTo(78,48);g.moveTo(46,16);g.lineTo(46,80);g.stroke();fr(g,'#b0b0a8',90,14,30,60);for(let y=18;y<72;y+=4)fr(g,'#9a9a92',92,y,26,1.5);});
+const tankTex=()=>canvasTex(64,64,(g,w,h)=>{fr(g,'#bcc4cc',0,0,w,h);g.fillStyle='#8e98a2';for(let i=0;i<=4;i++){g.fillRect(i*16-1,0,2,h);g.fillRect(0,i*16-1,w,2);}g.fillStyle='rgba(0,0,0,.08)';for(let i=0;i<4;i++)g.fillRect(i*16+3,3,10,10);});
+const tactTex=()=>{const t=canvasTex(64,64,(g,w,h)=>{fr(g,'#d8b020',0,0,w,h);g.fillStyle='#f0cc3a';for(let y=8;y<64;y+=16)for(let x=8;x<64;x+=16){g.beginPath();g.arc(x,y,4.5,0,TAU);g.fill();}g.strokeStyle='rgba(0,0,0,.25)';g.strokeRect(0,0,64,64);});t.wrapS=t.wrapT=THREE.RepeatWrapping;return t;};
 function idx(g){if(!g.index){g.setIndex([...Array(g.attributes.position.count).keys()]);}if(!g.attributes.uv)g.setAttribute('uv',new THREE.Float32BufferAttribute(new Array(g.attributes.position.count*2).fill(0),2));return g;}
 function prismGeo(L,D,Hh){const a=-L/2,b=L/2,c=D/2;const P=[[a,0,-c],[a,0,c],[a,Hh,0],[b,0,-c],[b,0,c],[b,Hh,0]];const F=[[0,2,1],[3,4,5],[0,3,5],[0,5,2],[1,2,5],[1,5,4]];
   const pos=[];for(const f of F)for(const i of f)pos.push(...P[i]);const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));g.computeVertexNormals();return idx(g);}
@@ -547,9 +695,43 @@ function streetFurniture(){
   // Tenjin subway entrances
   for(const [x,z,ry,nm] of [[-121.5,-86,Math.PI/2],[-98.5,-114,-Math.PI/2],[-121.5,104,Math.PI/2],[-180,-86,Math.PI/2],[-121.5,198,Math.PI/2,'地下鉄 薬院'],[230,-118,-Math.PI/2,'地下鉄 呉服町']]){if(inBld(x,z,1))continue;const g=boxGeo(2.4,2.6,4.4,0,1.3,0,ry);g.translate(x,0,z);addGeo('glass',g);BLD.push({x0:x-1.3,x1:x+1.3,z0:z-2.3,z1:z+2.3,h:2.6});addSign(nm||'地下鉄 天神','#3d8bff',false,x+Math.sin(ry)*1.25,2.2,z+Math.cos(ry)*1.25,ry,2.2,.6);}
 }
+// ---- 街の細かいもの：エアコンの室外機、置き看板、自動販売機、道路標識、青い案内標識、交差点名の標識 ----
+function sideSpot(b,s,d,m){m=m||1;if(s==='+x')return {x:b.x1+d,z:rand(b.z0+m,b.z1-m),ry:Math.PI/2};if(s==='-x')return {x:b.x0-d,z:rand(b.z0+m,b.z1-m),ry:-Math.PI/2};if(s==='+z')return {x:rand(b.x0+m,b.x1-m),z:b.z1+d,ry:0};return {x:rand(b.x0+m,b.x1-m),z:b.z0-d,ry:Math.PI};}
+function streetDetail(){
+  for(const b of BLD){if(!b.kind||b.h<8||Math.random()<.4)continue;const s=pick(['+x','-x','+z','-z']);const nf=Math.min(6,Math.floor(b.h/3.2)-1);if(nf<1)continue;
+    for(let i=ri(2,6);i>0;i--){const p=sideSpot(b,s,.2,.8);addGeo('acu',boxGeo(.8,.6,.3,p.x,ri(1,nf)*3.2+rand(.4,1.1),p.z,p.ry));}}
+  for(const b of BLD){if(!(b.kind==='N'||b.kind==='T'&&Math.random()<.3)||Math.random()<.4)continue;const s=faceToOpen(b);
+    for(let i=ri(1,2);i>0;i--){const p=sideSpot(b,s,.7);if(ROADS.some(r=>inR(p.x,p.z,r,.6))||isWater(p.x,p.z)||inBld(p.x,p.z,.2))continue;const r2=p.ry+(Math.random()<.6?Math.PI/2:0),c=ri(0,15);
+      addGeo('sgnbox',boxGeo(.5,1.02,.26,p.x,.65,p.z,r2));addGeo('sgnbox',boxGeo(.56,.1,.4,p.x,.05,p.z,r2));
+      for(const sd of [1,-1])addGeo('stand',putG(atlasPlane(.44,.92,c,8,2),p.x+Math.sin(r2)*.135*sd,.65,p.z+Math.cos(r2)*.135*sd,r2+(sd<0?Math.PI:0)));}}
+  let nv=0;for(let i=0;i<400&&nv<26;i++){const b=pick(BLD);if(!b.kind||!'NHTE'.includes(b.kind))continue;const p=sideSpot(b,faceToOpen(b),.45);if(ROADS.some(r=>inR(p.x,p.z,r,.8))||isWater(p.x,p.z)||inBld(p.x,p.z,.1))continue;
+    const c=ri(0,3),k=ri(1,2),lx=Math.cos(p.ry),lz=-Math.sin(p.ry);for(let j=0;j<k;j++){const x=p.x+lx*j*1.05,z=p.z+lz*j*1.05;addGeo('vend',boxGeo(1,1.85,.75,x,.93,z,p.ry));addGeo('vendF',putG(atlasPlane(.96,1.8,(c+j)%4,4,1),x+Math.sin(p.ry)*.38,.93,z+Math.cos(p.ry)*.38,p.ry));}
+    LSRC.push({x:p.x+Math.sin(p.ry)*1.2,y:1.4,z:p.z+Math.cos(p.ry)*1.2,c:0xe8f4ff,i:.9});nv++;}
+  const H=ROADS.filter(r=>r.x1-r.x0>r.z1-r.z0),V=ROADS.filter(r=>!(r.x1-r.x0>r.z1-r.z0));
+  // 最高速度40・駐車禁止（左側通行：車から見て左の歩道に、向かってくる車の方を向けて立てる）
+  const rsign=(x,z,ry,c)=>{if(inBld(x,z,.4)||isWater(x,z)||LANES.some(l=>inR(x,z,l,1))||RESERVE.some(r=>inR(x,z,r,.5)))return;addGeo('upole',boxGeo(.08,2.6,.08,x,1.3,z));
+    addGeo('rsign',putG(pxPlane(.62,.62,c*128,0,c*128+128,128,384,128),x+Math.sin(ry)*.05,2.5,z+Math.cos(ry)*.05,ry));addGeo('rsign',putG(pxPlane(.62,.62,256,0,384,128,384,128),x+Math.sin(ry)*.04,2.5,z+Math.cos(ry)*.04,ry+Math.PI));};
+  let ci=0;for(const h of H)for(let x=h.x0+30;x<h.x1-10;x+=64){if(V.some(v=>x>v.x0-16&&x<v.x1+16)||RIVERS.some(r=>x>r.x0-6&&x<r.x1+6))continue;rsign(x,h.z0-1.25,-Math.PI/2,ci++%2);rsign(x+20,h.z1+1.25,Math.PI/2,ci++%2);}
+  for(const v of V)for(let z=v.z0+30;z<v.z1-10;z+=64){if(H.some(h=>z>h.z0-16&&z<h.z1+16))continue;rsign(v.x1+1.25,z,Math.PI,ci++%2);rsign(v.x0-1.25,z+20,0,ci++%2);}
+  // 青い案内標識（片持ちの柱から道路の上に張り出す）
+  const guide=(px,pz,ax,az,ry,cell)=>{for(let t=0;t<6&&inBld(px,pz,.3);t++){px+=az?6:0;pz+=ax?6:0;}addGeo('upole',boxGeo(.3,7.2,.3,px,3.6,pz));const L=6.2;addGeo('upole',boxGeo(.16,.16,L,px+ax*L/2,6.9,pz+az*L/2,Math.atan2(ax,az)));
+    const cx=px+ax*4.4,cz=pz+az*4.4;addGeo('guide',putG(pxPlane(4.2,2.46,0,cell*300,512,cell*300+300,512,1024),cx+Math.sin(ry)*.07,5.4,cz+Math.cos(ry)*.07,ry));addGeo('sgnbox',boxGeo(4.3,2.56,.12,cx,5.4,cz,ry));
+    for(const o of [-1.5,1.5])addGeo('upole',boxGeo(.08,.9,.08,cx+ax*o,6.4,cz+az*o));};
+  guide(-140,-109.4,0,1,-Math.PI/2,0);guide(244,-90.8,0,-1,Math.PI/2,1);guide(-119.4,-70,1,0,0,2);
+  // 交差点名の標識（信号の柱）
+  const XN={'明治通り|渡辺通り':0,'明治通り|大博通り':1};
+  for(const h of H)for(const v of V){const i=XN[h.n+'|'+v.n];if(i===undefined)continue;
+    for(const [x,z,ry] of [[v.x0-1.4,h.z0-1.4,-Math.PI/2],[v.x1+1.4,h.z1+1.4,Math.PI/2],[v.x1+1.4,h.z0-1.4,Math.PI],[v.x0-1.4,h.z1+1.4,0]]){addGeo('guide',putG(pxPlane(1.5,.72,i*256,900,i*256+256,1024,512,1024),x+Math.sin(ry)*.17,4.7,z+Math.cos(ry)*.17,ry));addGeo('sgnbox',boxGeo(1.56,.78,.06,x+Math.sin(ry)*.13,4.7,z+Math.cos(ry)*.13,ry));}}
+  // 電柱の変圧器（中洲の路地）
+  if(GEO.upole)for(const g of GEO.upole.slice()){const bb=(g.boundingBox||(g.computeBoundingBox(),g.boundingBox));if(bb.max.y>8.3&&bb.max.y<8.7&&bb.max.x-bb.min.x<.4&&Math.random()<.5){const c=new THREE.CylinderGeometry(.32,.32,.9,10);c.translate((bb.min.x+bb.max.x)/2+.42,6.3,(bb.min.z+bb.max.z)/2);addGeo('tlbox',c);}}}
 // ================= BUILD WORLD =================
-const LSRC=[],LAMPS=[];const SIGNGEO={},REFL={};const addSign=(text,col,vert,x,y,z,ry,w,h)=>{const s=signTex(text,col,vert);if(y<12&&Math.random()<.5)LSRC.push({x:x+Math.sin(ry)*1.5,y,z:z+Math.cos(ry)*1.5,c:parseInt(col.slice(1),16),i:1.6});const g=new THREE.PlaneGeometry(w,h);g.rotateY(ry);g.translate(x,y,z);(SIGNGEO[s.key]||(SIGNGEO[s.key]={s,g:[]})).g.push(g);
-  if(y<14){const nx=Math.sin(ry),nz=Math.cos(ry);const flat=Math.abs(x-Math.round(x))>.01||Math.abs(z-Math.round(z))>.01;const cx=x+nx*(vert?0:3),cz=z+nz*(vert?0:3);if(!isWater(cx,cz)){const rg=new THREE.PlaneGeometry(Math.max(1,Math.min(w,5))*.8,vert?6:5.5);rg.rotateX(-Math.PI/2);rg.rotateY(ry+(vert?Math.PI/2:0));rg.translate(cx,.07,cz);(REFL[col]||(REFL[col]=[])).push(rg);}}};
+const LSRC=[],LAMPS=[];const SIGNGEO={},REFL={};
+// 看板を置く（板の厚みの箱つき）。dbl＝壁から突き出す看板で、両面に文字を出す
+const addSign=(text,col,vert,x,y,z,ry,w,h,dbl)=>{const s=signTex(text,col,vert);const nx=Math.sin(ry),nz=Math.cos(ry);if(s.lit&&y<12&&Math.random()<.5)LSRC.push({x:x+nx*1.5,y,z:z+nz*1.5,c:parseInt(col.slice(1),16),i:1.6});
+  const push=g=>(SIGNGEO[s.key]||(SIGNGEO[s.key]={s,g:[]})).g.push(g);
+  if(dbl){for(const sd of [1,-1]){const g=new THREE.PlaneGeometry(w,h);g.rotateY(ry+(sd<0?Math.PI:0));g.translate(x+nx*.13*sd,y,z+nz*.13*sd);push(g);}addGeo('sgnbox',boxGeo(w+.08,h+.08,.24,x,y,z,ry));}
+  else{const g=new THREE.PlaneGeometry(w,h);g.rotateY(ry);g.translate(x+nx*.1,y,z+nz*.1);push(g);addGeo('sgnbox',boxGeo(w+.08,h+.08,.18,x,y,z,ry));}
+  if(s.lit&&y<14){const cx=x+nx*(vert?0:3),cz=z+nz*(vert?0:3);if(!isWater(cx,cz)){const rg=new THREE.PlaneGeometry(Math.max(1,Math.min(w,5))*.8,vert?6:5.5);rg.rotateX(-Math.PI/2);rg.rotateY(ry+(vert?Math.PI/2:0));rg.translate(cx,.07,cz);(REFL[col]||(REFL[col]=[])).push(rg);}}};
 let BMATS=[];
 function bldGeo(w,h,d){const g=new THREE.BoxGeometry(w,h,d);const uv=g.attributes.uv;const S=[[d,h],[d,h],[w,d],[w,d],[w,h],[w,h]];
   for(let f=0;f<6;f++)for(let i=0;i<4;i++){const k=f*4+i;if(f===2||f===3)uv.setXY(k,.02,1-60/256);else uv.setXY(k,uv.getX(k)*S[f][0]/16,uv.getY(k)*S[f][1]/16);}g.translate(0,h/2,0);return g;}
@@ -560,7 +742,7 @@ function decorate(b,kind){const s=faceToOpen(b);const h=b.h;const along=(s==='+x
   const place=(u,y,w,hh,txt,col,vert,proj)=>{let x,z,ry;const a=along[0]+u*len;
     if(s==='+x'){x=b.x1+(proj?1:.07);z=a;ry=proj?0:Math.PI/2;}else if(s==='-x'){x=b.x0-(proj?1:.07);z=a;ry=proj?0:-Math.PI/2;}
     else if(s==='+z'){z=b.z1+(proj?1:.07);x=a;ry=proj?Math.PI/2:0;}else{z=b.z0-(proj?1:.07);x=a;ry=proj?Math.PI/2:Math.PI;}
-    addSign(txt,col,vert,x,y,z,ry,w,hh);};
+    addSign(txt,col,vert,x,y,z,ry,w,hh,proj);if(!proj&&y<4.6)b.lowSign=1;};
   if(kind==='N'&&h>8){const u=rand(.12,.88),a=along[0]+u*len;const hh=Math.min(h-3,rand(6,12));const yy=2.8+hh/2;
     if(s==='+x')addTenant(b.x1+.9,yy,a,0,hh);else if(s==='-x')addTenant(b.x0-.9,yy,a,Math.PI,hh);else if(s==='+z')addTenant(a,yy,b.z1+.9,Math.PI/2,hh);else addTenant(a,yy,b.z0-.9,-Math.PI/2,hh);}
   if(kind==='Y'){if(Math.random()<.7)place(rand(.2,.8),rand(2.6,3.4),Math.min(len-1,4.5),1,pick(Y_N),pick(['#ffe8b0','#ffb238','#9fe8c8','#ff9ec4','#ffffff']),false,false);if(Math.random()<.3)place(rand(.2,.8),rand(5,8),1.2,3.2,pick(['珈琲','古着','花屋','美容室','雑貨','パン']),pick(['#ffe8b0','#9fe8c8']),true,true);return;}
@@ -580,12 +762,13 @@ function genDistrict(x0,x1,z0,z1,step,kind){for(let cx=x0;cx<x1;cx+=step)for(let
       else if(kind==='Y'){const hh=rand(7,17);b=Math.random()<.4?addBldK(rx0,rx1,rz0,rz1,hh,pick(['apt','apt2'])):addBld(rx0,rx1,rz0,rz1,hh,ri(0,BMATS.length-1));}
       else if(kind==='T'&&Math.random()<.45){const hh=rand(36,72);b=addBldK(rx0,rx1,rz0,rz1,hh,'glass');const iw=(rx1-rx0)*.7,id=(rz1-rz0)*.7;const cr=bldGeo(iw,rand(5,12),id);cr.translate((rx0+rx1)/2,hh,(rz0+rz1)/2);addGeo('glass',cr);}
       else{const hh=kind==='T'?rand(16,58):kind==='N'?rand(10,30):rand(12,40);b=addBld(rx0,rx1,rz0,rz1,hh,ri(0,BMATS.length-1));}
-      decorate(b,kind);break;}w*=.7;d*=.7;}}}
+      b.kind=kind;decorate(b,kind);break;}w*=.7;d*=.7;}}}
 let YATAI=[],visionTex=null,visionCv=null,reflections=[],flickerMats=[],polR,polB;
 function buildWorld(){
-  const WT=[winTex(.35,true),winTex(.55,true),winTex(.3,false),winTex(.6,false)];
-  const BC=[0xb8b0b4,0x9ca2ae,0xc0b0a0,0x8a8890];makeEnv();
-  for(const t of WT)for(const c of BC.slice(0,3))BMATS.push(linMat(new THREE.MeshStandardMaterial({color:c,map:t,emissive:0xffffff,emissiveMap:t,emissiveIntensity:.42,roughness:.62,metalness:.15,envMapIntensity:.55})));
+  // 外壁6種類×色2つ。窓の明かりは別の画像（emissiveMap）なので、壁そのものは光らない
+  const FT=[0,1,2,3,4,5].map(facadeTex);for(const [m,e] of FT){m.repeat.set(1,.5);e.repeat.set(1,.5);}
+  const BC=[0xffffff,0xd6d2cc];makeEnv();
+  for(const [m,e] of FT)for(const c of BC)BMATS.push(linMat(new THREE.MeshStandardMaterial({color:c,map:m,emissive:0xffffff,emissiveMap:e,emissiveIntensity:.6,roughness:.78,metalness:.05,envMapIntensity:.45})));
   // ground (three land strips) + roads
   const PT=paverTex(),WT2=wetTex();PT.repeat.set(1,1);
   const gm=linMat(new THREE.MeshStandardMaterial({color:0xb0a8a8,map:PT,roughnessMap:WT2,roughness:.9,metalness:.05,envMapIntensity:.45}));
@@ -599,7 +782,8 @@ function buildWorld(){
       else{addGeo('curb',boxGeo(.3,.16,b-a,r.x0-.15,.08,(a+b)/2));addGeo('curb',boxGeo(.3,.16,b-a,r.x1+.15,.08,(a+b)/2));}}}
   // crosswalks
   for(const a of ROADS)for(const b of ROADS){if(a===b||!(a.x1-a.x0>a.z1-a.z0)||(b.x1-b.x0>b.z1-b.z0))continue;if(b.x0>a.x1||b.x1<a.x0||a.z0>b.z1||a.z1<b.z0)continue;
-    for(let i=0;i<6;i++){const x=b.x0+1+i*(b.x1-b.x0-2)/5;addGeo('line',boxGeo(.9,.05,3,x,.05,a.z0-2.2));addGeo('line',boxGeo(.9,.05,3,x,.05,a.z1+2.2));}}
+    for(let i=0;i<6;i++){const x=b.x0+1+i*(b.x1-b.x0-2)/5;addGeo('line',boxGeo(.9,.05,3,x,.05,a.z0-2.2));addGeo('line',boxGeo(.9,.05,3,x,.05,a.z1+2.2));}
+    for(const zc of [a.z0-2.2,a.z1+2.2])for(const xc of [b.x0-.95,b.x1+.95])if(!isWater(xc,zc))addGeo('tact',boxGeo(.6,.03,3,xc,.03,zc));}
   // rivers
   const wm=linMat(new THREE.MeshStandardMaterial({color:0x0a1226,roughness:.06,metalness:.85,emissive:0x040814,envMapIntensity:1.6}));
   for(const rv of RIVERS){const m=new THREE.Mesh(new THREE.PlaneGeometry(rv.x1-rv.x0,ZMAX-ZMIN+120),wm);m.rotation.x=-Math.PI/2;m.position.set((rv.x0+rv.x1)/2,-.9,0);scene.add(m);
@@ -611,11 +795,14 @@ function buildWorld(){
     for(let x=b.x0+3;x<b.x1;x+=6){addGeo('pole',boxGeo(.18,4.2,.18,x,2.1,b.z-b.w/2));addGeo(b.ped?'bulbB':'bulb',boxGeo(.5,.35,.5,x,4.3,b.z-b.w/2));addGeo('pole',boxGeo(.18,4.2,.18,x,2.1,b.z+b.w/2));addGeo(b.ped?'bulbB':'bulb',boxGeo(.5,.35,.5,x,4.3,b.z+b.w/2));}}
   // street lamps
   for(const r of ROADS){const horiz=r.x1-r.x0>r.z1-r.z0;for(let s=(horiz?r.x0:r.z0)+6;s<(horiz?r.x1:r.z1);s+=26){for(const side of [-1,1]){const x=horiz?s:(side<0?r.x0-1:r.x1+1),z=horiz?(side<0?r.z0-1:r.z1+1):s;if(isWater(x,z))continue;
-    addGeo('pole',boxGeo(.2,6,.2,x,3,z));addGeo('bulb',boxGeo(.7,.3,.7,x,6,z));LSRC.push({x,y:5.6,z,c:0xffc890,i:1.5});LAMPS.push({x,z});const pg=new THREE.PlaneGeometry(11,11);pg.rotateX(-Math.PI/2);pg.translate(x,.065,z);addGeo('pool',pg);}}}
+    // 道路側に腕を出したLEDの街灯
+    const ax=horiz?0:-side,az=horiz?-side:0,hx=x+ax*1.9,hz=z+az*1.9;addGeo('pole',boxGeo(.2,7.2,.2,x,3.6,z));addGeo('pole',boxGeo(.1,.1,2.1,x+ax*1.05,7.1,z+az*1.05,horiz?0:Math.PI/2));
+    addGeo('pole',boxGeo(horiz?.36:.9,.12,horiz?.9:.36,hx,7.05,hz));addGeo('bulb',boxGeo(horiz?.26:.74,.03,horiz?.74:.26,hx,6.98,hz));
+    LSRC.push({x:hx,y:6.4,z:hz,c:0xffe2c0,i:1.6});LAMPS.push({x,z});const pg=new THREE.PlaneGeometry(11,11);pg.rotateX(-Math.PI/2);pg.translate(hx,.065,hz);addGeo('pool',pg);}}}
   // custom buildings: snack, bar, shops, hospital
   const sn=addBld(40,54,-31,-13,14,1);addSign('スナック月光','#ff3d8b',true,39.9,7,-17,-Math.PI/2,1.6,8);addSign('月光','#ffe14d',false,39.93,3.2,-22,-Math.PI/2,4,1.2);
   box(.1,2.3,1.4,bas(0x552233),39.95,1.15,-22);
-  const br=addBld(4,20,49,67,12,4);addSign('BAR 玄','#ff2a2a',false,20.08,3.4,58,Math.PI/2,6,1.6);addSign('会員制','#b26bff',true,20.9,6,62,0,1.3,4.6);box(.1,2.3,1.4,bas(0x331111),20.05,1.15,58);
+  const br=addBld(4,20,49,67,12,4);addSign('BAR 玄','#ff2a2a',false,20.08,3.4,58,Math.PI/2,6,1.6);addSign('会員制','#b26bff',true,20.9,6,62,0,1.3,4.6,true);box(.1,2.3,1.4,bas(0x331111),20.05,1.15,58);
   addBld(40,52,24,37,9,2);addSign('ヨカマート','#4dff88',false,39.93,3.4,30.5,-Math.PI/2,9,1.8);box(.1,2.4,6,bas(0xdfffe8),39.95,1.2,30.5);
   addBld(-135,-122,-74,-58,22,5);addSign('ヨカマート','#4dff88',false,-121.93,3.4,-66,Math.PI/2,9,1.8);box(.1,2.4,6,bas(0xdfffe8),-121.95,1.2,-66);
   addBld(-140,-125,33,50,26,7);addSign('博多中央病院','#3de0ff',false,-124.93,6,41.5,Math.PI/2,12,2);addSign('+','#4dff88',false,-124.92,3,44.5,Math.PI/2,2,2);
@@ -632,13 +819,13 @@ function buildWorld(){
   for(const dz of [-1.4,1.4]){const m=new THREE.Mesh(new THREE.SphereGeometry(.3,12,10),bas(0xff4a22));m.scale.y=1.3;m.position.set(3.6,2.5,-34+dz);scene.add(m);}
   addBld(-98,-84,-60,-44,18,6).noStore=1;addSign('CLUB LUMINAS','#b26bff',false,-98.07,4.2,-52,-Math.PI/2,9,1.8);addSign('NIGHT CLUB','#3de0ff',false,-98.07,8,-52,-Math.PI/2,8,1.4);box(.1,2.6,2,bas(0x1a0a2a),-98.05,1.3,-52);LSRC.push({x:-100,y:3,z:-52,c:0xb26bff,i:2.2});
   // BAR YAHMAN (Nakasu 2-chome)
-  addBld(44,58,6,17,16,3).noStore=1;addSign('BAR YAHMAN','#ff5a1a',false,51,4.3,5.92,Math.PI,9,1.9);addSign('ヤーマン 2F','#ffe14d',true,57.3,7.5,5.2,Math.PI/2,1.4,6);
+  addBld(44,58,6,17,16,3).noStore=1;addSign('BAR YAHMAN','#ff5a1a',false,51,4.3,5.92,Math.PI,9,1.9);addSign('ヤーマン 2F','#ffe14d',true,57.3,7.5,5.2,Math.PI/2,1.4,6,true);
   addSign('夜のディズニーランド','#3de0ff',false,51,11,5.92,Math.PI,11,1.7);box(1.6,2.4,.1,bas(0x3a0a06),51,1.2,5.95);LSRC.push({x:51,y:3,z:3,c:0xff6a2a,i:2});LSRC.push({x:51,y:3,z:3,c:0xff6a2a,i:0});
   // districts
   buildYakuin();buildGofuku();buildKego();
   genDistrict(-246,-44,-246,140,26,'T');genDistrict(-246,-44,140,246,18,'Y');genDistrict(0,64,-160,160,14,'N');genDistrict(0,64,-246,-160,22,'E');genDistrict(0,64,160,246,22,'E');buildHakata();
   genDistrict(140,212,-236,-60,22,'G');genDistrict(90,140,-236,-60,22,'H');genDistrict(90,212,-60,236,22,'H');genDistrict(228,246,-236,-60,18,'G');genDistrict(228,246,-60,236,18,'H');
-  streetFurniture();
+  streetFurniture();streetDetail();
   // utility poles & wires along Nakasu lanes
   const wpts=[];for(const zl of [-50,45,-5]){let prev=null;for(let x=3;x<64;x+=11){const z=zl+(zl===-5?-4.3:-2.6);if(inBld(x,z,.3)||inR(x,z,ROADS[4],1)){prev=null;continue;}addGeo('upole',boxGeo(.28,8.5,.28,x,4.25,z));addGeo('upole',boxGeo(1.6,.14,.14,x,7.6,z));
     if(prev)for(const o of [-.7,0,.7])wpts.push(prev.x+o,7.65,prev.z,x+o*.2,7.5,z,x+o*.2,7.5,z,x+o,7.65,z);prev={x,z};}}
@@ -647,17 +834,27 @@ function buildWorld(){
    const wg=new THREE.BufferGeometry();wg.setAttribute('position',new THREE.BufferAttribute(new Float32Array(arr),3));scene.add(new THREE.LineSegments(wg,new THREE.LineBasicMaterial({color:0x08080a})));}
   // lit shop fronts on ground floors facing streets
   for(const b of BLD.slice()){if(b.h<8||b.x1-b.x0<4||b.noStore)continue;const s=faceToOpen(b);const cx=(b.x0+b.x1)/2,cz=(b.z0+b.z1)/2;const L=(s==='+x'||s==='-x')?b.z1-b.z0:b.x1-b.x0;
-    const g=new THREE.PlaneGeometry(L-1,2.6);const uv=g.attributes.uv;for(let i=0;i<uv.count;i++)uv.setX(i,uv.getX(i)*Math.max(1,Math.round((L-1)/5))/4);
+    const g=new THREE.PlaneGeometry(L-1,2.6);const uv=g.attributes.uv;const nseg=Math.max(1,Math.round((L-1)/5)),off=ri(0,7);for(let i=0;i<uv.count;i++)uv.setX(i,(uv.getX(i)*nseg+off)/8);
     let ry,x,z;if(s==='+x'){ry=Math.PI/2;x=b.x1+.06;z=cz;}else if(s==='-x'){ry=-Math.PI/2;x=b.x0-.06;z=cz;}else if(s==='+z'){ry=0;x=cx;z=b.z1+.06;}else{ry=Math.PI;x=cx;z=b.z0-.06;}
     if(isWater(x+Math.sin(ry)*3,z+Math.cos(ry)*3))continue;g.rotateY(ry);g.translate(x,1.45,z);addGeo('store',g);
     const aw=boxGeo(L-.6,.12,1.3,0,0,0,ry);aw.translate(x+Math.sin(ry)*.6,3.05,z+Math.cos(ry)*.6);addGeo(Math.random()<.5?'awn1':'awn2',aw);
     const glow=new THREE.PlaneGeometry(L-1,3.2);glow.rotateX(-Math.PI/2);glow.rotateY(ry);glow.translate(x+Math.sin(ry)*1.7,.08,z+Math.cos(ry)*1.7);addGeo('spill',glow);
-    if(Math.random()<.5)LSRC.push({x:x+Math.sin(ry)*2,y:2.2,z:z+Math.cos(ry)*2,c:0xffd6a0,i:1.1});}
+    if(Math.random()<.5)LSRC.push({x:x+Math.sin(ry)*2,y:2.2,z:z+Math.cos(ry)*2,c:0xffd6a0,i:1.1});
+    // 店の上の看板（ほかの看板が低い位置にない店だけ）
+    if(b.kind&&!b.lowSign&&Math.random()<.75){const fw=Math.min(L-1.6,4.8);if(fw>1.6){const fh=.62*Math.min(1,fw/4.8)+.06,o=rand(-(L-1-fw)/2,(L-1-fw)/2),lx=Math.cos(ry),lz=-Math.sin(ry);
+      addGeo('fasc',putG(atlasPlane(fw,fh,ri(0,15),2,8),x+lx*o+Math.sin(ry)*.17,3.56,z+lz*o+Math.cos(ry)*.17,ry));addGeo('sgnbox',boxGeo(fw+.08,fh+.08,.16,x+lx*o+Math.sin(ry)*.08,3.56,z+lz*o+Math.cos(ry)*.08,ry));}}}
   // rooftop clutter
-  for(const b of BLD.slice()){if(b.h<10||Math.random()<.35)continue;const n=ri(1,3);for(let i=0;i<n;i++){const w=rand(1.2,3),d=rand(1.2,3);addGeo('roof',boxGeo(w,rand(.8,2.2),d,rand(b.x0+w/2+.5,b.x1-w/2-.5)||b.x0+1,b.h+.6,rand(b.z0+d/2+.5,b.z1-d/2-.5)||b.z0+1));}
-    addGeo('roof',boxGeo(b.x1-b.x0,.5,.3,(b.x0+b.x1)/2,b.h+.25,b.z0+.15));addGeo('roof',boxGeo(b.x1-b.x0,.5,.3,(b.x0+b.x1)/2,b.h+.25,b.z1-.15));}
-  // vending machines in Nakasu alleys
-  for(let i=0;i<14;i++){const x=rand(2,62),z=pick([-50,-2,2,45])+rand(-2,2);if(inBld(x,z,1))continue;addGeo('vend',boxGeo(1,1.9,.8,x,.95,z));}
+  for(const b of BLD.slice()){if(b.h<10||Math.random()<.35)continue;
+    if(b.kind&&'NHEY'.includes(b.kind)&&b.h<34&&Math.random()<.45){// 受水槽（パネルの水槽を鉄の脚にのせる）
+      const tw=rand(1.8,2.6),td=rand(1.6,2.4),th=rand(1.4,2),x=rand(b.x0+tw/2+.6,b.x1-tw/2-.6),z=rand(b.z0+td/2+.6,b.z1-td/2-.6);addGeo('tank',boxGeo(tw,th,td,x,b.h+.6+th/2,z));for(const [dx,dz] of [[-1,-1],[1,-1],[-1,1],[1,1]])addGeo('upole',boxGeo(.1,.6,.1,x+dx*(tw/2-.1),b.h+.3,z+dz*(td/2-.1)));}
+    else{const n=ri(1,3);for(let i=0;i<n;i++){const w=rand(1.2,3),d=rand(1.2,3);addGeo('roof',boxGeo(w,rand(.8,2.2),d,rand(b.x0+w/2+.5,b.x1-w/2-.5)||b.x0+1,b.h+.6,rand(b.z0+d/2+.5,b.z1-d/2-.5)||b.z0+1));}}
+    if(b.kind&&'TNH'.includes(b.kind)&&b.h>=12&&b.h<45&&Math.random()<.18){// 屋上の広告看板（鉄骨の枠つき）
+      const s=faceToOpen(b),len=(s==='+x'||s==='-x')?b.z1-b.z0:b.x1-b.x0,bw=Math.min(len*.85,10),bh=bw*.5,cx=(b.x0+b.x1)/2,cz=(b.z0+b.z1)/2;let x,z,ry;
+      if(s==='+x'){x=b.x1-1;z=cz;ry=Math.PI/2;}else if(s==='-x'){x=b.x0+1;z=cz;ry=-Math.PI/2;}else if(s==='+z'){z=b.z1-1;x=cx;ry=0;}else{z=b.z0+1;x=cx;ry=Math.PI;}
+      const y=b.h+1.2+bh/2,nx=Math.sin(ry),nz=Math.cos(ry),lx=Math.cos(ry),lz=-Math.sin(ry);addGeo('bboard',putG(atlasPlane(bw,bh,ri(0,3),2,2),x+nx*.08,y,z+nz*.08,ry));addGeo('sgnbox',boxGeo(bw+.2,bh+.2,.14,x,y,z,ry));
+      for(const o of [-.42,0,.42])addGeo('upole',boxGeo(.16,y+bh/2-b.h,.16,x+lx*o*bw-nx*.5,(b.h+y+bh/2)/2,z+lz*o*bw-nz*.5));for(const o of [-.3,.3])addGeo('upole',boxGeo(bw,.1,.1,x-nx*.5,y+o*bh,z-nz*.5,ry));
+      for(const o of [-.33,0,.33]){addGeo('upole',boxGeo(.06,.06,.7,x+lx*o*bw+nx*.3,y+bh/2+.1,z+lz*o*bw+nz*.3,ry));addGeo('bulb',boxGeo(.28,.1,.16,x+lx*o*bw+nx*.65,y+bh/2+.08,z+lz*o*bw+nz*.65,ry));}}
+    for(const [w,d,x,z] of [[b.x1-b.x0,.3,(b.x0+b.x1)/2,b.z0+.15],[b.x1-b.x0,.3,(b.x0+b.x1)/2,b.z1-.15],[.3,b.z1-b.z0,b.x0+.15,(b.z0+b.z1)/2],[.3,b.z1-b.z0,b.x1-.15,(b.z0+b.z1)/2]])addGeo('roof',boxGeo(w,.5,d,x,b.h+.25,z));}
   // trees in Tenjin plaza and avenue
   for(let i=0;i<26;i++){let x,z;if(i<12){x=rand(-170,-130);z=rand(-38,28);if(Math.abs(x+150)<6&&Math.abs(z+22)<6)continue;}else{x=pick([-120.5,-99.5]);z=rand(-240,240);if(inR(x,z,ROADS[0],2)||inR(x,z,ROADS[1],2))continue;}
     addGeo('trunk',boxGeo(.3,3.2,.3,x,1.6,z));for(let k=0;k<4;k++){const c=new THREE.IcosahedronGeometry(rand(1.1,1.6),1);const p=c.attributes.position;for(let j=0;j<p.count;j++)p.setXYZ(j,p.getX(j)*rand(.85,1.15),p.getY(j)*rand(.8,1.1),p.getZ(j)*rand(.85,1.15));c.computeVertexNormals();c.translate(x+rand(-1,1),rand(3.6,4.8),z+rand(-1,1));addLeaf(c);}}
@@ -678,10 +875,15 @@ function buildWorld(){
   const addMat=(c,o)=>linMat(new THREE.MeshBasicMaterial({color:c,map:glowTex,transparent:true,opacity:o,blending:THREE.AdditiveBlending,depthWrite:false}));
   const AT=asphaltTex(),RW=wetTex();AT.repeat.set(1,1);RW.repeat.set(1,1);
   const STT=storeTex();
-  const MATS={pool:addMat(0xffb070,.22),road:linMat(new THREE.MeshStandardMaterial({color:0xffffff,map:AT,roughnessMap:RW,roughness:.8,metalness:.1,envMapIntensity:.7})),curb:std(0x6a666a,.7,0,.6),upole:std(0x4a4848,.8,.1,.5),roof:std(0x5a5658,.85,.1,.4),awn1:std(0x8a1e22,.7,0,.5),awn2:std(0x1e3a5a,.7,0,.5),store:linMat(new THREE.MeshBasicMaterial({map:STT,color:0xd8d0c8})),spill:addMat(0xffc890,.16),line:lam(0xd8d8d8),wall:lam(0x4a4652),rail:lam(0x8a8a96),deck:lam(0x55525e),deck2:lam(0x7a5a44),pole:lam(0x3a3a44),bulb:bas(0xffe2a8),bulbB:bas(0x8fe8ff),vend:new THREE.MeshLambertMaterial({color:0x8a98b0,emissive:0x4a5a78}),trunk:lam(0x3a2818),leaf:std(0x1a3a24,.9,0,.4)};
+  const MATS={pool:addMat(0xffcfa0,.2),road:linMat(new THREE.MeshStandardMaterial({color:0xffffff,map:AT,roughnessMap:RW,roughness:.8,metalness:.1,envMapIntensity:.7})),curb:std(0x6a666a,.7,0,.6),upole:std(0x4a4848,.8,.1,.5),roof:std(0x5a5658,.85,.1,.4),awn1:std(0x8a1e22,.7,0,.5),awn2:std(0x1e3a5a,.7,0,.5),store:decal(linMat(new THREE.MeshBasicMaterial({map:STT,color:0xd8d0c8}))),spill:addMat(0xffc890,.16),line:lam(0xd8d8d8),wall:lam(0x4a4652),rail:lam(0x8a8a96),deck:lam(0x55525e),deck2:lam(0x7a5a44),pole:lam(0x3a3a44),bulb:bas(0xffe2a8),bulbB:bas(0x8fe8ff),vend:new THREE.MeshLambertMaterial({color:0x9aa0a8,emissive:0x1a1e24}),trunk:lam(0x3a2818),leaf:std(0x1a3a24,.9,0,.4)};
+  if(GEO.tact)for(const g of GEO.tact){const p=g.attributes.position,uv=g.attributes.uv;for(let i=0;i<p.count;i++)uv.setXY(i,p.getX(i)/.3,p.getZ(i)/.3);}
   if(GEO.road)for(const g of GEO.road){const p=g.attributes.position,uv=g.attributes.uv;for(let i=0;i<p.count;i++)uv.setXY(i,p.getX(i)/7,p.getZ(i)/7);}
-  {const GT=glassTex(),AT1=aptTex(),AT2=aptTex(),WT=woodTex();WT.repeat.set(2.4,2.3);
-   Object.assign(MATS,{glass:linMat(new THREE.MeshStandardMaterial({color:0xd0dcec,map:GT,emissive:0xffffff,emissiveMap:litOnly(GT),emissiveIntensity:.7,roughness:.08,metalness:.85,envMapIntensity:1.4})),
+  {const [GT,GE]=glassTex(),AT1=aptTex(),AT2=aptTex(),WT=woodTex();WT.repeat.set(2.4,2.3);GT.repeat.set(1,.5);GE.repeat.set(1,.5);const RS=rsignTex(),GD=guideTex();
+   Object.assign(MATS,{glass:linMat(new THREE.MeshStandardMaterial({color:0xffffff,map:GT,emissive:0xffffff,emissiveMap:GE,emissiveIntensity:.36,roughness:.16,metalness:.35,envMapIntensity:.7})),
+    sgnbox:std(0x2a2a2e,.55,.5,.5),fasc:decal(new THREE.MeshBasicMaterial({map:fasciaTex(),color:0xd4d4d4})),stand:decal(new THREE.MeshBasicMaterial({map:standTex(),color:0xd4d4d4})),vendF:decal(new THREE.MeshBasicMaterial({map:vendTex(),color:0xdadada})),
+    bboard:decal(new THREE.MeshBasicMaterial({map:bboardTex(),color:0xcccccc})),rsign:decal(new THREE.MeshLambertMaterial({map:RS,alphaTest:.5,emissive:0xffffff,emissiveMap:RS,emissiveIntensity:.3})),
+    guide:decal(new THREE.MeshLambertMaterial({map:GD,emissive:0xffffff,emissiveMap:GD,emissiveIntensity:.32})),acu:new THREE.MeshLambertMaterial({map:acTex()}),tank:new THREE.MeshLambertMaterial({map:tankTex()}),
+    tact:linMat(new THREE.MeshStandardMaterial({map:tactTex(),roughness:.7,metalness:0})),
     apt:linMat(new THREE.MeshStandardMaterial({color:0x8e8880,map:AT1,emissive:0xffffff,emissiveMap:litOnly(AT1),emissiveIntensity:.75,roughness:.8,metalness:.05,envMapIntensity:.4})),
     apt2:linMat(new THREE.MeshStandardMaterial({color:0x7e7a76,map:AT2,emissive:0xffffff,emissiveMap:litOnly(AT2),emissiveIntensity:.75,roughness:.8,metalness:.05,envMapIntensity:.4})),
     wood:linMat(new THREE.MeshStandardMaterial({color:0xa8a098,map:WT,emissive:0xffffff,emissiveMap:litOnly(WT),emissiveIntensity:.8,roughness:.85,metalness:0})),
@@ -696,7 +898,7 @@ function buildWorld(){
   for(const k in GEO){const isB=k[0]==='b'&&k.length<=3&&!MATS[k];const mat=isB?BMATS[+k.slice(1)]:MATS[k];if(!mat)continue;const me=new THREE.Mesh(mergeGeos(GEO[k]),mat);if(isB||k==='wall'||k==='deck'||k==='deck2'||k==='vend'||k==='trunk'||k==='leaf'||k==='pole'){me.castShadow=true;me.receiveShadow=true;}if(k==='road'||k==='line'||k==='curb')me.receiveShadow=true;if(k==='upole'||k==='roof'||k==='glass'||k==='apt'||k==='apt2'||k==='wood'||k==='tile'||k==='mallA'||k==='mallB'||k==='mallC'||k==='verm'||k==='roofT'||k==='stone'){me.castShadow=true;me.receiveShadow=true;}scene.add(me);}
   for(const c in REFL){const me=new THREE.Mesh(mergeGeos(REFL[c]),addMat(parseInt(c.slice(1),16),.38));scene.add(me);}
   const sk=Object.keys(SIGNGEO);for(const k of sk){const e=SIGNGEO[k];scene.add(new THREE.Mesh(mergeGeos(e.g),e.s.m));}
-  flickerMats=sk.slice(0,6).map(k=>SIGNGEO[k].s.m);
+  flickerMats=sk.filter(k=>SIGNGEO[k].s.st==='neon').slice(0,6).map(k=>SIGNGEO[k].s.m);
   // rooms
   buildRoom(ROOMS.snack);buildRoom(ROOMS.bar);buildRoom(ROOMS.yahman);buildRoom(ROOMS.izakaya);buildRoom(ROOMS.club);
   lin(scene);makeRain();
@@ -2074,7 +2276,9 @@ function frame(now){requestAnimationFrame(frame);let rdt=Math.min(.05,(now-last)
 
 // ================= START =================
 polR=new THREE.MeshBasicMaterial({color:0xff2020});polB=new THREE.MeshBasicMaterial({color:0x2a6aff});
-(async()=>{try{await Promise.race([document.fonts.load('40px "Dela Gothic One"','中洲天神ラーメン'),new Promise(r=>setTimeout(r,2500))]);}catch(e){}
+(async()=>{try{// 看板に使う文字だけ、フォントを先に読み込む（読み込めなければ端末の文字で描く）
+  const T=[...new Set([...N_V,...N_H,...Y_N,...G_N,...T_H,...TEN_N,...WLET,...FASC_N,...STAND_N,...BB.flat(),...GUIDE.flatMap(d=>[d.u[0],d.l[0],d.r[0]]),...XNAME.flat(),'テナント募集本日休業営業中つめた〜い特価激安新商品おすすめ酒処千鳥ら麺博多駅薬院呉服町天神櫛田神社宮聖福寺警固公園交番川端通商店街明太子人形うどん茶舗ぜんざい雑貨鮮魚和菓子織居酒屋ほたる焼鳥もつ鍋月光玄会員制ヨカマート中央病院屋台通りようこそ中洲へビールラーメンおでん天ぷら'].join(''))].join('');
+  await Promise.race([Promise.all([document.fonts.load('40px "Dela Gothic One"',T),document.fonts.load('900 40px "Noto Sans JP"',T),document.fonts.load('700 40px "Noto Sans JP"',T),document.fonts.load('700 40px "Noto Serif JP"',T)]),new Promise(r=>setTimeout(r,4000))]);}catch(e){}
   setupPost();applyQ();buildWorld();initLights();applyQ();$('loading').textContent='人物モデルを読み込み中…';
   try{await loadRig();}catch(e){console.warn('rig',e);RIG.ok=false;}makePlayer();
   for(let i=0;i<8;i++){const x=rand(46,66),z=rand(62,82);if(i<4)spawnCar(48+i*5,64,0,'car',{parked:true});}
@@ -2086,7 +2290,7 @@ polR=new THREE.MeshBasicMaterial({color:0xff2020});polB=new THREE.MeshBasicMater
   P.g.visible=true;mode='title';$('loading').style.display='none';$('bNew').disabled=false;if(load())$('bCont').style.display='block';Net.init();
   if(new URLSearchParams(location.search).has('autostart'))begin(null);})();
 requestAnimationFrame(frame);
-window.__G={KEV,updEncounter,removeCar,exitCar,kegoPop,get TRAIN(){return TRAIN},spawnCar,VENUES,enterVenue,leaveVenue,openVenueMenu,openTreat,doTreat,treatAll,openPhone,closePhone,phoneApp,addMsg,gainFollowers,FOUT,manageDealers,isDealerTime,LAMPS,FACES_M,FACES_F,FACE_PLAYER,V3:(x,y,z)=>new THREE.Vector3(x,y,z),PREM,Pay,premGrant,equip,callMyCar,openPrem,openShop,get Q(){return Q},PEDN,get mission(){return mission},dist,spawn:spawnActor,rm:removeActor,RIG,camYaw:()=>camYaw,setYaw:v=>camYaw=v,hostiles,knockOut,useMarker,markers,enterCar,POS,S,get P(){return P},actors,cars,BLD,MAINS,runMission,get mode(){return mode},advance};
+window.__G={scene,KEV,updEncounter,removeCar,exitCar,kegoPop,get TRAIN(){return TRAIN},spawnCar,VENUES,enterVenue,leaveVenue,openVenueMenu,openTreat,doTreat,treatAll,openPhone,closePhone,phoneApp,addMsg,gainFollowers,FOUT,manageDealers,isDealerTime,LAMPS,FACES_M,FACES_F,FACE_PLAYER,V3:(x,y,z)=>new THREE.Vector3(x,y,z),PREM,Pay,premGrant,equip,callMyCar,openPrem,openShop,get Q(){return Q},PEDN,get mission(){return mission},dist,spawn:spawnActor,rm:removeActor,RIG,camYaw:()=>camYaw,setYaw:v=>camYaw=v,hostiles,knockOut,useMarker,markers,enterCar,POS,S,get P(){return P},actors,cars,BLD,MAINS,runMission,get mode(){return mode},advance};
 }
 </script>
 </body></html>
