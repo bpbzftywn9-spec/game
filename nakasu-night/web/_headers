@@ -17,3 +17,5 @@
   Cache-Control: public, max-age=86400
 /cut/*
   Cache-Control: public, max-age=86400
+/tex/*
+  Cache-Control: public, max-age=86400

@@ -30,3 +30,37 @@ Higgsfieldで生成（画像: gpt_image_2_6 / 動画: seedance_2_5）。元の�
 
 鉄二の顔の基準画像: 40e125e2-4ca7-4ac2-81b1-08c75651ac52
 TAIKI・おにょの参照写真（本人提供・使用許可済み）: Higgsfield media aa706013-1da0-4121-b758-3edbd341fd70 / 00e96896-b0a2-40a4-aba5-36f2bf6b1d8e
+
+## 街の写真の素材（web/tex/）
+2026年11月25日、オーナーの承認（上限200クレジット）を受けて Higgsfield で生成（gpt_image_2_6、高画質・2k、1枚2クレジット）。使ったのは26枚・52クレジット。
+外壁は、窓の並び（横の柱の間隔と階の高さ）に合わせて切り出し、つなぎ目なく繰り返せるようにした（切り出しの手順は下の「作り方」）。文字・ロゴ・看板の文字は入れないように指示している（看板の文字はゲームの中でプログラムが描く）。元の画像（PNG、1520x2688 など）はHiggsfieldのライブラリに残っている。
+| ファイル | 内容 | Higgsfield job id |
+|---|---|---|
+| f_zakkyo.jpg | タイルの雑居ビル | a01c5398-53e4-42d9-b8f8-fcf9bc09e8cd |
+| f_ribbon.jpg | 横長の窓のオフィス | 8d2220eb-e967-4779-8211-cd2db6029cb7 |
+| f_barbldg.jpg | 中洲の古いバーのビル | f9355d3a-1a0b-456a-963e-cfa0a460738e |
+| f_hotel.jpg | ビジネスホテル | 272eaf4a-6988-4fd9-9033-27c29944d414 |
+| f_browntile.jpg | 茶色のタイルのビル | 031f1719-9c88-4fd5-8814-d72c80581dea |
+| f_whitetile.jpg | 白いタイルのビル | b3b48b64-0e62-42b0-b03f-2b8e5126f7b2 |
+| f_glass.jpg | ガラスのオフィス（天神） | 13333275-8162-42eb-aca1-7a072a7431f4 |
+| f_glass2.jpg | 青緑のガラスのオフィス | 6b82a31d-5aff-43e2-90ff-1340cee1d19f |
+| f_apt1.jpg | マンション | 1591c8a5-cbd5-49e3-b57d-c87ad25961c8 |
+| f_apt2.jpg | 古い団地 | 257c4ff3-a413-4ca9-9885-ee70f21374b4 |
+| machiya.jpg | 博多の町家 | 83d49141-ce6d-4fc3-92c2-545cfcff0699 |
+| shops.jpg の1 | 居酒屋 | dc0e61c3-5282-4ef4-ab66-ce41f73e82ff |
+| shops.jpg の2 | ラーメン屋 | 6154d5e9-e1f4-491d-9a57-1de34de277f5 |
+| shops.jpg の3 | 酒屋 | f129ae3e-af75-47d7-9863-96412a01fc42 |
+| shops.jpg の4 | シャッター | 57c72261-9ef5-406c-a839-8caeac9ffb84 |
+| shops.jpg の5 | バーの入口 | 36ac7c0b-7cb7-4cdf-873e-14c62eb3f9bd |
+| shops.jpg の6 | ドラッグストア（上の黄色い帯は切った） | f58e6e9b-9cdd-4ae9-a521-b8acb3b6e0a3 |
+| shops.jpg の7 | カフェ | d68c005e-68d2-4299-92ce-df1ce3ad5362 |
+| shops.jpg の8 | ビルの入口 | f00ab00b-32cf-4729-903f-f98a50e78118 |
+| shops.jpg の9 | 和菓子屋 | de86c2b6-308f-462b-a401-d64131181807 |
+| shops.jpg の10 | お茶・反物の店 | cea5877e-f954-4cb2-9327-0f9bd597e106 |
+| station.jpg | 駅の正面（博多駅） | e5852f27-2634-4c6e-9103-84c5d9ab679e |
+| shrine.jpg | 神社の拝殿（櫛田神社） | c5cdcf05-1515-4b45-82e9-541907e21eb1 |
+| asphalt.jpg | アスファルト | e98e3e45-358c-4ad5-bc62-742e8fdd387f |
+| sidewalk.jpg | 歩道のブロック | dfff1066-7707-4679-8765-67d82b49e347 |
+| sky.jpg | 夜空と遠くの街並み | 39693eca-25dc-4286-856f-88a5e0a960c0 |
+
+作り方：外壁は、画像の縦横の明るさの変化から窓と階の間隔を求め、その整数倍で切り出し、切れ目を16pxだけ重ねてなじませた。1枚が実際の何m分かは `index.html` の `PHOTO_M`。夜に光る窓の部分は、ゲームを起動するときに画像から取り出す（`photoGlow`）。地面は半分ずらして重ね、つなぎ目を消した。
