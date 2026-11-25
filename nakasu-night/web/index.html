@@ -319,7 +319,7 @@ function makeEnv(){const t=canvasTex(1024,512,(g,w,h)=>{let gr=g.createLinearGra
     for(let i=0;i<160;i++){const x=rand(0,w),bw=rand(10,40),bh=rand(10,70);g.fillStyle='#0a0a10';g.fillRect(x,h/2-bh,bw,bh+2);for(let k=0;k<8;k++){g.fillStyle=pick(['#ffcf80','#ffe8c0','#9fc8ff','#ff6aa0']);g.globalAlpha=.6;g.fillRect(x+rand(1,bw-3),h/2-rand(3,bh),2,2);g.globalAlpha=1;}}
     g.fillStyle='rgba(255,240,220,.9)';g.beginPath();g.arc(w*.7,h*.12,9,0,TAU);g.fill();});
   if(PHOTO.sky){// 夜空と遠くの街並み（AIの写真）を、地平線に合わせて2回くり返して貼る
-    const c=sky.image,g=c.getContext('2d'),im=PHOTO.sky.image,cw=c.width/4,wh=Math.round(cw*.43),t=document.createElement('canvas');t.width=cw;t.height=wh;const tg=t.getContext('2d');tg.filter='saturate(.5) brightness(.92)';tg.drawImage(im,0,0,cw,wh);tg.filter='none';
+    const c=sky.image,g=c.getContext('2d'),im=PHOTO.sky.image,cw=c.width/4,wh=Math.round(cw*.43),t=document.createElement('canvas');t.width=cw;t.height=wh;const tg=t.getContext('2d');tg.filter='saturate(.18) brightness(.78)';tg.drawImage(im,0,0,cw,wh);tg.filter='none';tg.globalCompositeOperation='source-atop';const wg=tg.createLinearGradient(0,0,0,wh);wg.addColorStop(0,'rgba(20,30,50,.35)');wg.addColorStop(.75,'rgba(60,50,40,0)');wg.addColorStop(1,'rgba(90,70,50,.25)');tg.fillStyle=wg;tg.fillRect(0,0,cw,wh);tg.globalCompositeOperation='source-over';
     tg.globalCompositeOperation='destination-in';const gr=tg.createLinearGradient(0,0,0,wh);gr.addColorStop(0,'rgba(0,0,0,0)');gr.addColorStop(.55,'rgba(0,0,0,.85)');gr.addColorStop(1,'rgba(0,0,0,1)');tg.fillStyle=gr;tg.fillRect(0,0,cw,wh);
     for(let i=0;i<4;i++)g.drawImage(t,i*cw,c.height/2+3-wh);sky.needsUpdate=true;}
   sky.mapping=THREE.EquirectangularReflectionMapping;scene.background=sky;}
