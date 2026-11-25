@@ -14,7 +14,7 @@
 ```
 web/
   index.html        ゲーム本体（HTML・CSS・JSが1ファイルに入っている。約2,300行）
-  models/           人物モデル（man_q.glb / woman_q.glb）とアニメーション（anims.json）
+  models/           人物モデル（man_q.glb / woman_q.glb）とアニメーション（anims.json）、AIで作った車（car_*.glb）と歩く人（ped_*.glb）
   lib/three/        three.js r128 と使っている examples/js（CDNを使わず同梱。MITライセンス）
   _headers          Cloudflare Pages の応答ヘッダー（キャッシュなど）
   cut/              カットシーン（画像 c0〜c6, s0〜s2, y1〜y3 / 動画 v0〜v3）
@@ -68,7 +68,8 @@ python tests/full_playthrough.py # 別ターミナルで serve を起動した�
 | `ROOMS` | 店内（スナック月光、BAR 玄、BAR YAHMAN） |
 | `rigLook`, `makeRigged`, `dressCop` | 人物の見た目。警官は水色シャツ＋POLICEベスト＋制帽（`dressCop`） |
 | `managePop`, `spawnPedGroup`, `PEDN`, `TRAFN`, `linePoint`, `camFwd` | 通行人の数（軽量38／標準56／高画質72）と走る車の数（16／22／28）。通行人の8割は歩道や路地（`linePoint`）に、多くはカメラの前のほうに出す。連れ、立ち話、客引き、傘（`giveUmbrella`。けんかの相手や倒れた人は持たない） |
-| `CROWD`, `initCrowd`, `crowdSpawn`, `updCrowd`, `walkLines` | 遠くの人混み（見た目だけの簡単な人形、軽量60／標準120／高画質180人）。まとめて描く（InstancedMesh）ので軽い。32mより近くは本物の通行人に任せて隠す。半分は傘をさす |
+| `CARM`, `CARSPEC`, `prepCar`, `aiCarMesh`, `PEDM`, `bakeWalk`, `startAIModels`, `crowdUseAI`, `swapAICars` | AIで作った車と人の3Dモデル（`web/models/car_*.glb`・`ped_*.glb`）。ゲームが始まってから裏で読み込み、終わったら走っている車と遠くの人混みを入れ替える（読み込めなければ箱の車・簡単な人形のまま）。車は向き・長さ・地面をそろえ（`prepCar`）、前照灯・尾灯・パトランプ・バスの行き先表示を足す。セダンと軽は色を変える。人は歩くアニメーションを16コマ（軽量は12コマ）の形に焼いて（`bakeWalk`）、まとめて描く |
+| `CROWD`, `initCrowd`, `crowdSpawn`, `updCrowd`, `walkLines` | 遠くの人混み（軽量45／標準120／高画質180人。3Dモデルが読み込めるまでは簡単な人形）。まとめて描く（InstancedMesh）ので軽い。32mより近くは本物の通行人に任せて隠す。半分は傘をさす |
 | `busMesh`, `BUSDEST`, `BUSSTOPS`, `buildBusStops`, `busStopPop`, `mergeCarParts` | 路線バス（会社名・ロゴなし。行き先はLED風）とバス停（屋根・ベンチ・広告・標識。近くに来ると待っている人が立つ）。バスは長いので、当たりは線分で取る。`mergeCarParts` は車の部品を材質ごとにまとめて描く回数を減らす |
 | `CUTS`, `still`, `showStill`, `playVideo` | カットシーン |
 | `MAINS`, `SUBS` | ストーリー全7章とサブストーリー3本（セリフもここ） |
@@ -132,6 +133,7 @@ python tests/full_playthrough.py # 別ターミナルで serve を起動した�
 - 屋台・川沿いの景色・天神のデパートも写真の素材にした（2026年11月25日、オーナーの指示。11枚・22クレジット、合計74クレジット）。
 - 建物の外観を作り込んだ（2026年11月25日、オーナーの指示。3枚・6クレジット、合計80クレジット）：となりと接する面を窓の少ない横の壁に、外階段、航空障害灯とアンテナ、布の日よけ、ビルの足元の影、地下鉄の入口の看板と明かり。空を紫から、紺と街明かりのにじむ色に変えた。
 - 街のにぎわいを出した（2026年11月25日、オーナーの指示）：通行人と車を増やし、遠くの人混み、傘、路線バス、バス停、中洲の川沿いのタクシー待ちを追加。
+- 車と人を3Dモデルで作り直した（2026年11月25日、オーナーの指示。クレジットの上限を400に引き上げ。9体・225クレジット、合計305クレジット）：セダン・タクシー・軽・路線バス・パトカーと、歩く人4種。近くの通行人（けんかや会話をする人）はこれまでの人物モデルのまま。
 - 街の景色と看板を現実に近づけた（2026年11月25日、オーナーの指示）。上の表の `facadeTex`〜`streetDetail`。店名・広告はすべて架空（業種や地名だけ実在）。看板の文字は Google Fonts の Noto Sans JP / Noto Serif JP（無料）を、看板に使う文字だけ先に読み込む（4秒で読み込めなければ端末の文字で描く）。
 - 乗り物にバイクを追加し、課金のバイクを3種類追加（ネイキッド・アメリカン・スーパースポーツ。価格は仮）。
 - 課金の車を8種類にした（軽・SUV・旧車・EV・リムジン・デコトラを追加。価格は仮）。
