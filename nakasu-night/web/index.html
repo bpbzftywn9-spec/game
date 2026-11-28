@@ -1598,6 +1598,56 @@ function bgmTick(){if(!AC||muted||mode==='title'||mode==='loading'||mode==='cut'
     if(bgmStep%4===0)tone(120,.18,'sine',chase?.35:.22,40,bgmNext);if(chase&&bgmStep%4===2)noise(.12,.25,1500,bgmNext);if(bgmStep%2===1)noise(.03,.06,7000,bgmNext,1);
     if(!chase&&bgmStep%16===0)tone(440*Math.pow(2,(pick([69,72,76,74])-69)/12),spb*6,'sine',.035,0,bgmNext);
     bgmNext+=spb;bgmStep++;}}
+// ================= BGM（Sunoの曲） =================
+// 曲は web/bgm/<名前>.mp3（96kbps）。ここに書いた曲だけを読み込む（ないファイルを取りに行かない）。
+// ls＝ループの戻り先、le＝ループの終わり（秒）。le の BGM_XF 秒前から ls へクロスフェードして切れ目なく回す。
+// 曲がない場面と、読み込み中・読み込めないときは、これまでの電子音（bgmTick）を鳴らす。
+const BGM={};
+const BGM_VOL=.5,BGM_XF=2.5,BGM_SLOW=1.5,BGM_FAST=.25,BGMC={},BGMPOS={};
+const BGM_ROOM={snack:'snack_gekko',yahman:['bar_yahman','bar_yahman_a'],bar:'bar_gen',izakaya:'izakaya_hotaru',club:'club_luminas'};
+const BGM_AREA={'中洲エリア':'nakasu_night','天神エリア':'tenjin_city','薬院エリア':'tenjin_city','博多エリア':'hakata_town','呉服町エリア':'hakata_town'};
+const BGM_HOT={street_fight:1,boss_battle:1,wanted_chase:1};// すぐ切り替えて、毎回頭から鳴らす曲
+let bgmBus=null,bgmCur=null,bgmArea='nakasu_night',bgmFightT=0,bgmVolK=-1,bgmLast=0;
+const bgmHas=k=>{if(Array.isArray(k))k=k.find(x=>BGM[x]);return k&&BGM[k]?k:null;};
+function bgmScene(){// いまの場面で鳴らしたい曲の名前（曲がなければ null → 電子音）
+  if(mode==='title')return bgmHas('title_theme');if(mode==='ending')return bgmHas('ending');
+  if(S.boss)return bgmHas('boss_battle');if(S.wanted>0)return bgmHas('wanted_chase');
+  if(S.room){for(const k in ROOMS)if(ROOMS[k]===S.room)return bgmHas(BGM_ROOM[k]);return null;}
+  if(bgmFightT>0)return bgmHas('street_fight');if(P&&P.car)return bgmHas('night_drive');
+  return bgmHas(bgmArea);}
+function bgmLoad(k){let e=BGMC[k];if(e){e.use=performance.now();return e;}e=BGMC[k]={buf:null,fail:false,use:performance.now()};
+  fetch('bgm/'+k+'.mp3').then(r=>{if(!r.ok)throw new Error(r.status);return r.arrayBuffer();})
+    .then(b=>new Promise((ok,ng)=>AC.decodeAudioData(b,ok,ng))).then(buf=>{e.buf=buf;bgmTrim();}).catch(()=>{e.fail=true;});return e;}
+function bgmTrim(){// 展開した曲はメモリを食うので、新しく使った順に2〜3曲だけ持つ
+  const max=Q===0?2:3,ks=Object.keys(BGMC).filter(k=>BGMC[k].buf&&!(bgmCur&&bgmCur.k===k)).sort((a,b)=>BGMC[b].use-BGMC[a].use);
+  for(const k of ks.slice(Math.max(0,max-1)))delete BGMC[k];}
+function bgmSeg(c,when,off,fade){const s=AC.createBufferSource(),g=AC.createGain();s.buffer=c.buf;s.connect(g);g.connect(c.g);
+  const end=when+(c.le-off);g.gain.setValueAtTime(fade>0?0:1,when);if(fade>0)g.gain.linearRampToValueAtTime(1,when+fade);
+  g.gain.setValueAtTime(1,end-BGM_XF);g.gain.linearRampToValueAtTime(0,end);s.start(when,off);s.stop(end+.05);
+  c.segs.push({s,start:when,off});if(c.segs.length>3)c.segs.shift();c.next=end-BGM_XF;}
+function bgmPos(c){const t=AC.currentTime;let p=0;for(const s of c.segs)if(s.start<=t)p=s.off+(t-s.start);return p;}
+function bgmStart(k,fade){const e=BGMC[k],m=BGM[k],le=Math.min(m.le||e.buf.duration,e.buf.duration),ls=Math.min(m.ls||0,le-BGM_XF*2);
+  const c={k,buf:e.buf,ls,le,g:AC.createGain(),segs:[]};c.g.connect(bgmBus);
+  let off=BGM_HOT[k]?0:(BGMPOS[k]||0);if(off>=le-BGM_XF-BGM_SLOW-.5)off=ls;bgmSeg(c,AC.currentTime+.03,off,fade);bgmCur=c;}
+function bgmStop(fade){const c=bgmCur;if(!c)return;bgmCur=null;BGMPOS[c.k]=bgmPos(c);const t=AC.currentTime;
+  c.g.gain.cancelScheduledValues(t);c.g.gain.setValueAtTime(c.g.gain.value,t);c.g.gain.linearRampToValueAtTime(0,t+fade);
+  for(const s of c.segs)try{s.s.stop(t+fade+.05);}catch(e){}setTimeout(()=>{try{c.g.disconnect();}catch(e){}},(fade+.3)*1000);}
+function bgmUpdate(){const now=performance.now()/1000,dt=Math.min(1,now-(bgmLast||now));bgmLast=now;// けんかの余韻は実際の時間で数える
+  if(!AC)return;if(!bgmBus){bgmBus=AC.createGain();bgmBus.gain.value=0;bgmBus.connect(AC.destination);}
+  if(mode==='play'||mode==='talk'){// エリアは道や川の上では前の曲のまま。けんかは相手がいなくなっても少し続ける
+    if(P&&!S.room){const a=areaOf(P.x,P.z);if(a&&BGM_AREA[a.n])bgmArea=BGM_AREA[a.n];}
+    if(P&&!S.room&&hostiles().some(h=>dist(h,P)<16))bgmFightT=4;else bgmFightT-=dt;}
+  const want=(muted||mode==='cut'||mode==='loading')?null:bgmScene();
+  if(want)bgmLoad(want);
+  const ready=want&&BGMC[want]&&BGMC[want].buf;
+  if((bgmCur&&bgmCur.k)!==(ready?want:null)&&(ready||!want||!bgmCur||(BGMC[want]&&BGMC[want].fail))){
+    const fast=(want&&BGM_HOT[want])||(bgmCur&&BGM_HOT[bgmCur.k]&&!want)||mode==='cut';
+    bgmStop(fast?BGM_FAST:BGM_SLOW);if(ready)bgmStart(want,fast?.05:BGM_SLOW);}
+  if(bgmCur&&AC.currentTime>bgmCur.next-1)bgmSeg(bgmCur,bgmCur.next,bgmCur.ls,BGM_XF);
+  const k=(S.room||mode==='talk'||mode==='shop'||mode==='phone'||mode==='pause')?.45:1;// 店の中・会話中は小さく
+  if(k!==bgmVolK){bgmVolK=k;bgmBus.gain.setTargetAtTime(BGM_VOL*k,AC.currentTime,.25);}
+  if(!bgmCur)bgmTick();}
+addEventListener('pointerdown',()=>{if(mode==='title')initAudio();});// タイトル画面は最初のタップで鳴らす
 $('bMute').onclick=()=>{initAudio();muted=!muted;$('bMute').textContent=muted?'×':'♪';if(sirenG)sirenG.gain.value=0;};
 
 // ================= MOVEMENT / COLLISION =================
@@ -2506,7 +2556,7 @@ function frame(now){requestAnimationFrame(frame);let rdt=Math.min(.05,(now-last)
   goalPil.material.opacity=.2+.1*Math.sin(now/200);
   if(P&&mode!=='title'&&mode!=='loading'){updObjective();if(mode==='play')updRoute(rdt);updHUD();drawMap();updWP();}
   if(S.goal)goalPil.position.set(S.goal.x,20,S.goal.z);
-  bgmTick();updCamera(rdt);if(composer&&Q>0){finalPass.uniforms.time.value=(now/1000)%10;composer.render(rdt);}else R.render(scene,cam);
+  bgmUpdate();updCamera(rdt);if(composer&&Q>0){finalPass.uniforms.time.value=(now/1000)%10;composer.render(rdt);}else R.render(scene,cam);
   if(snapCb){const cb=snapCb;snapCb=null;let url='';try{const src=R.domElement,sz=Math.min(src.width,src.height),c=document.createElement('canvas');c.width=c.height=320;c.getContext('2d').drawImage(src,(src.width-sz)/2,(src.height-sz)/2,sz,sz,0,0,320,320);url=c.toDataURL('image/jpeg',.72);}catch(e){}cb(url);}}
 
 // ================= START =================
@@ -2528,7 +2578,7 @@ polR=new THREE.MeshBasicMaterial({color:0xff2020});polB=new THREE.MeshBasicMater
   P.g.visible=true;mode='title';$('loading').style.display='none';$('bNew').disabled=false;if(load())$('bCont').style.display='block';Net.init();
   if(new URLSearchParams(location.search).has('autostart'))begin(null);})();
 requestAnimationFrame(frame);
-window.__G={scene,STAIRS,stick,R,get CROWD(){return CROWD},managePop,busStopPop,updCrowd,KEV,updEncounter,removeCar,exitCar,kegoPop,get TRAIN(){return TRAIN},spawnCar,VENUES,enterVenue,leaveVenue,openVenueMenu,openTreat,doTreat,treatAll,openPhone,closePhone,phoneApp,addMsg,gainFollowers,FOUT,manageDealers,isDealerTime,LAMPS,FACES_M,FACES_F,FACE_PLAYER,V3:(x,y,z)=>new THREE.Vector3(x,y,z),PREM,Pay,premGrant,equip,callMyCar,openPrem,openShop,get Q(){return Q},PEDN,get mission(){return mission},dist,spawn:spawnActor,rm:removeActor,RIG,camYaw:()=>camYaw,setYaw:v=>camYaw=v,hostiles,knockOut,useMarker,markers,enterCar,POS,S,get P(){return P},actors,cars,BLD,MAINS,runMission,get mode(){return mode},advance};
+window.__G={scene,BGM,BGMC,get bgmCur(){return bgmCur},bgmScene,STAIRS,stick,R,get CROWD(){return CROWD},managePop,busStopPop,updCrowd,KEV,updEncounter,removeCar,exitCar,kegoPop,get TRAIN(){return TRAIN},spawnCar,VENUES,enterVenue,leaveVenue,openVenueMenu,openTreat,doTreat,treatAll,openPhone,closePhone,phoneApp,addMsg,gainFollowers,FOUT,manageDealers,isDealerTime,LAMPS,FACES_M,FACES_F,FACE_PLAYER,V3:(x,y,z)=>new THREE.Vector3(x,y,z),PREM,Pay,premGrant,equip,callMyCar,openPrem,openShop,get Q(){return Q},PEDN,get mission(){return mission},dist,spawn:spawnActor,rm:removeActor,RIG,camYaw:()=>camYaw,setYaw:v=>camYaw=v,hostiles,knockOut,useMarker,markers,enterCar,POS,S,get P(){return P},actors,cars,BLD,MAINS,runMission,get mode(){return mode},advance};
 }
 </script>
 </body></html>
