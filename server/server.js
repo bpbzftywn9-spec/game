@@ -39,6 +39,10 @@ const CFG = {
   dbPath: process.env.DB_PATH || path.join(__dirname, 'data', 'game.db'),
   trustProxy: process.env.TRUST_PROXY === '1',
   gameFile: process.env.GAME_FILE || path.join(__dirname, '..', 'index.html'),
+  // Password for the owner's referral report page (/admin/referrals). Disabled unless 16+ chars.
+  adminKey: process.env.ADMIN_KEY || '',
+  // Days a referral keeps counting after the code is entered. 0 = no limit.
+  refDays: Number(process.env.REF_DAYS || 0),
 };
 const originOf = u => { try { return new URL(u).origin; } catch { return ''; } };
 // Games served by this API. Each user (device token) belongs to one game.
@@ -112,7 +116,24 @@ CREATE TABLE IF NOT EXISTS grants(id INTEGER PRIMARY KEY AUTOINCREMENT, user_id 
 CREATE INDEX IF NOT EXISTS orders_user ON orders(user_id, status, paid_at);
 CREATE INDEX IF NOT EXISTS grants_user ON grants(user_id, acked_at);
 `);
-if (!db.prepare('PRAGMA table_info(users)').all().some(c => c.name === 'game')) db.exec("ALTER TABLE users ADD COLUMN game TEXT NOT NULL DEFAULT 'jingi'");
+function addColumn(table, col, def) {
+  if (!db.prepare(`PRAGMA table_info(${table})`).all().some(c => c.name === col)) db.exec(`ALTER TABLE ${table} ADD COLUMN ${col} ${def}`);
+}
+addColumn('users', 'game', "TEXT NOT NULL DEFAULT 'jingi'");
+// Referral codes (紹介コード): one per promoter. A player's code is fixed once entered.
+db.exec(`CREATE TABLE IF NOT EXISTS refcodes(code TEXT PRIMARY KEY, game TEXT NOT NULL, name TEXT NOT NULL, rate REAL NOT NULL DEFAULT 0.2,
+  active INTEGER NOT NULL DEFAULT 1, created_at INTEGER NOT NULL)`);
+addColumn('users', 'ref', 'TEXT');
+addColumn('users', 'ref_at', 'INTEGER');
+// Per order: the referral it counts for, and what actually reached the account (Stripe fee, refunds).
+addColumn('orders', 'ref', 'TEXT');
+addColumn('orders', 'payment_intent', 'TEXT');
+addColumn('orders', 'fee', 'INTEGER');
+addColumn('orders', 'net', 'INTEGER');
+addColumn('orders', 'refunded', 'INTEGER NOT NULL DEFAULT 0');
+db.exec(`CREATE INDEX IF NOT EXISTS orders_ref ON orders(ref, status, paid_at);
+CREATE INDEX IF NOT EXISTS orders_pi ON orders(payment_intent);
+CREATE INDEX IF NOT EXISTS users_ref ON users(ref, ref_at);`);
 const q = {
   insUser: db.prepare('INSERT INTO users(id,token_hash,transfer_code,created_at,game) VALUES(?,?,?,?,?)'),
   userByToken: db.prepare('SELECT * FROM users WHERE token_hash=?'),
@@ -120,7 +141,7 @@ const q = {
   rotate: db.prepare('UPDATE users SET token_hash=?, transfer_code=? WHERE id=?'),
   getSave: db.prepare('SELECT data, updated_at FROM saves WHERE user_id=?'),
   putSave: db.prepare('INSERT INTO saves(user_id,data,updated_at) VALUES(?,?,?) ON CONFLICT(user_id) DO UPDATE SET data=excluded.data, updated_at=excluded.updated_at'),
-  insOrder: db.prepare('INSERT INTO orders(id,user_id,product,amount,status,created_at) VALUES(?,?,?,?,?,?)'),
+  insOrder: db.prepare('INSERT INTO orders(id,user_id,product,amount,status,created_at,ref) VALUES(?,?,?,?,?,?,?)'),
   setSession: db.prepare('UPDATE orders SET stripe_session=? WHERE id=?'),
   order: db.prepare('SELECT * FROM orders WHERE id=?'),
   orderBySession: db.prepare('SELECT * FROM orders WHERE stripe_session=?'),
@@ -130,6 +151,16 @@ const q = {
   pending: db.prepare('SELECT id, items, order_id FROM grants WHERE user_id=? AND acked_at IS NULL ORDER BY id'),
   ack: db.prepare('UPDATE grants SET acked_at=? WHERE id=? AND user_id=? AND acked_at IS NULL'),
   spent: db.prepare("SELECT COALESCE(SUM(amount),0) AS s FROM orders WHERE user_id=? AND status='paid' AND paid_at>=?"),
+  refCode: db.prepare('SELECT * FROM refcodes WHERE code=?'),
+  refCodes: db.prepare('SELECT r.*, (SELECT COUNT(*) FROM users u WHERE u.ref=r.code) AS users FROM refcodes r WHERE r.game=? ORDER BY r.created_at'),
+  upsertRef: db.prepare('INSERT INTO refcodes(code,game,name,rate,active,created_at) VALUES(?,?,?,?,?,?) ON CONFLICT(code) DO UPDATE SET name=excluded.name, rate=excluded.rate, active=excluded.active'),
+  setUserRef: db.prepare('UPDATE users SET ref=?, ref_at=? WHERE id=? AND ref IS NULL'),
+  setPI: db.prepare('UPDATE orders SET payment_intent=? WHERE id=? AND payment_intent IS NULL'),
+  setMoney: db.prepare('UPDATE orders SET fee=?, net=?, refunded=? WHERE id=?'),
+  setRefundByPI: db.prepare('UPDATE orders SET refunded=? WHERE payment_intent=?'),
+  refOrders: db.prepare("SELECT * FROM orders WHERE ref IS NOT NULL AND status='paid' AND paid_at>=? AND paid_at<? AND user_id IN (SELECT id FROM users WHERE game=?)"),
+  plainSales: db.prepare("SELECT COUNT(*) AS n, COALESCE(SUM(amount),0) AS s FROM orders WHERE ref IS NULL AND status='paid' AND paid_at>=? AND paid_at<? AND user_id IN (SELECT id FROM users WHERE game=?)"),
+  newRefUsers: db.prepare('SELECT ref, COUNT(*) AS n FROM users WHERE game=? AND ref IS NOT NULL AND ref_at>=? AND ref_at<? GROUP BY ref'),
 };
 
 const now = () => Date.now();
@@ -159,6 +190,7 @@ function fulfill(orderId) {
   try {
     q.markPaid.run(now(), orderId);
     q.insGrant.run(o.user_id, orderId, JSON.stringify(p.items), now());
+    if (CFG.mode !== 'stripe' && o.net === null) q.setMoney.run(0, o.amount, 0, orderId); // test payments: no fee
     db.exec('COMMIT');
   } catch (e) { db.exec('ROLLBACK'); throw e; }
   return true;
@@ -197,7 +229,23 @@ function fulfillFromSession(s) {
   const o = orderId && q.order.get(orderId);
   if (!o) return false;
   if (s.payment_status !== 'paid' || s.currency !== 'jpy' || s.amount_total !== o.amount) return false;
-  return fulfill(orderId);
+  const ok = fulfill(orderId);
+  if (ok && typeof s.payment_intent === 'string') {
+    q.setPI.run(s.payment_intent, orderId);
+    // Referred sales: note the Stripe fee and refunds so the promoter's share is taken from what really arrived.
+    if (o.ref) syncOrderMoney(q.order.get(orderId)).catch(e => console.warn('fee lookup failed:', e.message));
+  }
+  return ok;
+}
+// Reads the fee, the net amount and refunds of one paid order from Stripe. Only JPY balances are recorded.
+async function syncOrderMoney(o) {
+  if (CFG.mode !== 'stripe' || !o || !o.payment_intent) return false;
+  const pi = await stripe('GET', '/payment_intents/' + encodeURIComponent(o.payment_intent) + '?expand[]=latest_charge.balance_transaction');
+  const ch = pi.latest_charge && typeof pi.latest_charge === 'object' ? pi.latest_charge : null;
+  const bt = ch && ch.balance_transaction && typeof ch.balance_transaction === 'object' ? ch.balance_transaction : null;
+  const jpy = bt && bt.currency === 'jpy';
+  q.setMoney.run(jpy ? bt.fee : o.fee, jpy ? bt.net : o.net, ch ? ch.amount_refunded || 0 : o.refunded, o.id);
+  return true;
 }
 
 // ---------- http helpers ----------
@@ -255,6 +303,54 @@ const mockPage = order => `<!doctype html><html lang="ja"><meta charset="utf-8">
 <p><a href="${esc(order.back)}?purchase=cancel" style="color:#ccc">キャンセル</a></p></div>
 <script>document.getElementById('pay').onclick=async()=>{const r=await fetch('/api/mock/pay',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({order:${JSON.stringify(order.id)}})});const j=await r.json();location.href=j.redirect;};</script></body></html>`;
 
+// ---------- referrals (紹介コード) ----------
+const normRef = v => String(v || '').toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 16);
+// The code a new order counts for: the player's code, while it is active and inside REF_DAYS.
+function refForOrder(u) {
+  if (!u.ref) return null;
+  if (CFG.refDays > 0 && now() - (u.ref_at || 0) > CFG.refDays * 86400e3) return null;
+  return u.ref;
+}
+// 'YYYY-MM' → [start, end) in epoch ms, Japan time. Defaults to the current month.
+function monthRange(m) {
+  const mm = /^(\d{4})-(\d{2})$/.exec(m || '');
+  const j = new Date(now() + 9 * 3600e3);
+  const y = mm ? +mm[1] : j.getUTCFullYear(), mo = mm ? +mm[2] - 1 : j.getUTCMonth();
+  if (mo < 0 || mo > 11) throw err(400, '月の指定が不正です');
+  return { month: `${y}-${String(mo + 1).padStart(2, '0')}`, start: Date.UTC(y, mo, 1) - 9 * 3600e3, end: Date.UTC(y, mo + 1, 1) - 9 * 3600e3 };
+}
+// What a referred order is worth to the promoter's share: net of the Stripe fee, minus refunds.
+// Until the fee is known (net is null) the paid amount stands in, and the report says so.
+const orderBase = o => Math.max(0, (o.net === null ? o.amount : o.net) - (o.refunded || 0));
+function referralReport(game, m) {
+  const { month, start, end } = monthRange(m);
+  const codes = q.refCodes.all(game);
+  const fresh = Object.fromEntries(q.newRefUsers.all(game, start, end).map(r => [r.ref, r.n]));
+  const rows = new Map(codes.map(c => [c.code, { code: c.code, name: c.name, rate: c.rate, active: !!c.active, users: c.users, newUsers: fresh[c.code] || 0,
+    orders: 0, gross: 0, fee: 0, refunded: 0, base: 0, pendingFee: 0 }]));
+  for (const o of q.refOrders.all(start, end, game)) {
+    let r = rows.get(o.ref);
+    if (!r) { r = { code: o.ref, name: '（削除されたコード）', rate: 0, active: false, users: 0, newUsers: 0, orders: 0, gross: 0, fee: 0, refunded: 0, base: 0, pendingFee: 0 }; rows.set(o.ref, r); }
+    r.orders++; r.gross += o.amount; r.fee += o.fee || 0; r.refunded += o.refunded || 0; r.base += orderBase(o);
+    if (o.net === null) r.pendingFee++;
+  }
+  const list = [...rows.values()].map(r => ({ ...r, payout: Math.floor(r.base * r.rate) }));
+  const plain = q.plainSales.get(start, end, game);
+  return { game, month, refDays: CFG.refDays, paymentMode: CFG.mode, codes: list,
+    total: list.reduce((t, r) => ({ orders: t.orders + r.orders, gross: t.gross + r.gross, base: t.base + r.base, payout: t.payout + r.payout }), { orders: 0, gross: 0, base: 0, payout: 0 }),
+    withoutCode: { orders: plain.n, gross: plain.s } };
+}
+function adminAuth(req) {
+  if (CFG.adminKey.length < 16) throw err(503, '管理用のパスワード（ADMIN_KEY）が未設定です。Render の環境変数に16文字以上で設定してください');
+  const key = 'adminfail:' + ipOf(req); const h = hits.get(key);
+  if (h && h.reset > now() && h.n >= 10) throw err(429, 'パスワードの間違いが続いたため、15分ほど待ってから試してください');
+  const given = String(req.headers['x-admin-key'] || '');
+  if (!crypto.timingSafeEqual(Buffer.from(sha(given)), Buffer.from(sha(CFG.adminKey)))) {
+    rateLimit(key, Infinity, 15 * 60e3);
+    throw err(401, 'パスワードが違います');
+  }
+}
+
 // ---------- routes ----------
 async function handle(req, res) {
   const url = new URL(req.url, 'http://x');
@@ -296,7 +392,21 @@ async function handle(req, res) {
   if (M === 'GET' && p === '/api/me') {
     const u = auth(req);
     const g = gameOf(u);
-    return send(res, 200, { userId: u.id, game: u.game, transferCode: u.transfer_code, spentThisMonth: spentThisMonth(u.id), monthlyLimit: g.monthlyLimit, paymentMode: CFG.mode, salesOpen: !salesBlockers(g).length });
+    return send(res, 200, { userId: u.id, game: u.game, transferCode: u.transfer_code, spentThisMonth: spentThisMonth(u.id), monthlyLimit: g.monthlyLimit, paymentMode: CFG.mode, salesOpen: !salesBlockers(g).length, ref: u.ref || null });
+  }
+  // Enter a referral code (紹介コード). Once set it never changes.
+  if (M === 'POST' && p === '/api/ref') {
+    const u = auth(req);
+    rateLimit('ref:' + ipOf(req), 10, 10 * 60e3);
+    const code = normRef((await json(req)).code);
+    if (u.ref) {
+      if (u.ref === code) return send(res, 200, { ref: u.ref });
+      throw err(409, `紹介コードは登録済みです（${u.ref}）。変更はできません`, `A referral code is already set (${u.ref}) and cannot be changed`);
+    }
+    const c = code.length >= 2 && q.refCode.get(code);
+    if (!c || !c.active || c.game !== u.game) throw err(404, '紹介コードが見つかりません', 'Referral code not found');
+    q.setUserRef.run(code, now(), u.id);
+    return send(res, 200, { ref: code });
   }
   if (M === 'GET' && p === '/api/products') return send(res, 200, { products: (GAMES[url.searchParams.get('game')] || GAMES.jingi).products.map(publicProduct) });
 
@@ -334,12 +444,13 @@ async function handle(req, res) {
     if (b.consent !== true) throw err(400, '購入前の確認にチェックしてください');
     if (spentThisMonth(u.id) + prod.price > g.monthlyLimit) throw err(403, `今月の購入上限（¥${g.monthlyLimit.toLocaleString()}）を超えるため購入できません`, `This purchase would go over the monthly limit (¥${g.monthlyLimit.toLocaleString()})`);
     const orderId = 'o_' + rid(12);
-    q.insOrder.run(orderId, u.id, prod.id, prod.price, 'pending', now());
+    const ref = refForOrder(u);
+    q.insOrder.run(orderId, u.id, prod.id, prod.price, 'pending', now(), ref);
     if (CFG.mode === 'mock') return send(res, 200, { url: `${u.game === 'jingi' ? '' : CFG.publicUrl}/mock-checkout?order=${orderId}` });
     const s = await stripe('POST', '/checkout/sessions', {
       mode: 'payment', locale: b.lang === 'en' ? 'en' : 'ja', client_reference_id: u.id,
       line_items: { 0: { quantity: 1, price_data: { currency: 'jpy', unit_amount: prod.price, product_data: Object.assign(b.lang === 'en' ? { name: prod.name_en || prod.name, description: prod.desc_en || prod.desc } : { name: prod.name, description: prod.desc }, CFG.taxCode ? { tax_code: CFG.taxCode } : {}) } } },
-      metadata: { order_id: orderId, user_id: u.id, product: prod.id, game: u.game },
+      metadata: { order_id: orderId, user_id: u.id, product: prod.id, game: u.game, ...(ref ? { ref } : {}) },
       ...(CFG.managedPayments === 'off' ? { managed_payments: { enabled: false } } : {}),
       success_url: `${g.url}?purchase=success&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${g.url}?purchase=cancel`,
@@ -376,8 +487,42 @@ async function handle(req, res) {
     else if (ev.type === 'checkout.session.expired' || ev.type === 'checkout.session.async_payment_failed') {
       const id = ev.data.object.metadata && ev.data.object.metadata.order_id;
       if (id) q.markFailed.run(ev.type === 'checkout.session.expired' ? 'expired' : 'failed', id);
+    } else if (ev.type === 'charge.refunded') {
+      const ch = ev.data.object;
+      if (typeof ch.payment_intent === 'string') q.setRefundByPI.run(ch.amount_refunded || 0, ch.payment_intent);
     }
     return send(res, 200, { received: true });
+  }
+
+  // ----- owner's referral page (password: ADMIN_KEY) -----
+  if (M === 'GET' && p === '/admin/referrals') return send(res, 200, fs.readFileSync(path.join(__dirname, 'public', 'admin-referrals.html'), 'utf8'), 'text/html; charset=utf-8');
+  if (p.startsWith('/api/admin/')) {
+    adminAuth(req);
+    const game = GAMES[url.searchParams.get('game')] ? url.searchParams.get('game') : 'nakasu';
+    if (M === 'GET' && p === '/api/admin/refcodes') {
+      const link = GAMES[game].url;
+      return send(res, 200, { game, link, codes: q.refCodes.all(game).map(c => ({ code: c.code, name: c.name, rate: c.rate, active: !!c.active, users: c.users, link: link ? `${link}?ref=${c.code}` : '' })) });
+    }
+    if (M === 'POST' && p === '/api/admin/refcodes') {
+      const b = await json(req);
+      const code = normRef(b.code), name = String(b.name || '').trim().slice(0, 40);
+      const rate = b.rate === undefined ? 0.2 : Number(b.rate);
+      if (code.length < 2) throw err(400, 'コードは英数字2〜16文字にしてください');
+      if (!name) throw err(400, '紹介者の名前を入れてください');
+      if (!(rate >= 0 && rate <= 1)) throw err(400, '報酬の割合は0〜100%にしてください');
+      const old = q.refCode.get(code);
+      if (old && old.game !== game) throw err(409, 'このコードは別のゲームで使われています');
+      q.upsertRef.run(code, game, name, rate, b.active === false ? 0 : 1, now());
+      return send(res, 200, { ok: true, code });
+    }
+    if (M === 'GET' && p === '/api/admin/referrals') return send(res, 200, referralReport(game, url.searchParams.get('month')));
+    // Re-reads fees and refunds from Stripe for that month's referred orders.
+    if (M === 'POST' && p === '/api/admin/referrals/sync') {
+      const { start, end } = monthRange(url.searchParams.get('month'));
+      let n = 0;
+      for (const o of q.refOrders.all(start, end, game).slice(0, 300)) if (await syncOrderMoney(o).catch(() => false)) n++;
+      return send(res, 200, { ok: true, updated: n });
+    }
   }
 
   if (CFG.mode === 'mock') {

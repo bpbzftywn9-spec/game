@@ -17,6 +17,7 @@ process.env.SELLER_NAME = 'テスト<商店>';
 process.env.SELLER_EMAIL = 'shop@example.com';
 process.env.NAKASU_URL = 'https://nakasu.example/';
 process.env.NAKASU_MONTHLY_LIMIT_JPY = '5000';
+process.env.ADMIN_KEY = 'admin-key-for-tests-0123456789';
 const { server, isOnPersistentMount } = require('../server');
 
 let base;
@@ -189,4 +190,69 @@ test('about page lists 中洲ナイト products too', async () => {
   assert.match(html, /シャンパンタワー/);
   assert.match(html, /¥12,200/);
   assert.match(html, /https:\/\/nakasu\.example\//);
+});
+
+test('紹介コード: register codes, fixed per player, referred sales and the promoter report', async () => {
+  const ADMIN = { 'X-Admin-Key': 'admin-key-for-tests-0123456789' };
+  assert.equal((await call('GET', '/api/admin/refcodes?game=nakasu')).status, 401, 'needs the password');
+  assert.equal((await call('GET', '/api/admin/refcodes?game=nakasu', undefined, null, { 'X-Admin-Key': 'wrong' })).status, 401);
+  assert.match(await (await fetch(base + '/admin/referrals')).text(), /紹介コードの集計/);
+
+  assert.equal((await call('POST', '/api/admin/refcodes?game=nakasu', { code: 'x', name: 'a' }, null, ADMIN)).status, 400, 'too short');
+  assert.equal((await call('POST', '/api/admin/refcodes?game=nakasu', { code: 'taiki', name: 'TAIKIさん' }, null, ADMIN)).status, 200);
+  assert.equal((await call('POST', '/api/admin/refcodes?game=nakasu', { code: 'ONYO-1', name: 'おにょさん', rate: 0.25 }, null, ADMIN)).status, 200);
+  const codes = (await call('GET', '/api/admin/refcodes?game=nakasu', undefined, null, ADMIN)).body;
+  assert.deepEqual(codes.codes.map(c => [c.code, c.rate, c.link]), [['TAIKI', 0.2, 'https://nakasu.example/?ref=TAIKI'], ['ONYO1', 0.25, 'https://nakasu.example/?ref=ONYO1']]);
+
+  // a referred player
+  const a = (await call('POST', '/api/session', { game: 'nakasu' })).body.token;
+  assert.equal((await call('GET', '/api/me', undefined, a)).body.ref, null);
+  assert.equal((await call('POST', '/api/ref', { code: 'NOPE' }, a)).status, 404);
+  const r1 = await call('POST', '/api/ref', { code: ' taiki ' }, a);
+  assert.equal(r1.status, 200);
+  assert.equal(r1.body.ref, 'TAIKI');
+  assert.equal((await call('POST', '/api/ref', { code: 'TAIKI' }, a)).status, 200, 'same code again is fine');
+  assert.equal((await call('POST', '/api/ref', { code: 'ONYO1' }, a)).status, 409, 'cannot switch to another code');
+  assert.equal((await call('GET', '/api/me', undefined, a)).body.ref, 'TAIKI');
+
+  // codes belong to one game
+  const j = (await call('POST', '/api/session')).body.token;
+  assert.equal((await call('POST', '/api/ref', { code: 'TAIKI' }, j)).status, 404);
+
+  // referred purchase (test payment: no fee)
+  const c = await call('POST', '/api/checkout', { product: 'o_white', consent: true }, a);
+  await call('POST', '/api/mock/pay', { order: new URL(c.body.url, base).searchParams.get('order') });
+  // referred purchase through the Stripe webhook, then partly refunded
+  const c2 = await call('POST', '/api/checkout', { product: 'o_wine', consent: true }, a);
+  const order2 = new URL(c2.body.url, base).searchParams.get('order');
+  let raw = JSON.stringify({ type: 'checkout.session.completed', data: { object: { id: 'cs_test_ref', payment_status: 'paid', currency: 'jpy', amount_total: 2500, payment_intent: 'pi_test_ref', metadata: { order_id: order2 } } } });
+  await call('POST', '/api/stripe/webhook', raw, null, { 'Stripe-Signature': sign(raw) });
+  raw = JSON.stringify({ type: 'charge.refunded', data: { object: { payment_intent: 'pi_test_ref', amount_refunded: 1000 } } });
+  assert.equal((await call('POST', '/api/stripe/webhook', raw, null, { 'Stripe-Signature': sign(raw) })).status, 200);
+
+  // a player without a code
+  const b = (await call('POST', '/api/session', { game: 'nakasu' })).body.token;
+  const c3 = await call('POST', '/api/checkout', { product: 'o_leather', consent: true }, b);
+  await call('POST', '/api/mock/pay', { order: new URL(c3.body.url, base).searchParams.get('order') });
+
+  // stopping a code blocks new players but keeps counting the ones already in
+  assert.equal((await call('POST', '/api/admin/refcodes?game=nakasu', { code: 'TAIKI', name: 'TAIKIさん', rate: 0.2, active: false }, null, ADMIN)).status, 200);
+  const d = (await call('POST', '/api/session', { game: 'nakasu' })).body.token;
+  assert.equal((await call('POST', '/api/ref', { code: 'TAIKI' }, d)).status, 404);
+
+  const rep = (await call('GET', '/api/admin/referrals?game=nakasu', undefined, null, ADMIN)).body;
+  const t = rep.codes.find(x => x.code === 'TAIKI');
+  assert.equal(t.users, 1);
+  assert.equal(t.newUsers, 1);
+  assert.equal(t.orders, 2);
+  assert.equal(t.gross, 5000);
+  assert.equal(t.refunded, 1000);
+  assert.equal(t.pendingFee, 0, 'test payments have no fee');
+  assert.equal(t.base, 2500 + 2500 - 1000);
+  assert.equal(t.payout, 800);
+  assert.equal(rep.codes.find(x => x.code === 'ONYO1').payout, 0);
+  assert.equal(rep.total.payout, 800);
+  assert.ok(rep.withoutCode.orders >= 1);
+  assert.equal((await call('GET', '/api/admin/referrals?game=nakasu&month=2020-01', undefined, null, ADMIN)).body.total.orders, 0);
+  assert.equal((await call('GET', '/api/admin/referrals?month=2026-13', undefined, null, ADMIN)).status, 400);
 });

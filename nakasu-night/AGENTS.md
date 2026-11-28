@@ -76,6 +76,7 @@ python tests/full_playthrough.py # 別ターミナルで serve を起動した�
 | `CHT`, `LOCN`, `updObjective`, `updWP`, `navPath`, `updRoute` | ミッション表示（左上の目的枠、画面上の黄色い◆と距離、ミニマップの道順） |
 | `SHOPS` | 屋台・コンビニ・BAR YAHMAN の商品と価格 |
 | `PREM`, `Pay`, `openPrem`, `premGrant`, `equip`, `callMyCar`, `dressPlayer` | 課金アイテム（服装・武器・車・アクセサリー・酒代）。仕様は `docs/premium.md` |
+| `Ref`, `normRef` | 紹介コード。紹介リンク（`?ref=コード`）か、タイトル画面・プレミアムショップの「紹介コードを入力」で、決済サーバーの `/api/ref` に1回だけ登録（変更不可）。通信前に入れたコードは `nakasu_ref_pending` に取っておき、つながったら登録する。集計はサーバーの `/admin/referrals`（`docs/premium.md`） |
 | `FACES_M`, `FACES_F`, `FACE_PLAYER`, `faceTex`, `addHair`, `femHair`, `stripWoman`, `FOUT` | 人物の見た目のバリエーション。男性は顔12種＋主人公専用（顔のテクスチャに眉・ひげ・しわ・傷を描き、髪型・頭の形・体格を変える）。女性は顔8種（肌の色×髪型5種：元のおだんご・ボブ・ロング・ポニーテール・まとめ髪）と服装8種（`FOUT`） |
 | `manageDealers`, `aiDealer`, `dealerBounty`, `S.clock` | 売人。ゲーム内の時計（1秒＝1分、20:00〜翌6:00をくり返す）で22時〜4時に街灯の下に出る。倒すと商店会から報奨金（手配度は上がらない） |
 | `VENUES`, `enterVenue`, `leaveVenue`, `openVenueMenu`, `openTreat`, `treatAll`, `gainFollowers`, `FMS` | 店に入る・客に奢る・フォロワーと特典。店内は `ROOMS`（居酒屋 ほたる・CLUB LUMINAS を追加） |
@@ -140,8 +141,11 @@ python tests/full_playthrough.py # 別ターミナルで serve を起動した�
 - 名前の変更（2026年11月24日、オーナーの指示）：ギャング「玄海連合」→「福博連合」、トクリュウの指示役「鬼塚剛」→「工藤蓮」。
 - 女性の髪型を4種類追加（ボブ・ロング・ポニーテール・まとめ髪。元のおだんご髪と合わせて5種類）。元の髪・ヘッドホン・サングラスは、モデルのつながった部品ごとに消している（`stripWoman`）。女性の服装を8種類追加（`FOUT`。上とパンツの色・柄を変える）。
 - BGMをSunoで作る準備（2026年11月26日、オーナーの指示）：シーンごとの曲とSuno用プロンプトを、Claude Docs の「仁義 中洲ナイト BGM制作指示書（Suno用プロンプト）」（https://claude.ai/artifact/BkDVq13CJwZmFWyoysQ5k8 ）にまとめた。全19曲、ファイル名は一覧のとおり（`nakasu_night`、`yatai_river`、`snack_gekko`、`bar_yahman_a`/`bar_yahman_b`、`street_fight`、`boss_battle`、`wanted_chase`、`title_theme`、`ending` など）。曲はオーナーが Suno の有料プランで作り、WAV で Google ドライブの「中洲ナイトBGM」フォルダに入れる。Suno のプランの料金はオーナーの判断。
+- 紹介コードを追加（2026年11月28日、オーナーの指示）：プロモーターごとのコードで流入元を記録し、紹介経由の売上（Stripe手数料と返金を引いた額）の20%を紹介者に払う。タイトル画面とプレミアムショップに入力欄、紹介リンクで自動登録。サーバーに集計ページ `/admin/referrals`（パスワード `ADMIN_KEY`）。仕様は `docs/premium.md`、設定は `DEPLOY.md`。プライバシーポリシーに紹介コードを追記した。プロモーター本人の購入を対象にするかは未決定。
 
 ## 7. 次にやること（オーナーの指示を待つ）
+
+- **紹介コード**：決済サーバーへの反映は、作業ブランチをメインのブランチ（Render が読むブランチ）に合わせてから（オーナーの承認が必要）。反映後、オーナーが Stripe の Webhook に `charge.refunded` を追加し、`/admin/referrals` でプロモーターのコードを作る。
 
 - **BGMの組み込み（進行中）**：1曲目がドライブの「中洲ナイトBGM」フォルダにある（2026年11月28日）。Google ドライブのコネクタで読み、96kbps の MP3 に変換して `web/bgm/` に置く。いまの電子音のBGM（`bgmTick`）は、曲の読み込み中と読み込めないときの代わりとして残す。場面に入ったときに読み込み、ループ位置を合わせて切れ目なく回し、エリアや店の切り替えは1.5秒で入れ替え、けんか・手配・ボス戦はすぐ切り替える。店の中と会話中は音量を下げ、動画の間は止める。♪ボタン（`bMute`）で消せること、スマホでは最初のタップ後に鳴ることを保つ。優先Aの9曲がそろったら一度組み込み、全章の通しテストと動画でオーナーに確認してもらう。
 

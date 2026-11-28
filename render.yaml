@@ -29,6 +29,10 @@ services:
         sync: false
       - key: NAKASU_MONTHLY_LIMIT_JPY # 中洲ナイトの月間購入上限（円）
         value: "100000"
+      - key: ADMIN_KEY                # 紹介コードの集計ページ（/admin/referrals）のパスワード。Render が自動で作る
+        generateValue: true
+      - key: REF_DAYS                 # 紹介コードを入れてから何日までの購入を数えるか。0 は期限なし
+        value: "0"
       - key: STRIPE_SECRET_KEY        # 最初は sk_test_ で始まるテストキー
         sync: false
       - key: STRIPE_WEBHOOK_SECRET    # デプロイ後に Stripe で Webhook を作ってから入れる

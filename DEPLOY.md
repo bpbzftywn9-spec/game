@@ -58,7 +58,7 @@
 ## 3. Stripe の Webhook をつなぐ
 1. Stripe → 開発者 → Webhook → **エンドポイントを追加**
 2. URL：`https://（手順2のURL）/api/stripe/webhook`
-3. イベント：`checkout.session.completed`、`checkout.session.async_payment_succeeded`、`checkout.session.async_payment_failed`、`checkout.session.expired` の4つ
+3. イベント：`checkout.session.completed`、`checkout.session.async_payment_succeeded`、`checkout.session.async_payment_failed`、`checkout.session.expired`、`charge.refunded` の5つ（`charge.refunded` は紹介者への支払額から返金を引くため。すでに Webhook を作ってある場合は、このイベントを追加する）
 4. 作成後に表示される **署名シークレット（`whsec_...`）** をコピーする
 5. Render → サービス → Environment → `STRIPE_WEBHOOK_SECRET` に貼り付けて保存（自動で再起動）
 6. `https://（URL）/api/health` を開き、`"salesOpen":true` になっていれば販売が開く（`false` のときは `waitingFor` に足りない設定の名前が出る）
@@ -76,6 +76,16 @@
 2. 本番の API キー（`sk_live_...`）を Render の `STRIPE_SECRET_KEY` に入れ替える
 3. Stripe の **本番環境側** で手順3と同じ Webhook を作り直し、新しい `whsec_...` を `STRIPE_WEBHOOK_SECRET` に入れ替える
 4. 自分で1回だけ本番購入（¥120）して受け取れることを確認し、Stripe から返金する
+
+## 紹介コード（プロモーターの集計）
+プロモーターごとに紹介コードを作り、誰の紹介で始めた人がどれだけ課金したかと、紹介者に支払う額を集計する（いまは仁義 中洲ナイトのみ。プレイヤーの入力画面は中洲ナイトにだけある）。
+1. Render → サービス → Environment で `ADMIN_KEY` の値をコピーする（Blueprint で自動作成される。ない場合は16文字以上の推測されにくい文字列を自分で入れる）。
+2. `https://（URL）/admin/referrals` を開き、`ADMIN_KEY` をパスワードとして入れる。
+3. 「コードを追加・変更」で、コード（英数字2〜16文字）・紹介者の名前・割合（初期値20%）を入れて保存する。表の「紹介リンク」（`中洲ナイトのURL?ref=コード`）をプロモーターに渡す。
+4. 月ごとに、月を選んで「Stripeと照合」→「CSVで保存」。「支払額」を紹介者に振り込む。
+- 対象額＝売上−Stripe手数料−返金。支払額＝対象額×割合（1円未満切り捨て）。
+- プレイヤーのコードは最初に登録したもので固定。停止したコードは新しく入力できなくなるが、登録済みの人の購入は数え続ける。
+- `REF_DAYS` に日数を入れると、コードを入れてからその日数までの購入だけを数える（0 は期限なし）。
 
 ## 6. 独自ドメイン（任意）
 Render → サービス → Settings → Custom Domains でドメインを追加し、表示される DNS 設定をドメイン会社で行う。

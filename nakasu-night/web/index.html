@@ -193,6 +193,8 @@ body.ttl #hud,body.ttl #mapw,body.ttl #topbtns,body.ttl #btns,body.ttl #feed{dis
   <button class="mbtn pri" id="bNew" disabled>はじめから</button>
   <button class="mbtn" id="bCont" style="display:none">つづきから</button>
   <button class="mbtn" id="bXfer2" style="display:none;font-size:14px;padding:9px">機種変更（引き継ぎ）</button>
+  <button class="mbtn" id="bRef2" style="display:none;font-size:14px;padding:9px">紹介コードを入力</button>
+  <div id="refok" style="display:none;font-size:12px;opacity:.85;margin:4px 0;text-shadow:0 1px 2px #000"></div>
   <div id="loading">街を組み立て中…</div>
   <div class="hint">スマホ：左半分ドラッグで移動／右半分ドラッグで視点／右下ボタンで攻撃<br>PC：WASD移動・マウスドラッグか←→で視点・J殴る・K蹴る・L回避・H極・E乗る/話す・Space急ブレーキ</div>
 </div>
@@ -202,13 +204,18 @@ body.ttl #hud,body.ttl #mapw,body.ttl #topbtns,body.ttl #btns,body.ttl #feed{dis
   <div id="premtabs"></div><div id="premitems"></div>
   <p class="pnote">価格は税込です。服装・武器・車・アクセサリーは一度買えばずっと使え、何度でも着替えられます。購入したアイテムはこの端末のセーブデータに保存されます。</p>
   <div id="premnet" style="display:none"><div class="pnote plinks"><a data-legal="tokushoho" target="_blank" rel="noopener">特定商取引法に基づく表記</a>　<a data-legal="terms" target="_blank" rel="noopener">利用規約</a>　<a data-legal="privacy" target="_blank" rel="noopener">プライバシー</a></div>
-  <button class="mbtn" id="bXfer">機種変更（引き継ぎ）</button></div>
+  <button class="mbtn" id="bXfer">機種変更（引き継ぎ）</button><button class="mbtn" id="bRef" style="display:none">紹介コードを入力</button></div>
   <button class="mbtn" id="bPremClose">閉じる</button></div></div>
 <div class="ov" id="xfer" style="z-index:36;background:rgba(0,0,0,.72)"><div class="panel" style="text-align:center"><h3 class="dg" style="color:#3de0ff">機種変更（引き継ぎ）</h3>
   <p class="pnote" style="text-align:center">新しい端末でこのコードを入力すると、セーブデータと購入したアイテムを引き継げます。コードは他人に教えないでください。使うと、この端末では遊べなくなります。</p>
   <div id="xcode" style="font-size:26px;font-weight:900;letter-spacing:.08em;margin:8px 0 14px;user-select:all"></div>
   <input id="xin" placeholder="引き継ぎコードを入力" autocomplete="off" style="width:100%;font-size:18px;padding:10px;border-radius:10px;border:1px solid #fff;background:#0008;color:#fff;text-align:center">
   <button class="mbtn pri" id="bXRedeem">この端末に引き継ぐ</button><button class="mbtn" id="bXClose">閉じる</button></div></div>
+<div class="ov" id="refm" style="z-index:36;background:rgba(0,0,0,.72)"><div class="panel" style="text-align:center"><h3 class="dg" style="color:#ffd84a">紹介コード</h3>
+  <p class="pnote" style="text-align:center">このゲームを紹介してくれた人から聞いたコードを入力してください。登録は1回だけで、あとから変更はできません。入力しなくても遊べます。</p>
+  <input id="refin" placeholder="紹介コード" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="20" style="width:100%;font-size:18px;padding:10px;border-radius:10px;border:1px solid #fff;background:#0008;color:#fff;text-align:center;text-transform:uppercase">
+  <div id="refst" class="pnote" style="text-align:center;min-height:1.6em;opacity:1;color:#ffd84a;font-size:13px;font-weight:700"></div>
+  <button class="mbtn pri" id="bRefOk">登録する</button><button class="mbtn" id="bRefClose">閉じる</button></div></div>
 <div class="ov" id="pconf" style="z-index:38;background:rgba(0,0,0,.72)"><div class="panel" style="text-align:left">
   <h3 class="dg" id="pch" style="color:#ffd84a;margin:0 0 4px"></h3><div class="sub" id="pcd"></div>
   <div id="pcp" style="font-size:26px;font-weight:900;margin:8px 0">0円</div>
@@ -1967,7 +1974,7 @@ const DEV_API=IS_LOCAL?(()=>{const q=new URLSearchParams(location.search).get('a
 const Net={api:(DEV_API||NAKASU_API_URL).replace(/\/$/,''),ready:false,token:null,me:null,prices:{},
   async req(m,p,body){const h={'Content-Type':'application/json'};if(this.token)h.Authorization='Bearer '+this.token;
     const r=await fetch(this.api+p,{method:m,headers:h,body:body===undefined?undefined:JSON.stringify(body)});const j=await r.json().catch(()=>({}));
-    if(!r.ok)throw new Error(j.error||'通信エラー（'+r.status+'）');return j;},
+    if(!r.ok)throw Object.assign(new Error(j.error||'通信エラー（'+r.status+'）'),{status:r.status});return j;},
   async init(){if(!this.api)return;try{
       this.token=lsGet('nakasu_token');
       if(this.token){try{this.me=await this.req('GET','/api/me');}catch(e){this.token=null;}}
@@ -1977,7 +1984,7 @@ const Net={api:(DEV_API||NAKASU_API_URL).replace(/\/$/,''),ready:false,token:nul
       if(sv.data&&(!local||(sv.data.savedAt||0)>(local.savedAt||0)))lsSet('nakasu_night_v1',JSON.stringify(sv.data));
       else if(local&&(!sv.data||(local.savedAt||0)>(sv.data.savedAt||0)))this.req('PUT','/api/save',{data:local}).catch(()=>{});
       if(load())$('bCont').style.display='block';
-      this.ready=true;$('bXfer2').style.display='block';this.handleReturn();
+      this.ready=true;$('bXfer2').style.display='block';this.handleReturn();Ref.afterLogin();
       setInterval(()=>{if(mode==='play')this.pullGrants();},30000);
     }catch(e){console.warn('online features disabled:',e);}},
   handleReturn(){const u=new URLSearchParams(location.search),st=u.get('purchase');if(!st)return;
@@ -2000,6 +2007,37 @@ document.querySelectorAll('[data-legal]').forEach(a=>{a.href=(Net.api||'')+'/leg
 $('bXfer2').onclick=()=>$('bXfer').onclick();
 $('bXfer').onclick=()=>{$('xcode').textContent=Net.me?Net.me.transferCode:'';$('xin').value='';$('xfer').style.display='flex';};
 $('bXClose').onclick=()=>{$('xfer').style.display='none';};
+
+// ================= 紹介コード（プロモーターごとの流入元） =================
+// 紹介リンク（?ref=コード）で来た人は自動で、それ以外はタイトル画面かプレミアムショップから入力する。
+// サーバーのプレイヤー記録に1回だけ結びつき（変更不可）、以後の課金に紹介コードが付く。集計は決済サーバーの /admin/referrals。
+const normRef=v=>String(v||'').toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,16);
+const Ref={pending:normRef(lsGet('nakasu_ref_pending')),
+  done(){return !!(Net.me&&Net.me.ref);},
+  keep(c){this.pending=c;if(c)lsSet('nakasu_ref_pending',c);else{try{localStorage.removeItem('nakasu_ref_pending');}catch(e){}}},
+  fromUrl(){const u=new URLSearchParams(location.search);if(!u.has('ref'))return;const c=normRef(u.get('ref'));u.delete('ref');
+    history.replaceState(null,'',location.pathname+(u.toString()?'?'+u:'')+location.hash);if(c.length>=2)this.keep(c);},
+  ui(){const show=!!Net.api&&!this.done();$('bRef2').style.display=show?'block':'none';$('bRef2').textContent=this.pending?'紹介コード：'+this.pending:'紹介コードを入力';
+    $('bRef').style.display=show&&Net.ready?'block':'none';
+    $('refok').style.display=this.done()?'block':'none';$('refok').textContent=this.done()?'紹介コード：'+Net.me.ref+'（登録済み）':'';},
+  // 'ok' 登録できた / 'wait' 通信がつながったら登録する / それ以外はエラーの文
+  async send(code){code=normRef(code);if(code.length<2)return '紹介コードを入力してください';
+    if(!Net.ready){this.keep(code);this.ui();return 'wait';}
+    try{const r=await Net.req('POST','/api/ref',{code});Net.me.ref=r.ref;this.keep('');this.ui();toast('紹介コード「'+r.ref+'」を登録しました',3);return 'ok';}
+    catch(e){if(e.status===404||e.status===409)this.keep('');this.ui();return e.message;}},
+  // 紹介リンクのコードが使えなかったときは、タイトル画面なら入力画面を開いて理由を見せる
+  async afterLogin(){if(this.done())this.keep('');else if(this.pending){const c=this.pending,r=await this.send(c);
+      if(r!=='ok'){if(mode==='title'){this.open();$('refin').value=c;$('refst').textContent=r;}else toast(r,4);}}this.ui();},
+  open(){$('refin').value=this.pending;$('refst').textContent=this.pending&&!Net.ready?'通信がつながったら自動で登録します':'';$('refm').style.display='flex';}};
+Ref.fromUrl();Ref.ui();
+$('bRef2').onclick=()=>Ref.open();$('bRef').onclick=()=>Ref.open();
+$('bRefClose').onclick=()=>{$('refm').style.display='none';};
+$('refin').onkeydown=e=>{if(e.key==='Enter')$('bRefOk').onclick();};
+$('bRefOk').onclick=async()=>{const b=$('bRefOk');if(b.disabled)return;b.disabled=true;$('refst').textContent='確認中…';
+  const r=await Ref.send($('refin').value);b.disabled=false;
+  if(r==='ok')$('refm').style.display='none';
+  else if(r==='wait'){$('refm').style.display='none';toast('通信がつながったら紹介コードを登録します',3);}
+  else $('refst').textContent=r;};
 $('bXRedeem').onclick=async()=>{const code=$('xin').value.trim();if(!code){toast('コードを入力してください',2);return;}
   try{const r=await Net.req('POST','/api/transfer',{code,game:'nakasu'});lsSet('nakasu_token',r.token);try{localStorage.removeItem('nakasu_night_v1');}catch(e){}location.reload();}catch(e){toast(e.message,3);}};
 
@@ -2528,7 +2566,7 @@ polR=new THREE.MeshBasicMaterial({color:0xff2020});polB=new THREE.MeshBasicMater
   P.g.visible=true;mode='title';$('loading').style.display='none';$('bNew').disabled=false;if(load())$('bCont').style.display='block';Net.init();
   if(new URLSearchParams(location.search).has('autostart'))begin(null);})();
 requestAnimationFrame(frame);
-window.__G={scene,STAIRS,stick,R,get CROWD(){return CROWD},managePop,busStopPop,updCrowd,KEV,updEncounter,removeCar,exitCar,kegoPop,get TRAIN(){return TRAIN},spawnCar,VENUES,enterVenue,leaveVenue,openVenueMenu,openTreat,doTreat,treatAll,openPhone,closePhone,phoneApp,addMsg,gainFollowers,FOUT,manageDealers,isDealerTime,LAMPS,FACES_M,FACES_F,FACE_PLAYER,V3:(x,y,z)=>new THREE.Vector3(x,y,z),PREM,Pay,premGrant,equip,callMyCar,openPrem,openShop,get Q(){return Q},PEDN,get mission(){return mission},dist,spawn:spawnActor,rm:removeActor,RIG,camYaw:()=>camYaw,setYaw:v=>camYaw=v,hostiles,knockOut,useMarker,markers,enterCar,POS,S,get P(){return P},actors,cars,BLD,MAINS,runMission,get mode(){return mode},advance};
+window.__G={scene,STAIRS,stick,R,get CROWD(){return CROWD},managePop,busStopPop,updCrowd,KEV,updEncounter,removeCar,exitCar,kegoPop,get TRAIN(){return TRAIN},spawnCar,VENUES,enterVenue,leaveVenue,openVenueMenu,openTreat,doTreat,treatAll,openPhone,closePhone,phoneApp,addMsg,gainFollowers,FOUT,manageDealers,isDealerTime,LAMPS,FACES_M,FACES_F,FACE_PLAYER,V3:(x,y,z)=>new THREE.Vector3(x,y,z),PREM,Pay,premGrant,equip,callMyCar,openPrem,openShop,get Q(){return Q},PEDN,get mission(){return mission},dist,spawn:spawnActor,rm:removeActor,RIG,camYaw:()=>camYaw,setYaw:v=>camYaw=v,hostiles,knockOut,useMarker,markers,enterCar,POS,S,get P(){return P},actors,cars,BLD,MAINS,runMission,get mode(){return mode},advance,Ref,Net};
 }
 </script>
 </body></html>
