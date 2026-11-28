@@ -1602,7 +1602,9 @@ function bgmTick(){if(!AC||muted||mode==='title'||mode==='loading'||mode==='cut'
 // 曲は web/bgm/<名前>.mp3（96kbps）。ここに書いた曲だけを読み込む（ないファイルを取りに行かない）。
 // ls＝ループの戻り先、le＝ループの終わり（秒）。le の BGM_XF 秒前から ls へクロスフェードして切れ目なく回す。
 // 曲がない場面と、読み込み中・読み込めないときは、これまでの電子音（bgmTick）を鳴らす。
-const BGM={};
+const BGM={// 2026年11月28日：Sunoの曲（ループ位置は波形から探した。曲は le で切ってある）
+  nakasu_night:{ls:26.54,le:112.54},tenjin_city:{ls:21.80,le:97.77},hakata_town:{ls:22.92,le:157.42},yatai_river:{ls:38.22,le:113.38},
+  night_drive:{ls:44.51,le:100.51},snack_gekko:{ls:42.54,le:164.60},bar_yahman:{ls:42.12,le:102.09}};
 const BGM_VOL=.5,BGM_XF=2.5,BGM_SLOW=1.5,BGM_FAST=.25,BGMC={},BGMPOS={};
 const BGM_ROOM={snack:'snack_gekko',yahman:['bar_yahman','bar_yahman_a'],bar:'bar_gen',izakaya:'izakaya_hotaru',club:'club_luminas'};
 const BGM_AREA={'中洲エリア':'nakasu_night','天神エリア':'tenjin_city','薬院エリア':'tenjin_city','博多エリア':'hakata_town','呉服町エリア':'hakata_town'};
@@ -1635,7 +1637,7 @@ function bgmStop(fade){const c=bgmCur;if(!c)return;bgmCur=null;BGMPOS[c.k]=bgmPo
 function bgmUpdate(){const now=performance.now()/1000,dt=Math.min(1,now-(bgmLast||now));bgmLast=now;// けんかの余韻は実際の時間で数える
   if(!AC)return;if(!bgmBus){bgmBus=AC.createGain();bgmBus.gain.value=0;bgmBus.connect(AC.destination);}
   if(mode==='play'||mode==='talk'){// エリアは道や川の上では前の曲のまま。けんかは相手がいなくなっても少し続ける
-    if(P&&!S.room){const a=areaOf(P.x,P.z);if(a&&BGM_AREA[a.n])bgmArea=BGM_AREA[a.n];}
+    if(P&&!S.room){const a=areaOf(P.x,P.z);if(a&&BGM_AREA[a.n])bgmArea=BGM_AREA[a.n];if(YATAI.some(y=>Math.abs(y.x-P.x)<10&&Math.abs(y.z-P.z)<9))bgmArea='yatai_river';}// 那珂川沿いの屋台の前
     if(P&&!S.room&&hostiles().some(h=>dist(h,P)<16))bgmFightT=4;else bgmFightT-=dt;}
   const want=(muted||mode==='cut'||mode==='loading')?null:bgmScene();
   if(want)bgmLoad(want);

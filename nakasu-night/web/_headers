@@ -19,3 +19,5 @@
   Cache-Control: public, max-age=86400
 /tex/*
   Cache-Control: public, max-age=86400
+/bgm/*
+  Cache-Control: public, max-age=86400

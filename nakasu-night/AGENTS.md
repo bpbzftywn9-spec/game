@@ -17,6 +17,7 @@ web/
   models/           人物モデル（man_q.glb / woman_q.glb）とアニメーション（anims.json）、AIで作った車（car_*.glb）と歩く人（ped_*.glb）
   lib/three/        three.js r128 と使っている examples/js（CDNを使わず同梱。MITライセンス）
   _headers          Cloudflare Pages の応答ヘッダー（キャッシュなど）
+  bgm/              BGM（Sunoで作った曲を96kbpsのMP3にしたもの。ループの終わりで切ってある）
   cut/              カットシーン（画像 c0〜c6, s0〜s2, y1〜y3 / 動画 v0〜v3）
   tex/              街の写真の素材（外壁・店先・博多駅・櫛田神社・屋台・川沿い・デパート・木・地面・夜空。AIで生成。出どころは assets-source/README.md）
 tests/
@@ -80,7 +81,7 @@ python tests/full_playthrough.py # 別ターミナルで serve を起動した�
 | `manageDealers`, `aiDealer`, `dealerBounty`, `S.clock` | 売人。ゲーム内の時計（1秒＝1分、20:00〜翌6:00をくり返す）で22時〜4時に街灯の下に出る。倒すと商店会から報奨金（手配度は上がらない） |
 | `VENUES`, `enterVenue`, `leaveVenue`, `openVenueMenu`, `openTreat`, `treatAll`, `gainFollowers`, `FMS` | 店に入る・客に奢る・フォロワーと特典。店内は `ROOMS`（居酒屋 ほたる・CLUB LUMINAS を追加） |
 | `openPhone`, `phoneApp`, `CONTACTS`, `CHMSG`, `addMsg`, `addPost`, `snap` | スマホ（📱 / Pキー）：連絡アプリ（章が進むとメッセージが届く）、写真SNS「ヨルスナ」、カメラ。`snap` は画面を正方形に切り取って投稿の写真にする（写真はセーブしない） |
-| `BGM`, `bgmScene`, `bgmUpdate`, `bgmLoad`, `bgmTick` | BGM。`BGM` に書いた曲だけを `web/bgm/<名前>.mp3` から、その場面に入ったときに読み込む（`{ls,le}`＝ループの戻り先と終わりの秒。`le` の2.5秒前から `ls` へクロスフェードして回す）。場面→曲は `bgmScene`（ボス戦・手配・店・けんか・車・エリアの順に優先）。エリアと店の切り替えは1.5秒、けんか・手配・ボス戦は0.25秒で切り替え、けんか・手配・ボス戦の曲は毎回頭から、ほかは止めた位置から続ける。店の中・会話中は音量を下げ、動画の間は止める。展開した曲はメモリを食うので2〜3曲だけ持つ。曲がない場面と読み込み中は、これまでの電子音（`bgmTick`） |
+| `BGM`, `bgmScene`, `bgmUpdate`, `bgmLoad`, `bgmTick` | BGM。`BGM` に書いた曲だけを `web/bgm/<名前>.mp3` から、その場面に入ったときに読み込む（`{ls,le}`＝ループの戻り先と終わりの秒。`le` の2.5秒前から `ls` へクロスフェードして回す）。場面→曲は `bgmScene`（ボス戦・手配・店・けんか・車・エリアの順に優先。那珂川沿いの屋台の前は `yatai_river`）。エリアと店の切り替えは1.5秒、けんか・手配・ボス戦は0.25秒で切り替え、けんか・手配・ボス戦の曲は毎回頭から、ほかは止めた位置から続ける。店の中・会話中は音量を下げ、動画の間は止める。展開した曲はメモリを食うので2〜3曲だけ持つ。曲がない場面と読み込み中は、これまでの電子音（`bgmTick`） |
 | `save`, `load` | セーブ（localStorage `nakasu_night_v1`、`v:2`。購入品は `own`、装備は `eq`） |
 
 ## 5. 守ること
@@ -144,9 +145,10 @@ python tests/full_playthrough.py # 別ターミナルで serve を起動した�
 
 ## 7. 次にやること（オーナーの指示を待つ）
 
-- **BGMの組み込み（進行中）**：再生の仕組みはできた（上の表の `BGM`。2026年11月28日）。曲のファイルが届いたら、`web/bgm/<名前>.mp3` に置いて `BGM` に1行足すだけで鳴る（例 `nakasu_night:{ls:8.2,le:181.5}`）。
-  - ドライブの「中洲ナイトBGM」フォルダには `nakasu_night.wav`・`tenjin_city.wav`・`hakata_town.wav` がある（2026年11月28日）。ただし **Google ドライブのコネクタは1ファイル10MBまでしか取り出せず、WAV（24〜39MB）は読めなかった**。オーナーに、Suno の MP3 ダウンロード（10MB未満）を同じフォルダに入れてもらうよう頼んだ。
-  - 変換：`ffmpeg -i 元.mp3 -ac 2 -ar 44100 -b:a 96k -t <le> web/bgm/<名前>.mp3`（`le` より後は使わないので切る）。ループ位置（`ls` は前奏の後の小節の頭、`le` は終わりの前の同じ拍の位置）は曲を聞いて／波形を見て決める。
+- **BGMの組み込み（進行中）**：7曲を組み込んだ（2026年11月28日）：`nakasu_night`（中洲）・`tenjin_city`（天神・薬院）・`hakata_town`（博多・呉服町）・`yatai_river`（屋台の前）・`night_drive`（車・バイク）・`snack_gekko`（スナック月光）・`bar_yahman`（BAR YAHMAN）。残りの12曲（優先Aでは `street_fight`・`boss_battle`・`wanted_chase`・`title_theme`・`ending`）は、届くまで電子音が鳴る。
+  - 曲の受け取り：オーナーが Suno から MP3 で落としてドライブの「中洲ナイトBGM」フォルダに入れる。**Google ドライブのコネクタは1ファイル10MBまでなので、WAV（24〜39MB）は読めない。MP3（3〜5MB）を使う。**
+  - 足し方：ループ位置を探す →（`le` で切って）96kbps に変換して `web/bgm/<名前>.mp3` に置く → `BGM` に `{ls,le}` を1行足す。変換は `ffmpeg -nostdin -i 元.mp3 -t <le> -ac 2 -ar 44100 -b:a 96k -map_metadata -1 web/bgm/<名前>.mp3`。
+  - ループ位置は `tools/bgm_loop.py` で波形から探した：6秒ぶんの音の特徴（32帯域の強さ）と拍の位置（音の立ち上がり）がいちばん似ている2か所を、前奏の後（4〜45秒）と曲の後半（フェードアウトの前）から選び、`ls` を前、`le` を後ろ＋2.5秒にする。耳ではまだ確かめていないので、つなぎ目が気になる曲があれば `ls`/`le` を直す。
   - 方針（オーナーの指示）：96kbps の MP3。電子音は読み込み中と読み込めないときの代わりとして残す。♪ボタンで消せること、スマホでは最初のタップ後に鳴ることを保つ。優先Aの9曲がそろったら一度組み込み、全章の通しテストと動画でオーナーに確認してもらう。
 
 - Web版は Cloudflare Pages で公開する方針。準備は済み、公開前の確認（素材の商用利用、人物モデルの利用条件、店舗情報、「県警」の扱い）もオーナーが済ませた（`docs/cloudflare-pages.md`）。アカウント作成と公開の操作はオーナーが行う。
